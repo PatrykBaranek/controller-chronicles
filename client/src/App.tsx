@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
 import Games from './pages/Games';
-
+import { AuthProvider } from 'react-auth-kit';
+import PrivateRoute from './components/PrivateRoute';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
       { path: 'register', element: <h1>register</h1> },
       {
         path: 'profile',
-        element: <h1>private route profile</h1>,
+        element: <h1>profile</h1>,
         children: [
           {
             path: 'collections',
@@ -32,8 +33,15 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => {
-  return <RouterProvider router={router} />;
-};
+const App = () => (
+  <AuthProvider
+    authType={'localstorage'}
+    authName={'_auth'}
+    cookieDomain={window.location.hostname}
+    cookieSecure={window.location.protocol === 'https:'}
+  >
+    <RouterProvider router={router} />
+  </AuthProvider>
+);
 
 export default App;
