@@ -8,18 +8,22 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
-import { GetGameVideoReviewDto } from './dto/get-game-video-review.dto';
+import { GetGameVideoReviewDto } from './youtube/dto/get-game-video-review.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { GetGameDto } from './dto/get-game.dto';
+import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
+import { YoutubeService } from './youtube/youtube.service';
 
 @ApiTags('Games Api')
 @Controller('games')
 export class GamesController {
-  constructor(private readonly gamesService: GamesService) {}
+  constructor(
+    private readonly gamesService: GamesService,
+    private readonly youtubeService: YoutubeService,
+  ) {}
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
-  async getGames(@Query() queryParams: GetGameDto) {
+  async getGames(@Query() queryParams: GetGameQueryParamsDto) {
     return this.gamesService.getGames(queryParams);
   }
 
@@ -30,7 +34,7 @@ export class GamesController {
 
   @Get(':id/trailers')
   async getGameTrailersById(@Param('id', ParseIntPipe) id: number) {
-    return this.getGameTrailersById(id);
+    return this.gamesService.getGameTrailersById(id);
   }
 
   @Get(':title/video-review')
@@ -39,7 +43,10 @@ export class GamesController {
     @Param('title') title: string,
     @Query() queryParams: GetGameVideoReviewDto,
   ) {
-    return this.gamesService.getGameVideoReviewByTitle(title, queryParams.lang);
+    return this.youtubeService.getGameVideoReviewByTitle(
+      title,
+      queryParams.lang,
+    );
   }
 
   @Get('/developers')
