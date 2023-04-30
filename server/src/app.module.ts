@@ -5,6 +5,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
+import { DevelopersModule } from './developers/developers.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GamesModule } from './games/games.module';
     MongooseModule.forRoot(process.env.MONGO_URI),
     SpotifyModule,
     GamesModule,
+    DevelopersModule,
   ],
 })
 export class AppModule {}
