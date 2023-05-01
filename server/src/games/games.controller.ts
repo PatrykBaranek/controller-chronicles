@@ -49,8 +49,8 @@ export class GamesController {
     );
   }
 
-  @Get('/developers')
-  async getGamesByDeveloper() {
-    return this.gamesService.getGamesByDeveloper();
+  @Get(':id/stores')
+  async getGameStoresById(@Param('id', ParseIntPipe) id: number) {
+    return this.gamesService.getGameStoresByGameId(id);
   }
 }

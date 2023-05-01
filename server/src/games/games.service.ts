@@ -8,16 +8,22 @@ import { plainToInstance } from 'class-transformer';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 import { HowLongToBeatService } from 'howlongtobeat';
 import { HowLongToBeatResponseDto } from './dto/how-long-to-beat-response.dto';
+import { GetGameStoresResponse } from './types/rawg-game-stores-response';
+import { GetStoresResponse } from './types/rawg-stores-response';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class GamesService {
+  private readonly rawgApiUrl = 'https://api.rawg.io/api/games';
   private readonly hltbService: HowLongToBeatService;
 
   constructor(private readonly httpService: HttpService) {
     this.hltbService = new HowLongToBeatService();
   }
 
-  getGames(options?: GetGameQueryParamsDto) {
+  getGames(
+    options?: GetGameQueryParamsDto,
+  ): Observable<PaginationDto<RawgGameResponseDto>> {
     const { page, page_size, stores, metacritic, ordering, search } = options;
 
     const paramsObject: Record<string, string> = {
@@ -32,7 +38,7 @@ export class GamesService {
 
     const httpParams = new URLSearchParams(paramsObject);
 
-    const url = `https://api.rawg.io/api/games?${httpParams.toString()}`;
+    const url = `${this.rawgApiUrl}?${httpParams.toString()}`;
 
     return this.httpService.get(url).pipe(
       map((response) => {
@@ -42,7 +48,7 @@ export class GamesService {
           totalItems: response.data.count,
           totalPages: Math.ceil(response.data.count / page_size),
           currentPage: page,
-          games: plainToInstance(RawgGameResponseDto, games),
+          results: plainToInstance(RawgGameResponseDto, games),
         };
       }),
     );
@@ -54,7 +60,7 @@ export class GamesService {
   }> {
     const game = this.httpService
       .get<RawgGameResponse>(
-        `https://api.rawg.io/api/games/${id}
+        `${this.rawgApiUrl}/${id}
           ?key=${process.env.RAWG_API_KEY}`,
       )
       .pipe(map((response: AxiosResponse<RawgGameResponse>) => response.data));
@@ -76,15 +82,28 @@ export class GamesService {
 
   getGameTrailersById(id: number) {
     return this.httpService
-      .get(
-        `https://api.rawg.io/api/games/${id}/movies?key=${process.env.RAWG_API_KEY}`,
-      )
+      .get(`${this.rawgApiUrl}/${id}/movies?key=${process.env.RAWG_API_KEY}`)
       .pipe(map((response) => response.data));
   }
 
-  getGamesByDeveloper() {
-    return this.httpService
-      .get(`https://api.rawg.io/api/developers?key=${process.env.RAWG_API_KEY}`)
-      .pipe(map((response) => response.data));
+  async getGameStoresByGameId(id: number) {
+    const gameStores =
+      await this.httpService.axiosRef.get<GetGameStoresResponse>(
+        `${this.rawgApiUrl}/${id}/stores?key=${process.env.RAWG_API_KEY}`,
+      );
+
+    const stores = await this.httpService.axiosRef.get<GetStoresResponse>(
+      `https://api.rawg.io/api/stores?key=${process.env.RAWG_API_KEY}`,
+    );
+
+    const result = gameStores.data.results.map((store) => {
+      return {
+        id: store.id,
+        name: stores.data.results.find((s) => s.id === store.store_id).name,
+        url: store.url,
+      };
+    });
+
+    return result;
   }
 }
