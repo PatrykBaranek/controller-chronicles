@@ -50,11 +50,16 @@ export class RawgGameResponseDto implements RawgGameResponse {
   parent_achievements_count: number;
   twitch_count: number;
   youtube_count: number;
-  reviews_text_count: number;
   ratings_count: number;
   suggestions_count: number;
   additions_count: number;
   screenshots_count: number;
+
+  @Exclude()
+  clip: string;
+
+  @Exclude()
+  reviews_text_count: number;
 
   @Exclude()
   description: string;
