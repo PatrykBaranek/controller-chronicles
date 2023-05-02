@@ -37,16 +37,13 @@ export class GamesController {
     return this.gamesService.getGameTrailersById(id);
   }
 
-  @Get(':title/video-review')
+  @Get(':id/video-review')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async getGameVideoReviewByTitle(
-    @Param('title') title: string,
+  async getGameVideoReviewByGameId(
+    @Param('id', ParseIntPipe) id: number,
     @Query() queryParams: GetGameVideoReviewDto,
   ) {
-    return this.youtubeService.getGameVideoReviewByTitle(
-      title,
-      queryParams.lang,
-    );
+    return this.youtubeService.getGameVideoReviewByGameId(id, queryParams.lang);
   }
 
   @Get(':id/stores')
