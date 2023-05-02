@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
+import { GamesService } from '../games.service';
 
 @Injectable()
 export class YoutubeService {
   private readonly youtube = google.youtube('v3');
 
-  async getGameVideoReviewByTitle(
-    title: string,
+  constructor(private readonly gamesService: GamesService) {}
+
+  async getGameVideoReviewByGameId(
+    id: number,
     lang?: 'pl' | 'en',
   ): Promise<any> {
-    let searchQuery = `${title} `;
+    const game = await this.gamesService.getGameById(id);
+    let searchQuery = `${game.rawgGame.name} `;
 
     if (lang === 'pl') {
       searchQuery += 'recenzja';

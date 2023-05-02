@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { Observable, forkJoin, from, map, switchMap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { RawgGameResponse } from './types/rawg-game-response';
 import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 import { plainToInstance } from 'class-transformer';
@@ -54,30 +53,22 @@ export class GamesService {
     );
   }
 
-  getGameById(id: number): Observable<{
+  async getGameById(id: number): Promise<{
     rawgGame: RawgGameResponseDto;
     howLongToBeat: HowLongToBeatResponseDto;
   }> {
-    const game = this.httpService
+    const rawgGame = await this.httpService.axiosRef
       .get<RawgGameResponse>(
-        `${this.rawgApiUrl}/${id}
-          ?key=${process.env.RAWG_API_KEY}`,
+        `${this.rawgApiUrl}/${id}?key=${process.env.RAWG_API_KEY}`,
       )
-      .pipe(map((response: AxiosResponse<RawgGameResponse>) => response.data));
+      .then((response) => response.data);
 
-    const hltbGame = game.pipe(
-      map((game) => this.hltbService.search(game.name)),
-      switchMap((promise) => from(promise)),
-    );
+    const hltbGame = await this.hltbService.search(rawgGame.name);
 
-    return forkJoin([game, hltbGame]).pipe(
-      map(([rawgGame, hltbGame]) => {
-        return {
-          rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
-          howLongToBeat: plainToInstance(HowLongToBeatResponseDto, hltbGame[0]),
-        };
-      }),
-    );
+    return {
+      rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
+      howLongToBeat: plainToInstance(HowLongToBeatResponseDto, hltbGame[0]),
+    };
   }
 
   getGameTrailersById(id: number) {
