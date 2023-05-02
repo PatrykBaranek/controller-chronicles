@@ -37,6 +37,13 @@ export class GamesController {
     return this.gamesService.getGameTrailersById(id);
   }
 
+  @Get(':id/yt/trailers')
+  async getGameTrailersFromYoutubeByGameId(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.youtubeService.getGameTrailersByGameId(id);
+  }
+
   @Get(':id/video-review')
   @UsePipes(new ValidationPipe({ transform: true }))
   async getGameVideoReviewByGameId(

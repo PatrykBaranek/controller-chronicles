@@ -10,6 +10,7 @@ import { HowLongToBeatResponseDto } from './dto/how-long-to-beat-response.dto';
 import { GetGameStoresResponse } from './types/rawg-game-stores-response';
 import { GetStoresResponse } from './types/rawg-stores-response';
 import { PaginationDto } from './dto/pagination.dto';
+import { YoutubeService } from './youtube/youtube.service';
 
 @Injectable()
 export class GamesService {
@@ -71,10 +72,12 @@ export class GamesService {
     };
   }
 
-  getGameTrailersById(id: number) {
-    return this.httpService
-      .get(`${this.rawgApiUrl}/${id}/movies?key=${process.env.RAWG_API_KEY}`)
-      .pipe(map((response) => response.data));
+  async getGameTrailersById(id: number) {
+    const rawgGameTrailers = await this.httpService.axiosRef.get(
+      `${this.rawgApiUrl}/${id}/movies?key=${process.env.RAWG_API_KEY}`,
+    );
+
+    return rawgGameTrailers.data;
   }
 
   async getGameStoresByGameId(id: number) {
