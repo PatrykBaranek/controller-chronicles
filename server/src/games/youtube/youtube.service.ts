@@ -8,10 +8,7 @@ export class YoutubeService {
 
   constructor(private readonly gamesService: GamesService) {}
 
-  async getGameVideoReviewByGameId(
-    id: number,
-    lang?: 'pl' | 'en',
-  ): Promise<any> {
+  async getGameVideoReviewByGameId(id: number, lang?: 'pl' | 'en') {
     const game = await this.gamesService.getGameById(id);
     let searchQuery = `${game.rawgGame.name} `;
 
@@ -21,9 +18,26 @@ export class YoutubeService {
       searchQuery += 'review';
     }
 
+    const result = await this.youtubeSearch(searchQuery);
+
+    return {
+      video_reviews: result,
+    };
+  }
+
+  async getGameTrailersByGameId(id: number) {
+    const game = await this.gamesService.getGameById(id);
+    const searchQuery = `${game.rawgGame.name} Official trailer`;
+
+    const result = await this.youtubeSearch(searchQuery);
+
+    return result;
+  }
+
+  private async youtubeSearch(q: string) {
     const requestOptions: youtube_v3.Params$Resource$Search$List = {
       key: process.env.YOUTUBE_API_KEY,
-      q: searchQuery,
+      q: q,
       part: ['snippet'],
       type: ['video'],
       order: 'relevance',
@@ -42,7 +56,7 @@ export class YoutubeService {
     });
 
     return {
-      video_reviews: result,
+      yt_trailers: result,
     };
   }
 }
