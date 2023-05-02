@@ -14,6 +14,10 @@ export class SpotifyAuthService {
     this.initializeSpotifyApi();
   }
 
+  isAuthenticated(): boolean {
+    return !!this.spotifyApi.getAccessToken();
+  }
+
   private initializeSpotifyApi() {
     this.spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,

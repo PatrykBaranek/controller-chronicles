@@ -1,14 +1,24 @@
-import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { SpotifyPodcastsService } from './spotify-podcasts.service';
+import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
 
 @Controller('spotify/podcasts')
+@UseGuards(SpotifyAuthGuard)
 export class SpotifyPodcastsController {
   constructor(
     private readonly spotifyPodcastsService: SpotifyPodcastsService,
   ) {}
 
   @Get()
-  async searchPodcast(@Query('lang') language: string) {
+  async getAllGamePodcasts(@Query('lang') language: string) {
     return this.spotifyPodcastsService.getAllGamePodcasts(language);
   }
 
@@ -17,9 +27,14 @@ export class SpotifyPodcastsController {
     return this.spotifyPodcastsService.getPodcastById(id);
   }
 
-  @Get('/podcasts/:id/newrelease')
+  @Get(':id/new-release')
   async getPodcastNewRelease(@Param('id') id: string) {
     return this.spotifyPodcastsService.getNewEpisodesForPodcast(id);
+  }
+
+  @Get('/users-list')
+  async getPodcastsFromUserLibrary() {
+    return this.spotifyPodcastsService.getPodcastsFromUserLibrary();
   }
 
   @Post('/add/:id')
