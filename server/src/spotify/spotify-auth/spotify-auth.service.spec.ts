@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SpotifyService } from './spotify.service';
+import { SpotifyAuthService } from './spotify-auth.service';
 
-describe('SpotifyService', () => {
-  let service: SpotifyService;
+describe('SpotifyAuthService', () => {
+  let service: SpotifyAuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SpotifyService],
+      providers: [SpotifyAuthService],
     }).compile();
 
-    service = module.get<SpotifyService>(SpotifyService);
+    service = module.get<SpotifyAuthService>(SpotifyAuthService);
   });
 
   it('should be defined', () => {
