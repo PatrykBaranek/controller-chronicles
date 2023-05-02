@@ -10,7 +10,7 @@ export class SpotifyEpisodesService {
     findEpisodeByGameTitleDto: FindEpisodeByGameDto,
   ) {
     const response = await this.spotifyAuthService.api.searchEpisodes(
-      findEpisodeByGameTitleDto.gameTitle.toLocaleLowerCase(),
+      findEpisodeByGameTitleDto.gameTitle,
       {
         limit: findEpisodeByGameTitleDto.limit,
       },

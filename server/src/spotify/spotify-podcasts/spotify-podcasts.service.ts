@@ -1,20 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
+import { GetAllGamingPodcastsDto } from '../dto/get-all-gaming-podcasts.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class SpotifyPodcastsService {
   constructor(private readonly spotifyAuthService: SpotifyAuthService) {}
 
-  async getAllGamePodcasts(language: string) {
-    let query = 'games';
+  async getAllGamePodcasts(
+    language: string,
+  ): Promise<SpotifyApi.PagingObject<GetAllGamingPodcastsDto>> {
+    let gamingKeywords = ['games', 'video games', 'gameplay'];
 
     if (language === 'pl') {
-      query = 'gry';
+      gamingKeywords = ['gry wideo', 'gry komputerowe'];
     }
 
-    const response = await this.spotifyAuthService.api.searchShows(query, {});
+    const query = gamingKeywords.map((keyword) => `${keyword}`).join(' OR ');
 
-    return response.body.shows.items;
+    const response = await this.spotifyAuthService.api.searchShows(query);
+
+    return {
+      ...response.body.shows,
+      items: plainToInstance(
+        GetAllGamingPodcastsDto,
+        response.body.shows.items,
+      ),
+    };
   }
 
   async getPodcastById(id: string) {
@@ -24,6 +36,12 @@ export class SpotifyPodcastsService {
     } catch (error) {
       throw new NotFoundException('Podcast not found');
     }
+  }
+
+  async getPodcastsFromUserLibrary() {
+    const podcastList = await this.spotifyAuthService.api.getMySavedShows();
+
+    return podcastList.body;
   }
 
   async addPodcastToUserLibrary(id: string) {
