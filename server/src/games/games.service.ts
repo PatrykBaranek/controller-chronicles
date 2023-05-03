@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { RawgGameResponse } from './types/rawg-game-response';
 import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 import { plainToInstance } from 'class-transformer';
@@ -9,21 +8,23 @@ import { HowLongToBeatService } from 'howlongtobeat';
 import { HowLongToBeatResponseDto } from './dto/how-long-to-beat-response.dto';
 import { GetGameStoresResponse } from './types/rawg-game-stores-response';
 import { GetStoresResponse } from './types/rawg-stores-response';
-import { PaginationDto } from './dto/pagination.dto';
-import { YoutubeService } from './youtube/youtube.service';
+import { GamesRepository } from './games.repository';
+import { AxiosResponse } from 'axios';
+import { Game } from './models/Game.schema';
 
 @Injectable()
 export class GamesService {
   private readonly rawgApiUrl = 'https://api.rawg.io/api/games';
   private readonly hltbService: HowLongToBeatService;
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly gamesRepository: GamesRepository,
+  ) {
     this.hltbService = new HowLongToBeatService();
   }
 
-  getGames(
-    options?: GetGameQueryParamsDto,
-  ): Observable<PaginationDto<RawgGameResponseDto>> {
+  async getGames(options?: GetGameQueryParamsDto) {
     const { page, page_size, stores, metacritic, ordering, search } = options;
 
     const paramsObject: Record<string, string> = {
@@ -40,24 +41,52 @@ export class GamesService {
 
     const url = `${this.rawgApiUrl}?${httpParams.toString()}`;
 
-    return this.httpService.get(url).pipe(
-      map((response) => {
-        const games = response.data.results as Object[];
+    try {
+      const response: AxiosResponse = await this.httpService.axiosRef.get(url);
 
-        return {
-          totalItems: response.data.count,
-          totalPages: Math.ceil(response.data.count / page_size),
-          currentPage: page,
-          results: plainToInstance(RawgGameResponseDto, games),
-        };
-      }),
-    );
+      const totalPages = Math.ceil(response.data.count / page_size);
+
+      if (page > totalPages) {
+        throw new NotFoundException(
+          'Page number cannot be greater than page size',
+        );
+      }
+
+      const games = response.data.results as RawgGameResponse[];
+
+      await Promise.all(
+        games.map(async (game) => {
+          const gameData: Partial<Game> = {
+            game_id: game.id,
+            rawgGame: game,
+          };
+          await this.gamesRepository.saveGame(plainToInstance(Game, gameData));
+        }),
+      );
+
+      return {
+        totalItems: response.data.count,
+        totalPages,
+        currentPage: page,
+        results: plainToInstance(RawgGameResponseDto, games),
+      };
+    } catch (error) {
+      // Handle errors based on the error object returned by axios
+      throw new HttpException(error.message, error.response.status);
+    }
   }
 
-  async getGameById(id: number): Promise<{
-    rawgGame: RawgGameResponseDto;
-    howLongToBeat: HowLongToBeatResponseDto;
-  }> {
+  async getGameById(id: number) {
+    const gameInDb = await this.gamesRepository.findGame(id);
+
+    if (gameInDb.rawgGame && gameInDb.howLongToBeat) {
+      return {
+        game_id: gameInDb.game_id,
+        rawgGame: gameInDb.rawgGame,
+        howLongToBeat: gameInDb.howLongToBeat,
+      };
+    }
+
     const rawgGame = await this.httpService.axiosRef
       .get<RawgGameResponse>(
         `${this.rawgApiUrl}/${id}?key=${process.env.RAWG_API_KEY}`,
@@ -66,9 +95,22 @@ export class GamesService {
 
     const hltbGame = await this.hltbService.search(rawgGame.name);
 
+    await this.gamesRepository.saveGame({
+      game_id: rawgGame.id,
+      rawgGame: {
+        ...plainToInstance(RawgGameResponseDto, rawgGame),
+      },
+      howLongToBeat: {
+        gameplayMain: hltbGame[0]?.gameplayMain,
+        gameplayMainExtra: hltbGame[0]?.gameplayMainExtra,
+        gameplayCompletionist: hltbGame[0]?.gameplayCompletionist,
+      },
+    });
+
     return {
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: plainToInstance(HowLongToBeatResponseDto, hltbGame[0]),
+      game_id: rawgGame.id,
     };
   }
 
