@@ -1,6 +1,6 @@
 import searchIco from '#/assets/searchIco.svg';
 import styled from 'styled-components';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 type StyledSearchBarProps = {
   isClicked: boolean;
   onSearchbarClick?: () => void;
@@ -51,17 +51,18 @@ const StyledSearchbar = styled.div<StyledSearchBarProps>`
 
 const Searchbar = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const ref = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('');
 
-  const onSearchbarClick = () => {
-    ref.current?.focus();
+  const onSearchbarClick = (e: React.FormEvent<EventTarget>) => {
+    (e.target as HTMLInputElement).focus();
     setIsClicked(prev => !prev);
   };
 
   return (
     <StyledSearchbar
       isClicked={isClicked}
-      onClick={onSearchbarClick}
+      onClick={e => onSearchbarClick(e)}
+      onBlur={() => setIsClicked(false)}
     >
       <img
         src={searchIco}
@@ -69,8 +70,9 @@ const Searchbar = () => {
       />
       <input
         type='text'
-        ref={ref}
+        value={inputValue}
         aria-label='searchbar'
+        onChange={e => setInputValue(e.target.value)}
       />
     </StyledSearchbar>
   );

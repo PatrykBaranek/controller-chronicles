@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 const StyledSplide = styled(Splide)`
   ul {
     display: flex;
+    justify-content: center;
   }
   a {
     color: ${({ theme }) => theme.colors.primary};

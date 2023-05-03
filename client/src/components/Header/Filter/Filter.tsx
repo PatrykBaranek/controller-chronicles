@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import isDesktopWidth from '../../utils/isDesktopWidth';
+import isDesktopWidth from '../../../utils/isDesktopWidth';
 import useWindowWidth from '../../../hooks/useWindowWidth';
 import FilterSlider from './FilterSlider';
-import Button from '../../UI/Button';
 import FilterDropdown from './FilterDropdown';
 
 const StyledFilter = styled.div`

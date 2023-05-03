@@ -4,10 +4,12 @@ import logo from '#/assets/logo.svg';
 import avatar from '#/assets/avatar.svg';
 import Searchbar from './Searchbar';
 import useWindowWidth from '../../hooks/useWindowWidth';
-import isLocationSearchable from '../utils/isLocationSearchable';
+import isLocationSearchable from '../../utils/isLocationSearchable';
 import { useLocation } from 'react-router-dom';
 import Filter from './Filter/Filter';
-import isDesktopWidth from '../utils/isDesktopWidth';
+import isDesktopWidth from '../../utils/isDesktopWidth';
+import Nav from '../Nav/Nav';
+
 const StyledHeader = styled.header`
   width: 100%;
   display: flex;
@@ -15,6 +17,9 @@ const StyledHeader = styled.header`
   flex-direction: column;
   padding: 1.31rem 2.18rem;
   overflow: hidden;
+  @media screen and (min-width: 900px) {
+    padding-bottom: 0;
+  }
 `;
 const StyledTopSection = styled.div`
   display: flex;
@@ -85,6 +90,7 @@ const Header = () => {
   const { pathname: location } = useLocation();
   return (
     <StyledHeader>
+      {!isDesktopWidth(windowWidth) && <Nav />}
       <StyledTopSection>
         <BurgerMenu />
         <StyledLogo

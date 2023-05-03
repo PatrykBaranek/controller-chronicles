@@ -1,3 +1,4 @@
+import useStore from '#/store/store';
 import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
@@ -26,7 +27,7 @@ const StyledBurgerMenu = styled.div<{ isOpen: boolean }>`
       border-radius: 10px;
       width: 200%;
       height: 2px;
-      top: ${({ isOpen }) => (isOpen ? '' : 'calc(50% - 5px)')};
+      top: ${({ isOpen }) => (isOpen ? '1px' : 'calc(50% - 5px)')};
       transform: translateY(-50%);
       transform: rotate(${({ isOpen }) => (isOpen ? '45deg' : '')});
       transition: all 0.5s ease-in-out;
@@ -46,19 +47,13 @@ const StyledBurgerMenu = styled.div<{ isOpen: boolean }>`
   }
 `;
 
-type Props = {
-  isMenuOpen: boolean;
-  setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
-};
+const BurgerMenu = () => {
+  const { isMenuOpen, toggleMenuOpen } = useStore();
 
-const BurgerMenu = ({ isMenuOpen, setIsMenuOpen }: Props) => {
-  const handleClick = () => {
-    setIsMenuOpen(prev => !prev);
-  };
   return (
     <StyledBurgerMenu
       isOpen={isMenuOpen}
-      onClick={handleClick}
+      onClick={toggleMenuOpen}
     >
       <span></span>
     </StyledBurgerMenu>
