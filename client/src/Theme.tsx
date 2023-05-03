@@ -15,7 +15,7 @@ const theme = {
       'linear-gradient(131.88deg, #A73EE7 14.48%, #00EBFF 83.43%)',
     inputGradient: 'linear-gradient(135deg, #0f55e819 0%, #9ddff319 100%)',
     activeGradient:
-      'radial-gradient(50% 128.57% at 50% -36.61%, #3C7055 0%, #527764a0 9.38%, #22173811 100%)',
+      'radial-gradient(50% 128.57% at 50% -36.61%, #3C7055 0%, #52776468 9.38%, transparent 100%)',
     cardGradient: `linear-gradient(rgba(255, 255, 255, 0.5), #48319d33, #48319d10)
       50% 0% / calc(100% - 2px) no-repeat,
     linear-gradient(0deg, transparent 35%, rgba(255, 255, 255, 0.5) 100%);`,
