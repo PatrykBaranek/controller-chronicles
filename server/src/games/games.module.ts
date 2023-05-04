@@ -10,6 +10,8 @@ import {
   GameTrailersSchema,
 } from './youtube/models/trailers.schema';
 import { YoutubeModule } from './youtube/youtube.module';
+import { RawgApiService } from './rawg-api/rawg-api.service';
+import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.service';
 
 @Module({
   imports: [
@@ -21,7 +23,12 @@ import { YoutubeModule } from './youtube/youtube.module';
     forwardRef(() => YoutubeModule),
   ],
   controllers: [GamesController],
-  providers: [GamesService, GamesRepository],
+  providers: [
+    GamesService,
+    GamesRepository,
+    RawgApiService,
+    HowLongToBeatService,
+  ],
   exports: [GamesService],
 })
 export class GamesModule {}
