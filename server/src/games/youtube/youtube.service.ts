@@ -36,15 +36,19 @@ export class YoutubeService {
     return { video_reviews };
   }
 
-  async getGameTrailersByGameId(id: number): Promise<SearchResult[]> {
+  async getGameTrailersByGameId(
+    id: number,
+  ): Promise<{ game_trailers: SearchResult[] }> {
     const game = await this.gamesService.getGameById(id);
     const searchQuery = `${game.rawgGame.name} Official trailer`;
 
-    return await this.getOrFetchGameVideos(
+    const game_trailers = await this.getOrFetchGameVideos(
       game.game_id,
       searchQuery,
       'trailers',
     );
+
+    return { game_trailers };
   }
 
   private async getOrFetchGameVideos(
