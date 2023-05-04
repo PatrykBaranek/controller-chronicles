@@ -27,7 +27,7 @@ export class SpotifyAuthService {
   }
 
   getAuthorizeURL(): string {
-    return this.spotifyApi.createAuthorizeURL(scopes);
+    return this.spotifyApi.createAuthorizeURL(scopes, '');
   }
 
   async handleAuthorizationCallback(code: string): Promise<void> {
