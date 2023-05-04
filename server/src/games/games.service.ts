@@ -71,7 +71,6 @@ export class GamesService {
         results: plainToInstance(RawgGameResponseDto, games),
       };
     } catch (error) {
-      // Handle errors based on the error object returned by axios
       throw new HttpException(error.message, error.response.status);
     }
   }
