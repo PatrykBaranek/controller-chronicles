@@ -32,11 +32,6 @@ export class GamesController {
     return this.gamesService.getGameById(id);
   }
 
-  @Get(':id/trailers')
-  async getGameTrailersById(@Param('id', ParseIntPipe) id: number) {
-    return this.gamesService.getGameTrailersById(id);
-  }
-
   @Get(':id/yt/trailers')
   async getGameTrailersFromYoutubeByGameId(
     @Param('id', ParseIntPipe) id: number,
