@@ -1,0 +1,35 @@
+name: Controller Chronicles Workflow
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run your script
+        run: npm run start
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
