@@ -21,14 +21,38 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm i
 
-      - name: Install client and server dependencies
-        run: npm run installDev
+      - name: Install client dependencies
+        run: |
+          cd client
+          npm i
 
-      - name: Run your script
-        run: npm run start
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm i
+
+      - name: Build client
+        run: |
+          cd client
+          npm run build
+
+      - name: Build server
+        run: |
+          cd server
+          npm run build
+
+      - name: Test client
+        run: |
+          cd client
+          npm run test
+
+      - name: Test server
+        run: |
+          cd server
+          npm run test
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
