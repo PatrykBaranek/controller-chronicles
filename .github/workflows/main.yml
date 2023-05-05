@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Install client and server dependencies
+        run: npm run installDev
+
       - name: Run your script
         run: npm run start
         env:
