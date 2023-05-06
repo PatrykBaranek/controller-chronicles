@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Game, GameDocument } from './models/Game.schema';
+import { Game, GameDocument } from './models/game.schema';
 import { Model } from 'mongoose';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 
