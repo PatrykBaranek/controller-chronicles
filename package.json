@@ -18,7 +18,7 @@
     "url": "https://github.com/PatrykBaranek/controller-chronicles/issues"
   },
   "homepage": "https://github.com/PatrykBaranek/controller-chronicles#readme",
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^8.0.1"
   }
 }
