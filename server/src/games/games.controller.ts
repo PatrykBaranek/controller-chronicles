@@ -20,6 +20,8 @@ import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 import { YoutubeService } from './youtube/youtube.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
+import { SteamService } from './steam/steam.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @ApiTags('games')
 @Controller('games')
@@ -27,6 +29,7 @@ export class GamesController {
   constructor(
     private readonly gamesService: GamesService,
     private readonly youtubeService: YoutubeService,
+    private readonly steamService: SteamService,
   ) {}
 
   @ApiOperation({ summary: 'Get games' })
@@ -80,5 +83,11 @@ export class GamesController {
   @Get(':id/stores')
   async getGameStoresById(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.getGameStoresByGameId(id);
+  }
+
+  @ApiQuery({ name: 'lang', enum: ['polish', 'english'] })
+  @Get('steam/bestsellers')
+  async getSteamBestSellers(@Query() lang: 'polish' | 'english' = 'english') {
+    return this.steamService.getBestSellers(lang);
   }
 }

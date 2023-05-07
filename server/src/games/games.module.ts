@@ -12,6 +12,7 @@ import {
 import { YoutubeModule } from './youtube/youtube.module';
 import { RawgApiService } from './rawg-api/rawg-api.service';
 import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.service';
+import { SteamService } from './steam/steam.service';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.servic
     GamesRepository,
     RawgApiService,
     HowLongToBeatService,
+    SteamService,
   ],
   exports: [GamesService],
 })
