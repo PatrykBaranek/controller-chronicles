@@ -85,9 +85,9 @@ export class GamesController {
     return this.gamesService.getGameStoresByGameId(id);
   }
 
-  @ApiQuery({ name: 'lang', enum: ['polish', 'english'] })
+  @ApiQuery({ name: 'cc', enum: ['pl', 'us'] })
   @Get('steam/bestsellers')
-  async getSteamBestSellers(@Query() lang: 'polish' | 'english' = 'english') {
-    return this.steamService.getBestSellers(lang);
+  async getSteamBestSellers(@Query() cc: 'pl' | 'us' = 'pl') {
+    return this.steamService.getBestSellers(cc);
   }
 }
