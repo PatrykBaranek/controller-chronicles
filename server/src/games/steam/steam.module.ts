@@ -1,0 +1,20 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  SteamBestSellers,
+  SteamBestSellersSchema,
+} from './models/steam-bestsellers.model';
+import { SteamService } from './steam.service';
+import { PuppeteerModule } from '../puppeteer/puppeteer.module';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: SteamBestSellers.name, schema: SteamBestSellersSchema },
+    ]),
+    PuppeteerModule,
+  ],
+  providers: [SteamService],
+  exports: [SteamService],
+})
+export class SteamModule {}
