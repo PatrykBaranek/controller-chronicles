@@ -1,9 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PuppeteerService } from '../puppeteer/puppeteer.service';
+import { SteamReposiiory } from './steam.repository';
 
 @Injectable()
 export class SteamService {
-  constructor(private readonly puppeteerService: PuppeteerService) {}
+  constructor(
+    private readonly steamRepository: SteamReposiiory,
+    private readonly puppeteerService: PuppeteerService,
+  ) {}
 
   async getBestSellers(cc: 'pl' | 'us') {
     const browser = await this.puppeteerService.launchBrowser();
@@ -20,16 +24,17 @@ export class SteamService {
         '.ds_collapse_flag',
       );
 
-      return await Promise.all(
+      const bestSellersJson = await Promise.all(
         listOfBestSellingGameHTMLElements.map(async (gameHTMLElement) => {
           const img = await gameHTMLElement
             .$('img')
             .then((el) => el.evaluate((el) => el.getAttribute('src')));
 
-          const gameTitle = await gameHTMLElement
+          const name = await gameHTMLElement
             .$('.title')
             .then((title) => title.evaluate((title) => title.textContent));
-          const steamLink = await gameHTMLElement.evaluate((element) =>
+
+          const link = await gameHTMLElement.evaluate((element) =>
             element.getAttribute('href'),
           );
 
@@ -43,18 +48,37 @@ export class SteamService {
             }),
           );
 
-          return {
+          const bestsellerToSave = {
             img,
-            gameTitle,
-            steamLink,
+            name,
+            link,
             price,
           };
+
+          await this.steamRepository.saveBestSellers({
+            games: bestsellerToSave,
+            updateDate: new Date(),
+          });
+
+          return bestsellerToSave;
         }),
       );
-    } catch (err: unknown) {
+
+      return bestSellersJson;
+    } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     } finally {
       await this.puppeteerService.closeBrowser(browser);
     }
+  }
+
+  private async checkIfTodaysBestSellersExist() {
+    const bestSellers = await this.steamRepository.getBestSellers();
+
+    if (bestSellers.length === 0) {
+      return false;
+    }
+
+    return true;
   }
 }
