@@ -6,6 +6,7 @@ import {
 } from './models/steam-bestsellers.model';
 import { SteamService } from './steam.service';
 import { PuppeteerModule } from '../puppeteer/puppeteer.module';
+import { SteamReposiiory } from './steam.repository';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { PuppeteerModule } from '../puppeteer/puppeteer.module';
     ]),
     PuppeteerModule,
   ],
-  providers: [SteamService],
+  providers: [SteamService, SteamReposiiory],
   exports: [SteamService],
 })
 export class SteamModule {}
