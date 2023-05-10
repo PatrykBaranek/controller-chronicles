@@ -20,6 +20,18 @@ const StyledNavbarLink = styled.li<StyledLink>`
     justify-content: flex-start;
     padding-left: 1.25rem;
   }
+
+  &:hover {
+    background: ${({ isActive }) =>
+      isActive
+        ? ''
+        : `linear-gradient(
+      131.88deg,
+      rgba(0, 235, 255, 0) 0,
+      rgba(167, 62, 231, 0.15) 14.48%,
+      rgba(0, 235, 255, 0) 70%
+    );`};
+  }
   &::before {
     display: ${({ isActive }) => (isActive ? 'inline' : 'none')};
     position: absolute;
@@ -30,6 +42,7 @@ const StyledNavbarLink = styled.li<StyledLink>`
     height: 50%;
     width: 80%;
     background: ${({ theme }) => theme.colors.activeGradient};
+    pointer-events: none;
   }
   &:not(:last-of-type) div::after {
     display: none;
@@ -37,8 +50,10 @@ const StyledNavbarLink = styled.li<StyledLink>`
 `;
 const StyledWrapper = styled.div`
   display: flex;
-  justify-content: center;
-
+  width: 30%;
+  @media screen and (min-width: 900px) {
+    width: 100%;
+  }
   &::before {
     position: absolute;
     top: 0;
@@ -77,11 +92,17 @@ const StyledWrapper = styled.div`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 0.9rem;
     font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+    @media screen and (min-width: 900px) {
+      width: 100%;
+      justify-content: flex-start;
+    }
     span {
       width: 1.5rem;
       height: 1.5rem;
     }
     img {
+      width: 1.5rem;
+      height: 1.5rem;
       filter: invert(90%) sepia(13%) saturate(181%) hue-rotate(201deg)
         brightness(104%) contrast(92%);
       opacity: 0.6;
@@ -96,8 +117,8 @@ const StyledWrapper = styled.div`
       width: 2rem;
       height: 2rem;
       border-radius: 100vh;
-      padding: 4px;
       position: relative;
+      margin-left: -5px;
       &::before {
         content: '';
         position: absolute;
@@ -111,10 +132,19 @@ const StyledWrapper = styled.div`
         pointer-events: none;
       }
     }
+    p {
+      margin-left: -3px;
+    }
     img {
       opacity: 1;
       filter: invert(100%) sepia(4%) saturate(10%) hue-rotate(66deg)
         brightness(103%) contrast(100%);
+    }
+    img[alt='Games icon'] {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-48%, -56%);
     }
   }
 `;
@@ -140,10 +170,10 @@ const NavbarLink = ({ text, icon }: NavbarLink) => {
           <span>
             <img
               src={icon}
-              alt={`${icon} icon`}
+              alt={`${text} icon`}
             />
           </span>
-          {text}
+          <p>{text}</p>
         </NavLink>
       </StyledWrapper>
     </StyledNavbarLink>

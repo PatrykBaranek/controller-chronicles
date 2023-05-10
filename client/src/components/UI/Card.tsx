@@ -1,13 +1,14 @@
 import { Children } from '#/types/types';
-import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
   overflow: hidden;
-  /* background: ${({ theme }) => theme.colors.cardGradient};
-  border-radius: 1rem; */
   position: relative;
   padding: 1px;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.05);
+  }
   &::before {
     content: '';
     position: absolute;
@@ -31,6 +32,20 @@ const StyledCard = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  a {
+    display: inherit;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+
+  a:hover h1 {
+    transition: all 0.3s ease-in-out;
+    background-image: ${({ theme }) => theme.colors.secondaryGradient};
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 `;
 
 const Card = ({ children }: Children) => {
