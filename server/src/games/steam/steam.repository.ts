@@ -10,12 +10,12 @@ export class SteamReposiiory {
     private steamBestSellerModel: Model<SteamBestSellers>,
   ) {}
 
-  async saveBestSellers(bestSellers: SteamBestSellers) {
+  async saveBestSellers(bestSellers: Partial<SteamBestSellers>) {
     await this.steamBestSellerModel.deleteMany({});
 
     const bestSellersToSave = new this.steamBestSellerModel({
       ...bestSellers,
-      updateDate: Date.now(),
+      updateDate: new Date(),
     });
     await bestSellersToSave.save();
   }
@@ -27,15 +27,23 @@ export class SteamReposiiory {
     const end = new Date();
     end.setHours(23, 59, 59, 999);
 
-    const bestSellers = await this.steamBestSellerModel
-      .find({
-        updateDate: {
-          $gte: start,
-          $lte: end,
+    const bestSellersFromDb = await this.steamBestSellerModel
+      .find(
+        {
+          updateDate: {
+            $gte: start,
+            $lte: end,
+          },
         },
-      })
+        {
+          _id: 0,
+          'games._id': 0,
+        },
+      )
       .sort({ updateDate: -1 });
 
-    return bestSellers;
+    const games = bestSellersFromDb.map((sellers) => sellers.games).flat();
+
+    return games;
   }
 }
