@@ -21,7 +21,6 @@ import { YoutubeService } from './youtube/youtube.service';
 import { PaginationDto } from './dto/pagination.dto';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 import { SteamService } from './steam/steam.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 @ApiTags('games')
 @Controller('games')
@@ -85,9 +84,9 @@ export class GamesController {
     return this.gamesService.getGameStoresByGameId(id);
   }
 
-  @ApiQuery({ name: 'cc', enum: ['pl', 'us'] })
+  @ApiOperation({ summary: 'Get steam bestsellers' })
   @Get('steam/bestsellers')
-  async getSteamBestSellers(@Query() cc: 'pl' | 'us' = 'pl') {
-    return this.steamService.getBestSellers(cc);
+  async getSteamBestSellers() {
+    return this.steamService.getBestSellers();
   }
 }
