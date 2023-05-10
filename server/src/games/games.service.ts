@@ -37,10 +37,7 @@ export class GamesService {
 
       return response;
     } catch (err) {
-      throw new InternalServerErrorException(
-        err.response.data,
-        err.response.status,
-      );
+      throw new InternalServerErrorException(err);
     }
   }
 
