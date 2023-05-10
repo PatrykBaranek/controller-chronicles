@@ -12,6 +12,8 @@ import {
 import { YoutubeModule } from './youtube/youtube.module';
 import { RawgApiService } from './rawg-api/rawg-api.service';
 import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.service';
+import { SteamModule } from './steam/steam.module';
+import { PuppeteerModule } from './puppeteer/puppeteer.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.servic
       { name: GameTrailers.name, schema: GameTrailersSchema },
     ]),
     forwardRef(() => YoutubeModule),
+    SteamModule,
+    PuppeteerModule,
   ],
   controllers: [GamesController],
   providers: [
