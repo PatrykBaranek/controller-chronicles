@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 import { GamesRepository } from './games.repository';
 import { RawgApiService } from './rawg-api/rawg-api.service';
@@ -17,11 +17,27 @@ export class GamesService {
     try {
       const response = await this.rawgApiService.getGames(options);
 
-      await this.gamesRepository.saveGames(response.results);
+      response.results = await Promise.all(
+        response.results.map(async (game) => {
+          const existingGame = await this.gamesRepository.findGame(game.id);
+
+          if (!existingGame) {
+            const gameToSave: Game = {
+              game_id: game.id,
+              rawgGame: game,
+              howLongToBeat: null,
+            };
+
+            await this.gamesRepository.saveGame(gameToSave);
+          }
+
+          return game;
+        }),
+      );
 
       return response;
     } catch (err) {
-      throw new HttpException(err.response.data, err.response.status);
+      throw new InternalServerErrorException(err);
     }
   }
 
