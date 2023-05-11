@@ -19,7 +19,6 @@ export class RawgGameResponseDto implements RawgGameResponse {
   name: string;
   name_original: string;
 
-  @Expose({ name: 'description_text' })
   description_raw: string;
 
   metacritic: number;
@@ -47,13 +46,15 @@ export class RawgGameResponseDto implements RawgGameResponse {
   game_series_count: number;
   creators_count: number;
   achievements_count: number;
-  parent_achievements_count: number;
   twitch_count: number;
   youtube_count: number;
   ratings_count: number;
   suggestions_count: number;
   additions_count: number;
   screenshots_count: number;
+
+  @Exclude()
+  parent_achievements_count: number;
 
   @Exclude()
   clip: string;
