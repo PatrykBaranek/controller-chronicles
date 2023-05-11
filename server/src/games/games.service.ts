@@ -4,6 +4,8 @@ import { GamesRepository } from './games.repository';
 import { RawgApiService } from './rawg-api/rawg-api.service';
 import { HowLongToBeatService } from './how-long-to-beat/how-long-to-beat.service';
 import { Game } from './models/game.schema';
+import { plainToInstance } from 'class-transformer';
+import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 
 @Injectable()
 export class GamesService {
@@ -53,7 +55,7 @@ export class GamesService {
 
     const gameData: Game = {
       game_id: rawgGame.id,
-      rawgGame,
+      rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
     };
 
