@@ -3,7 +3,6 @@ import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { GetGameQueryParamsDto } from '../dto/get-game-query-params.dto';
 import { AxiosResponse } from 'axios';
 import { RawgGameResponse } from '../types/rawg-game-response';
-import { PaginationDto } from '../dto/pagination.dto';
 import { GetStoresResponse } from '../types/rawg-stores-response';
 import { GetGameStoresResponse } from '../types/rawg-game-stores-response';
 import { RawgGameResponseDto } from '../dto/rawg-game-response.dto';
