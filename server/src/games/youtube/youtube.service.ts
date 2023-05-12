@@ -30,6 +30,7 @@ export class YoutubeService {
 
     const video_reviews = await this.getOrFetchGameVideos(
       game.game_id,
+      game.rawgGame.name,
       searchQuery,
       'reviews',
     );
@@ -44,6 +45,7 @@ export class YoutubeService {
 
     const game_trailers = await this.getOrFetchGameVideos(
       game.game_id,
+      game.rawgGame.name,
       searchQuery,
       'trailers',
     );
@@ -53,6 +55,7 @@ export class YoutubeService {
 
   private async getOrFetchGameVideos(
     gameId: number,
+    gameTitle: string,
     searchQuery: string,
     videoType: 'reviews' | 'trailers',
   ): Promise<SearchResult[]> {
@@ -64,7 +67,9 @@ export class YoutubeService {
       return existingVideos;
     }
 
-    const newVideos = await this.youtubeSearch(searchQuery);
+    const newVideos = (await this.youtubeSearch(searchQuery)).filter((video) =>
+      video.title?.toLowerCase().includes(gameTitle.toLowerCase()),
+    );
 
     if (videoType === 'reviews') {
       await this.youtubeRepository.saveGameVideoReviews(gameId, newVideos);
