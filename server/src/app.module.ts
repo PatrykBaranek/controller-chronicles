@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { GamesModule } from './games/games.module';
 import { DevelopersModule } from './developers/developers.module';
+import { GenresModule } from './genres/genres.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { DevelopersModule } from './developers/developers.module';
     SpotifyModule,
     GamesModule,
     DevelopersModule,
+    GenresModule,
+    TagsModule,
   ],
 })
 export class AppModule {}
