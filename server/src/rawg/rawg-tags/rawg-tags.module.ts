@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { RawgTagsService } from './rawg-tags.service';
 import { RawgTagsController } from './rawg-tags.controller';
-import { HttpModule } from '@nestjs/axios';
+import { RawgApiModule } from '../rawg-api/rawg-api.module';
 
 @Module({
-  imports: [HttpModule],
+  imports: [RawgApiModule],
   providers: [RawgTagsService],
   controllers: [RawgTagsController],
 })

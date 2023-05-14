@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-export class GenresDto {
+export class RawgGenreDto {
   id: number;
   name: string;
   slug: string;

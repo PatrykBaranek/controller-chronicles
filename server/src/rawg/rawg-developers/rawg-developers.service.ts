@@ -1,22 +1,17 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { map } from 'rxjs';
+import { RawgApiDevelopersService } from '../rawg-api/rawg-api-developers/rawg-api-developers.service';
 
 @Injectable()
 export class RawgDevelopersService {
-  private readonly url = 'https://api.rawg.io/api/developers';
+  constructor(
+    private readonly rawgApiDevelopersService: RawgApiDevelopersService,
+  ) {}
 
-  constructor(private readonly httpService: HttpService) {}
-
-  getDevelopers() {
-    return this.httpService
-      .get(this.url + `?key=${process.env.RAWG_API_KEY}`)
-      .pipe(map((response) => response.data));
+  getDevelopers(page: number, page_size: number) {
+    return this.rawgApiDevelopersService.getDevelopers(page, page_size);
   }
 
   getDeveloper(id: number) {
-    return this.httpService
-      .get(this.url + `/${id}?key=${process.env.RAWG_API_KEY}`)
-      .pipe(map((response) => response.data));
+    return this.rawgApiDevelopersService.getDeveloper(id);
   }
 }

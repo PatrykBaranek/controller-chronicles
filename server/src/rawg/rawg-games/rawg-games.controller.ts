@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 
-import { PaginationDto } from './dto/pagination.dto';
+import { PaginationDto } from '../helpers/dto/pagination.dto';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 import { YoutubeService } from 'src/youtube/youtube.service';
 import { SteamService } from 'src/steam/steam.service';

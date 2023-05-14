@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { RawgDevelopersService } from './rawg-developers.service';
 
 @Controller('developers')
@@ -6,8 +6,11 @@ export class RawgDevelopersController {
   constructor(private readonly developersService: RawgDevelopersService) {}
 
   @Get()
-  getDevelopers() {
-    return this.developersService.getDevelopers();
+  getDevelopers(
+    @Query('page') page: number,
+    @Query('page_size') page_size: number,
+  ) {
+    return this.developersService.getDevelopers(page, page_size);
   }
 
   @Get('/:id')

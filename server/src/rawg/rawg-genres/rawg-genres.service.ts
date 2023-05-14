@@ -1,16 +1,11 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { GenresDto } from './dto/genres.dto';
+import { RawgApiGenresService } from '../rawg-api/rawg-api-genres/rawg-api-genres.service';
 
 @Injectable()
 export class RawgGenresService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly rawgApiGenresService: RawgApiGenresService) {}
 
-  async getGenres() {
-    const response = await this.httpService.axiosRef.get(
-      `https://api.rawg.io/api/genres?key=${process.env.RAWG_API_KEY}`,
-    );
-    return plainToInstance(GenresDto, response.data.results);
+  async getGenres(page: number, page_size: number) {
+    return this.rawgApiGenresService.getGenres(page, page_size);
   }
 }

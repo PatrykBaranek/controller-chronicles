@@ -8,6 +8,7 @@ import { RawgGameResponse } from 'src/rawg/types/rawg-game-response';
 import { GetGameStoresResponse } from 'src/rawg/types/rawg-game-stores-response';
 import { GetStoresResponse } from 'src/rawg/types/rawg-stores-response';
 import { HttpService } from '@nestjs/axios';
+import { paginateResponse } from 'src/rawg/helpers/pagination.helper';
 
 @Injectable()
 export class RawgApiGamesService extends RawgApiService {
@@ -34,22 +35,9 @@ export class RawgApiGamesService extends RawgApiService {
 
     const response: AxiosResponse = await this.httpService.axiosRef.get(url);
 
-    const totalPages = Math.ceil(response.data.count / page_size);
-
-    if (page > totalPages) {
-      throw new NotFoundException(
-        'Page number cannot be greater than page size',
-      );
-    }
-
-    const games = response.data.results as RawgGameResponseDto[];
-
-    return {
-      totalItems: response.data.count,
-      totalPages,
-      currentPage: page,
-      results: plainToInstance(RawgGameResponseDto, games),
-    };
+    return paginateResponse(response, page, page_size, RawgGameResponseDto, {
+      showTotalPages: true,
+    });
   }
 
   async getGameById(id: number) {
