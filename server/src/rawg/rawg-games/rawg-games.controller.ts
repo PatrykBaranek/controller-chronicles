@@ -20,8 +20,9 @@ import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 import { PaginationDto } from '../helpers/dto/pagination.dto';
 import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 import { YoutubeService } from 'src/youtube/youtube.service';
-import { SteamService } from 'src/steam/steam.service';
+import { SteamBestSellersService } from 'src/steam/steam-bestsellers/steam-bestsellers.service';
 import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
+import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.service';
 
 @ApiTags('games')
 @Controller('games')
@@ -29,7 +30,8 @@ export class RawgGamesController {
   constructor(
     private readonly gamesService: RawgGamesService,
     private readonly youtubeService: YoutubeService,
-    private readonly steamService: SteamService,
+    private readonly steamBestSellersService: SteamBestSellersService,
+    private readonly steamReviewsService: SteamReviewsService,
   ) {}
 
   @ApiOperation({ summary: 'Get games' })
@@ -88,6 +90,12 @@ export class RawgGamesController {
   @ApiOperation({ summary: 'Get steam bestsellers' })
   @Get('steam/bestsellers')
   async getSteamBestSellers() {
-    return this.steamService.getBestSellers();
+    return this.steamBestSellersService.getBestSellers();
+  }
+
+  @ApiOperation({ summary: 'Get steam reviews by game ID' })
+  @Get(':id/steam/reviews')
+  async getSteamReviewsByGameId(@Param('id', ParseIntPipe) id: number) {
+    return this.steamReviewsService.getSteamReviewByGameId(id);
   }
 }
