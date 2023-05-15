@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
-
 import { SpotifyModule } from './spotify/spotify.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { GamesModule } from './games/games.module';
-import { DevelopersModule } from './developers/developers.module';
+import { RawgModule } from './rawg/rawg.module';
 
 @Module({
   imports: [
@@ -18,8 +16,7 @@ import { DevelopersModule } from './developers/developers.module';
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     SpotifyModule,
-    GamesModule,
-    DevelopersModule,
+    RawgModule,
   ],
 })
 export class AppModule {}
