@@ -3,7 +3,6 @@ import { RawgApiService } from '../rawg-api.service';
 import { AxiosResponse } from 'axios';
 import { GetGameQueryParamsDto } from 'src/rawg/rawg-games/dto/get-game-query-params.dto';
 import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
-import { plainToInstance } from 'class-transformer';
 import { RawgGameResponse } from 'src/rawg/types/rawg-game-response';
 import { GetGameStoresResponse } from 'src/rawg/types/rawg-game-stores-response';
 import { GetStoresResponse } from 'src/rawg/types/rawg-stores-response';
@@ -59,7 +58,7 @@ export class RawgApiGamesService extends RawgApiService {
       );
 
     const stores = await this.httpService.axiosRef.get<GetStoresResponse>(
-      `${this.rawgApiUrl}stores?key=${process.env.RAWG_API_KEY}`,
+      `https://api.rawg.io/api/stores?key=${process.env.RAWG_API_KEY}`,
     );
 
     const result = gameStores.data.results.map((store) => {
