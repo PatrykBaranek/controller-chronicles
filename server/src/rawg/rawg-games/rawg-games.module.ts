@@ -18,7 +18,7 @@ import { RawgApiGamesService } from '../rawg-api/rawg-api-games/rawg-api-games.s
     HttpModule,
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
     forwardRef(() => YoutubeModule),
-    SteamModule,
+    forwardRef(() => SteamModule),
     PuppeteerModule,
     HowLongToBeatModule,
   ],
