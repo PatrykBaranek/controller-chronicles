@@ -1,13 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { SteamBestSellers } from './models/steam-bestsellers.schema';
+import {
+  SteamBestSellers,
+  SteamBestSellersDocument,
+} from './models/steam-bestsellers.schema';
 import { Model } from 'mongoose';
+import {
+  SteamReviews,
+  SteamReviewsDocument,
+} from './models/steam-reviews.schema';
 
 @Injectable()
 export class SteamReposiiory {
   constructor(
     @InjectModel(SteamBestSellers.name)
-    private steamBestSellerModel: Model<SteamBestSellers>,
+    private steamBestSellerModel: Model<SteamBestSellersDocument>,
+    @InjectModel(SteamReviews.name)
+    private steamReviewsModel: Model<SteamReviewsDocument>,
   ) {}
 
   async saveBestSellers(bestSellers: Partial<SteamBestSellers>) {
@@ -18,6 +27,19 @@ export class SteamReposiiory {
       updateDate: new Date(),
     });
     await bestSellersToSave.save();
+  }
+
+  async saveReviews(reviews: Partial<SteamReviews>) {
+    if (await this.steamReviewsModel.find({ game_id: reviews.game_id })) {
+      await this.steamReviewsModel.deleteOne({ game_id: reviews.game_id });
+    }
+
+    const reviewsToSave = new this.steamReviewsModel({
+      ...reviews,
+      updatedAt: new Date(),
+    });
+
+    await reviewsToSave.save();
   }
 
   async getBestSellers() {
