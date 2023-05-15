@@ -57,7 +57,7 @@ export class GetGameQueryParamsDto {
     type: Number,
   })
   @IsOptional()
-  @IsInt()
+  @IsNumber()
   metacritic: number;
 
   @ApiProperty({
@@ -71,6 +71,13 @@ export class GetGameQueryParamsDto {
       'updated',
       'rating',
       'metacritic',
+      '-name',
+      '-released',
+      '-added',
+      '-created',
+      '-updated',
+      '-rating',
+      '-metacritic',
     ],
   })
   @IsOptional()
@@ -83,6 +90,13 @@ export class GetGameQueryParamsDto {
     'updated',
     'rating',
     'metacritic',
+    '-name',
+    '-released',
+    '-added',
+    '-created',
+    '-updated',
+    '-rating',
+    '-metacritic',
   ])
   ordering: [
     'name',
@@ -92,5 +106,12 @@ export class GetGameQueryParamsDto {
     'updated',
     'rating',
     'metacritic',
+    '-name',
+    '-released',
+    '-added',
+    '-created',
+    '-updated',
+    '-rating',
+    '-metacritic',
   ];
 }
