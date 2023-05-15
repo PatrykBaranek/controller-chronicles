@@ -3,13 +3,13 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { PuppeteerService } from '../puppeteer/puppeteer.service';
-import { SteamReposiiory } from './steam.repository';
+import { PuppeteerService } from '../../puppeteer/puppeteer.service';
+import { SteamReposiiory } from '../steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
-export class SteamService {
-  private readonly logger = new Logger(SteamService.name);
+export class SteamBestSellersService {
+  private readonly logger = new Logger(SteamBestSellersService.name);
 
   constructor(
     private readonly steamRepository: SteamReposiiory,
