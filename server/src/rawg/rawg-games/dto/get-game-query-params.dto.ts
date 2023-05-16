@@ -54,11 +54,20 @@ export class GetGameQueryParamsDto {
   @ApiProperty({
     description: 'Filter by Metacritic score',
     required: false,
-    type: Number,
+    type: String,
   })
   @IsOptional()
-  @IsNumber()
-  metacritic: number;
+  @IsString()
+  metacritic: string;
+
+  @ApiProperty({
+    description: 'Filter by tags',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  tags: string;
 
   @ApiProperty({
     description: 'Order results by specific field',

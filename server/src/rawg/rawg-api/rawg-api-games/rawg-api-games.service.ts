@@ -16,7 +16,8 @@ export class RawgApiGamesService extends RawgApiService {
   }
 
   async getGames(options?: GetGameQueryParamsDto) {
-    const { page, page_size, stores, metacritic, ordering, search } = options;
+    const { page, page_size, stores, metacritic, ordering, search, tags } =
+      options;
 
     const paramsObject: Record<string, string> = {
       key: process.env.RAWG_API_KEY,
@@ -25,6 +26,7 @@ export class RawgApiGamesService extends RawgApiService {
       ...(stores && { stores }),
       ...(metacritic && { metacritic: metacritic.toString() }),
       ...(ordering && { ordering: ordering.toString() }),
+      ...(tags && { tags: tags.toLocaleLowerCase() }),
       ...(search && { search }),
     };
 
