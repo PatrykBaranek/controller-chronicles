@@ -11,7 +11,15 @@ export class RawgApiDevelopersService extends RawgApiService {
   }
 
   async getDevelopers(page: number, page_size: number) {
-    const url = `${this.rawgApiUrl}?key=${process.env.RAWG_API_KEY}`;
+    const paramsObject = {
+      key: process.env.RAWG_API_KEY,
+      page: page.toString(),
+      page_size: page_size.toString(),
+    };
+
+    const httpParams = new URLSearchParams(paramsObject);
+
+    const url = `${this.rawgApiUrl}?${httpParams}`;
 
     const response = await this.httpService.axiosRef.get(url);
 
