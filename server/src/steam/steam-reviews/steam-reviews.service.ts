@@ -4,6 +4,17 @@ import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { SteamReposiiory } from '../steam.repository';
 import { ElementHandle, Page } from 'puppeteer';
 
+type SteamReviewsResultsType = {
+  reviewsSummaryFrom30Days?: {
+    usersCount: number;
+    textSummary: string;
+  };
+  reviewsSummaryOverall?: {
+    usersCount: number;
+    textSummary: string;
+  };
+};
+
 @Injectable()
 export class SteamReviewsService {
   constructor(
@@ -13,6 +24,12 @@ export class SteamReviewsService {
   ) {}
 
   async getSteamReviewByGameId(id: number) {
+    const game = await this.rawgGamesService.getGameById(id);
+
+    if (game.rawgGame.released === null) {
+      throw new NotFoundException('Game is not released yet');
+    }
+
     const stores = await this.rawgGamesService.getGameStoresByGameId(id);
 
     if (!stores.some((store) => store.name === 'Steam')) {
@@ -23,11 +40,11 @@ export class SteamReviewsService {
 
     const scrapedData = await this.scrapeSteamReviews(steamUrl);
 
-    console.log(scrapedData);
-
     this.steamRepository.saveReviews({
-      ...scrapedData,
       game_id: id,
+      reviewsSummaryFrom30Days: scrapedData.reviewsSummaryFrom30Days,
+      reviewsSummaryOverall: scrapedData.reviewsSummaryOverall,
+      updatedAt: new Date(),
     });
 
     return {
@@ -36,7 +53,9 @@ export class SteamReviewsService {
     };
   }
 
-  private async scrapeSteamReviews(url: string) {
+  private async scrapeSteamReviews(
+    url: string,
+  ): Promise<SteamReviewsResultsType> {
     const browser = await this.puppeteerService.launchBrowser();
     try {
       const page = await this.puppeteerService.createPage(browser, url);
@@ -47,34 +66,51 @@ export class SteamReviewsService {
         '#userReviews',
       );
 
+      const isOnlyOneReview = await this.checkIfOnlyOneReviewExists(
+        reviewsContainerElement,
+      );
+
       const reviewsSummaryElements = await reviewsContainerElement.$$(
         '.user_reviews_summary_row',
       );
 
-      const reviewsSummaryFrom30DaysElement = await reviewsSummaryElements[0].$(
-        '.summary.column',
-      );
+      let steamReviewsResult: SteamReviewsResultsType;
 
-      const reviewsSummaryOverallElement = await reviewsSummaryElements[1].$(
-        '.summary.column',
-      );
+      if (isOnlyOneReview) {
+        const reviewsSummaryOverallElement = await reviewsSummaryElements[0].$(
+          '.summary.column',
+        );
 
-      const steamReviewsFrom30DaysResult = await this.getSteamReviewsHelper(
-        reviewsSummaryFrom30DaysElement,
-        page,
-        '30Days',
-      );
+        steamReviewsResult = {
+          ...(await this.getSteamReviewsHelper(
+            reviewsSummaryOverallElement,
+            page,
+            'Overall',
+          )),
+        };
+      } else {
+        const reviewsSummaryFrom30DaysElement =
+          await reviewsSummaryElements[0].$('.summary.column');
 
-      const steamReviewsOverallResult = await this.getSteamReviewsHelper(
-        reviewsSummaryOverallElement,
-        page,
-        'Overall',
-      );
+        const reviewsSummaryOverallElement = await reviewsSummaryElements[1].$(
+          '.summary.column',
+        );
 
-      return {
-        ...steamReviewsFrom30DaysResult,
-        ...steamReviewsOverallResult,
-      };
+        steamReviewsResult = {
+          ...(await this.getSteamReviewsHelper(
+            reviewsSummaryFrom30DaysElement,
+            page,
+            '30Days',
+          )),
+          ...(await this.getSteamReviewsHelper(
+            reviewsSummaryOverallElement,
+            page,
+            'Overall',
+          )),
+        };
+      }
+
+      return steamReviewsResult;
     } catch (err) {
     } finally {
       await this.puppeteerService.closeBrowser(browser);
@@ -107,7 +143,7 @@ export class SteamReviewsService {
     if (reviewType === '30Days') {
       return {
         reviewsSummaryFrom30Days: {
-          usersCount: userCountText,
+          usersCount: Number(userCountText.replace(',', '')),
           textSummary: gameReviewSummaryText,
         },
       };
@@ -115,7 +151,7 @@ export class SteamReviewsService {
 
     return {
       reviewsSummaryOverall: {
-        usersCount: userCountText,
+        usersCount: Number(userCountText.replace(',', '')),
         textSummary: gameReviewSummaryText,
       },
     };
@@ -130,5 +166,17 @@ export class SteamReviewsService {
 
     await page.select('#ageYear', '1990');
     await page.click('#view_product_page_btn');
+  }
+
+  private async checkIfOnlyOneReviewExists(
+    reviewsContainerElement: ElementHandle<Element>,
+  ) {
+    const childrenCount = await reviewsContainerElement.evaluate((el) => {
+      return el.children.length;
+    });
+
+    console.log(childrenCount);
+
+    return childrenCount === 1 ? true : false;
   }
 }
