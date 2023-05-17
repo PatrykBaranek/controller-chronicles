@@ -7,23 +7,23 @@ export class SteamReviews {
 
   @Prop({
     type: {
+      userCount: Number,
       textSummary: String,
-      userCount: String,
     },
   })
   reviewsSummaryFrom30Days: {
-    usersCount: string;
+    usersCount: number;
     textSummary: string;
   };
 
   @Prop({
     type: {
+      userCount: Number,
       textSummary: String,
-      userCount: String,
     },
   })
   reviewsSummaryOverall: {
-    usersCount: string;
+    usersCount: number;
     textSummary: string;
   };
 
