@@ -32,9 +32,11 @@ export class RawgApiGamesService extends RawgApiService {
 
     const httpParams = new URLSearchParams(paramsObject);
 
-    const url = `${this.rawgApiUrl}?${httpParams.toString()}`;
+    const url = `${this.rawgApiUrl}`;
 
-    const response: AxiosResponse = await this.httpService.axiosRef.get(url);
+    const response: AxiosResponse = await this.httpService.axiosRef.get(url, {
+      params: httpParams,
+    });
 
     return paginateResponse(response, page, page_size, RawgGameResponseDto, {
       showTotalPages: true,
