@@ -29,7 +29,7 @@ export class SteamReposiiory {
     await bestSellersToSave.save();
   }
 
-  async saveReviews(reviews: Partial<SteamReviews>) {
+  async saveReviews(reviews: SteamReviews) {
     if (await this.steamReviewsModel.find({ game_id: reviews.game_id })) {
       await this.steamReviewsModel.deleteOne({ game_id: reviews.game_id });
     }
