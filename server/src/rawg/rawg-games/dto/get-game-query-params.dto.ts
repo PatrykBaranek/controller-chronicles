@@ -1,46 +1,12 @@
-import { Transform } from 'class-transformer';
-import {
-  IsIn,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { PageQueryParamsDto } from './page-query-params.dto';
 
-export class GetGameQueryParamsDto {
-  @ApiProperty({
-    description: 'The page number to fetch',
-    minimum: 1,
-    default: 1,
-    type: Number,
-  })
-  @IsNotEmpty()
-  @IsInt()
-  @Min(1)
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value))
-  page: number;
-
-  @ApiProperty({
-    description: 'The number of results per page',
-    minimum: 1,
-    default: 5,
-    type: Number,
-  })
-  @IsNotEmpty()
-  @IsInt()
-  @Min(5)
-  @IsNumber()
-  @Transform(({ value }) => parseInt(value))
-  page_size: number;
-
+export class GetGameQueryParamsDto extends PageQueryParamsDto {
   @ApiProperty({ description: 'Search term', required: false, type: String })
   @IsOptional()
   @IsString()
-  search: string;
+  search?: string;
 
   @ApiProperty({
     description: 'Filter by stores',
@@ -49,7 +15,7 @@ export class GetGameQueryParamsDto {
   })
   @IsOptional()
   @IsString()
-  stores: string;
+  stores?: string;
 
   @ApiProperty({
     description: 'Filter by Metacritic score',
@@ -58,7 +24,7 @@ export class GetGameQueryParamsDto {
   })
   @IsOptional()
   @IsString()
-  metacritic: string;
+  metacritic?: string;
 
   @ApiProperty({
     description: 'Filter by tags',
@@ -67,7 +33,16 @@ export class GetGameQueryParamsDto {
   })
   @IsOptional()
   @IsString()
-  tags: string;
+  tags?: string;
+
+  @ApiProperty({
+    description: 'Filter by release dates',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  dates?: string;
 
   @ApiProperty({
     description: 'Order results by specific field',
@@ -107,7 +82,7 @@ export class GetGameQueryParamsDto {
     '-rating',
     '-metacritic',
   ])
-  ordering: [
+  ordering?: [
     'name',
     'released',
     'added',
