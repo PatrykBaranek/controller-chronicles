@@ -3,6 +3,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Post,
   Query,
   UsePipes,
   ValidationPipe,
@@ -23,6 +24,7 @@ import { YoutubeService } from 'src/youtube/youtube.service';
 import { SteamBestSellersService } from 'src/steam/steam-bestsellers/steam-bestsellers.service';
 import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
 import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.service';
+import { PageQueryParamsDto } from './dto/page-query-params.dto';
 
 @ApiTags('games')
 @Controller('games')
@@ -35,7 +37,6 @@ export class RawgGamesController {
   ) {}
 
   @ApiOperation({ summary: 'Get games' })
-  @ApiQuery({ name: 'queryParams', type: GetGameQueryParamsDto })
   @ApiResponse({
     status: 200,
     description: 'Returns a list of games',
@@ -85,6 +86,12 @@ export class RawgGamesController {
   @Get(':id/stores')
   async getGameStoresById(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.getGameStoresByGameId(id);
+  }
+
+  @Post('new-releases')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getNewReleases(@Query() queryParams: PageQueryParamsDto) {
+    return this.gamesService.getNewReleases(queryParams);
   }
 
   @ApiOperation({ summary: 'Get steam bestsellers' })

@@ -6,6 +6,8 @@ import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
 import { HowLongToBeatService } from 'src/how-long-to-beat/how-long-to-beat.service';
 import { RawgApiGamesService } from '../rawg-api/rawg-api-games/rawg-api-games.service';
 import { Game } from './models/game.schema';
+import { format, subMonths } from 'date-fns';
+import { PageQueryParamsDto } from './dto/page-query-params.dto';
 
 @Injectable()
 export class RawgGamesService {
@@ -70,5 +72,15 @@ export class RawgGamesService {
 
   async getGameStoresByGameId(id: number) {
     return this.rawgApiGamesService.getGameStoresByGameId(id);
+  }
+
+  async getNewReleases(pageParams: PageQueryParamsDto) {
+    const currentDate = format(new Date(), 'yyyy-MM-dd');
+    const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
+
+    return this.rawgApiGamesService.getGames({
+      ...pageParams,
+      dates: `${oneMonthAgo},${currentDate}`,
+    });
   }
 }
