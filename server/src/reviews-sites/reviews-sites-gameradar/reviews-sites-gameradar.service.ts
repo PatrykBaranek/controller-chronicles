@@ -6,6 +6,7 @@ import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 @Injectable()
 export class ReviewsSitesGameradarService {
   siteUrl: string = 'https://www.gameradar.com/reviews';
+  gameReviewsOnPage: RawgGameResponseDto[] = [];
 
   constructor(
     private readonly puppeteerService: PuppeteerService,
@@ -28,6 +29,26 @@ export class ReviewsSitesGameradarService {
         browser,
         this.siteUrl,
       );
+
+      const reviewsContainerElement = await page.waitForSelector(
+        '.listingResults',
+      );
+
+      reviewsContainerElement.$$('.listingResult').then((elements) => {
+        elements.forEach(async (element) => {
+          const articleTitle = (
+            await (
+              await element.$('.content header .article-name')
+            ).evaluate((el) => el.textContent)
+          ).toString();
+
+          const articleFind = newReleasedGames.find((game) =>
+            articleTitle.includes(game.name),
+          );
+
+          this.gameReviewsOnPage.push(articleFind);
+        });
+      });
     } catch (err) {
     } finally {
     }
