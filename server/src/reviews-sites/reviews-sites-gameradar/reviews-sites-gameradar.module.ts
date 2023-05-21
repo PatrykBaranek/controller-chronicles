@@ -6,5 +6,6 @@ import { RawgGamesModule } from 'src/rawg/rawg-games/rawg-games.module';
 @Module({
   imports: [PuppeteerModule, RawgGamesModule],
   providers: [ReviewsSitesGameradarService],
+  exports: [ReviewsSitesGameradarService],
 })
 export class ReviewsSitesGameradarModule {}
