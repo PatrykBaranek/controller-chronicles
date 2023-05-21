@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 
 export class PuppeteerService {
@@ -17,5 +18,18 @@ export class PuppeteerService {
 
   async closeBrowser(browser: puppeteer.Browser): Promise<void> {
     await browser.close();
+  }
+
+  async withBrowser<T>(
+    fn: (browser: puppeteer.Browser) => Promise<T>,
+  ): Promise<T> {
+    const browser = await this.launchBrowser();
+    try {
+      return await fn(browser);
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    } finally {
+      await this.closeBrowser(browser);
+    }
   }
 }
