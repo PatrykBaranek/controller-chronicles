@@ -1,4 +1,4 @@
-import { GamesResponse } from '#/types/types';
+import { GameDetailsResponse, GamesResponse } from '#/types/types';
 import axios from 'axios';
 
 const gamesApi = axios.create({
@@ -15,8 +15,19 @@ export const getGames = async (
 
   return response.data;
 };
-export const getGameById = async (id: number | undefined): Promise<any> => {
+export const getGameById = async (
+  id: number | undefined
+): Promise<GameDetailsResponse> => {
   const response = await gamesApi.get(`/games/${id}`);
+
+  return response.data;
+};
+export const getGamesBySearchQuery = async (
+  query = ''
+): Promise<GamesResponse> => {
+  const response = await gamesApi.get(
+    `/games?page=1&page_size=5&search=${query}`
+  );
 
   return response.data;
 };
