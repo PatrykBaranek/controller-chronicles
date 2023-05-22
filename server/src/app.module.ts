@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { RawgModule } from './rawg/rawg.module';
 import { ReviewsSitesModule } from './reviews-sites/reviews-sites.module';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,7 +21,6 @@ import { UsersModule } from './users/users.module';
     RawgModule,
     ReviewsSitesModule,
     AuthModule,
-    UsersModule,
   ],
 })
 export class AppModule {}
