@@ -1,6 +1,10 @@
 import searchIco from '#/assets/searchIco.svg';
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
+import useStore from '#/store/store';
+import { getGamesBySearchQuery } from '#/api/gamesApi';
+import { useQuery } from 'react-query';
+import useDebounce from '#/hooks/useDebounce';
 type StyledSearchBarProps = {
   isClicked: boolean;
   onSearchbarClick?: () => void;
@@ -21,6 +25,7 @@ const StyledSearchbar = styled.div<StyledSearchBarProps>`
     aspect-ratio: 1;
     position: absolute;
     top: 50%;
+    pointer-events: none;
     left: ${({ isClicked }) => (isClicked ? '6vw' : '50%')};
     transform: translate(-50%, -50%);
     @media screen and (min-width: 600px) {
@@ -50,19 +55,29 @@ const StyledSearchbar = styled.div<StyledSearchBarProps>`
 `;
 
 const Searchbar = () => {
+  const { storeGames } = useStore();
   const [isClicked, setIsClicked] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const debouncedInputValue = useDebounce(inputValue);
+
+  const { data: games } = useQuery(['/games', debouncedInputValue], () =>
+    getGamesBySearchQuery(debouncedInputValue)
+  );
 
   const onSearchbarClick = (e: React.FormEvent<EventTarget>) => {
-    (e.target as HTMLInputElement).focus();
-    setIsClicked(prev => !prev);
+    setIsClicked(true);
   };
 
+  const handleSearchbarChange = (e: React.FormEvent<EventTarget>) => {
+    setInputValue((e.target as HTMLInputElement).value);
+  };
+  useEffect(() => {
+    games && storeGames(games.results);
+  }, [games]);
   return (
     <StyledSearchbar
       isClicked={isClicked}
       onClick={e => onSearchbarClick(e)}
-      onBlur={() => setIsClicked(false)}
     >
       <img
         src={searchIco}
@@ -70,9 +85,10 @@ const Searchbar = () => {
       />
       <input
         type='text'
+        onChange={e => handleSearchbarChange(e)}
         value={inputValue}
+        onBlur={() => inputValue === '' && setIsClicked(false)}
         aria-label='searchbar'
-        onChange={e => setInputValue(e.target.value)}
       />
     </StyledSearchbar>
   );

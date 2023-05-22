@@ -6,6 +6,56 @@ import { getGames } from '#/api/gamesApi';
 import GameCard from '#/components/GameCard/GameCard';
 import useWindowWidth from '#/hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
+import useStore from '#/store/store';
+
+const theme = createTheme({
+  components: {
+    MuiPagination: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'center',
+          marginBlock: '1rem',
+        },
+        outlined: {
+          button: {
+            fontFamily: 'Inter',
+            fontSize: '.8rem',
+            background: 'transparent',
+            color: 'white',
+            borderColor: 'rgba(235, 235, 245, 0.2)',
+            '&:hover': {
+              background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
+            },
+          },
+        },
+        ul: {
+          gap: '.2rem',
+        },
+      },
+    },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+
+          '&.Mui-selected': {
+            background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
+          },
+        },
+
+        sizeSmall: {
+          borderRadius: '14px',
+          margin: '0 2px',
+          padding: '0 5px',
+          minWidth: '28px',
+          height: '28px',
+        },
+      },
+    },
+  },
+});
+
 const StyledContainer = styled.div`
   width: 100%;
   display: flex;
@@ -23,12 +73,12 @@ const StyledWrapper = styled.div`
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  @media screen and (min-width: 900px) {
+  @media screen and (min-width: 1000px) {
     padding-top: 2rem;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
-  @media screen and (min-width: 1050px) {
+  @media screen and (min-width: 1300px) {
     padding-inline: 2rem;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(2, 23rem);
@@ -38,18 +88,18 @@ const StyledWrapper = styled.div`
 const Games = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
+  const { games: storedGames, storeGames } = useStore();
   const [page, setPage] = useState(1);
-  const { isLoading, isError, error, data } = useQuery(
-    ['/games', page],
-    () => getGames(page),
-    {
-      keepPreviousData: true,
-    }
-  );
+  const { data: games } = useQuery(['/games', page], () => getGames(page), {
+    keepPreviousData: true,
+  });
 
   useEffect(() => {
-    data && setPage(data.currentPage);
-  }, [data]);
+    if (!!games) {
+      storeGames(games.results);
+      setPage(games.currentPage);
+    }
+  }, [games]);
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -57,59 +107,10 @@ const Games = () => {
   ) => {
     setPage(value);
   };
-
-  const theme = createTheme({
-    components: {
-      MuiPagination: {
-        styleOverrides: {
-          root: {
-            display: 'flex',
-            justifyContent: 'center',
-            marginBlock: '1rem',
-          },
-          outlined: {
-            button: {
-              fontFamily: 'Inter',
-              fontSize: '.8rem',
-              background: 'transparent',
-              color: 'white',
-              borderColor: 'rgba(235, 235, 245, 0.2)',
-              '&:hover': {
-                background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
-              },
-            },
-          },
-          ul: {
-            gap: '.2rem',
-          },
-        },
-      },
-      MuiPaginationItem: {
-        styleOverrides: {
-          root: {
-            color: 'white',
-
-            '&.Mui-selected': {
-              background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
-            },
-          },
-
-          sizeSmall: {
-            borderRadius: '14px',
-            margin: '0 2px',
-            padding: '0 5px',
-            minWidth: '28px',
-            height: '28px',
-          },
-        },
-      },
-    },
-  });
-
   return (
     <StyledContainer>
       <StyledWrapper>
-        {data?.results.map(game => (
+        {storedGames?.map(game => (
           <GameCard
             key={game.id}
             id={game.id}
@@ -123,7 +124,7 @@ const Games = () => {
         <Pagination
           siblingCount={isDesktop ? 1 : 0}
           size={isDesktop ? 'medium' : 'small'}
-          count={data?.totalPages}
+          count={games?.totalPages}
           variant='outlined'
           page={page}
           onChange={handlePageChange}
