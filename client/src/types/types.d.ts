@@ -11,10 +11,10 @@ export type GamesResponse = {
   currentPage: number;
   totalItems: number;
   totalPages: number;
-  results: Data[];
+  results: Games[];
 };
 
-export type Data = {
+export type Games = {
   id: number;
   slug: string;
   name: string;
@@ -29,6 +29,50 @@ export type Data = {
   stores: Store[];
   tags: Genre[];
   short_screenshots: ShortScreenshot[];
+};
+
+export type GameDetailsResponse = {
+  game_id: number;
+  rawgGame: RawgGameDetails;
+  howLongToBeat: HLTB;
+  __v: number;
+  _id: string;
+};
+export type RawgGameDetails = Omit<Games, 'short_Screenshots'> & {
+  name_original: string;
+  metacritic_platforms: string[];
+  background_image_additional: string;
+  website: string;
+  screenshots_count: number;
+  creators_count: number;
+  achievements_count: number;
+  reddit_url: string;
+  reddit_name: string;
+  reddit_description: string;
+  reddit_count: number;
+  twitch_count: number;
+  youtube_count: number;
+  ratings_count: number;
+  metacritic_url: string;
+  additions_count: number;
+  game_series_count: number;
+  community_rating: number;
+  developers: Developer[];
+  publishers: Developer[];
+  description_raw: string;
+};
+export type Developer = {
+  id: number;
+  name: string;
+  slug: string;
+  games_count: number;
+  image_background: string;
+};
+export type HLTB = {
+  gameplayCompletionist: number;
+  gameplayMain: number;
+  gameplayMainExtra: number;
+  name: string;
 };
 
 export type Genre = {
@@ -72,8 +116,4 @@ export type ShortScreenshot = {
 export type Store = {
   id: number;
   store: Genre;
-};
-
-type GamesByIdResponse = {
-  game_id: number;
 };
