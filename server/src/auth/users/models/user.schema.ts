@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema({ collection: 'users' })
 export class User {
   @Prop()
-  username: string;
+  email: string;
 
   @Prop()
   password: string;
