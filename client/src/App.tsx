@@ -5,7 +5,13 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from 'react-auth-kit';
 import PrivateRoute from './components/PrivateRoute';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
