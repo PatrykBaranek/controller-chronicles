@@ -26,7 +26,7 @@ export const getGamesBySearchQuery = async (
   query = ''
 ): Promise<GamesResponse> => {
   const response = await gamesApi.get(
-    `/games?page=1&page_size=5&search=${query}`
+    `/games?page=1&page_size=8&search=${query}`
   );
 
   return response.data;

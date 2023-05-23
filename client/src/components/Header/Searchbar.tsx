@@ -1,6 +1,6 @@
 import searchIco from '#/assets/searchIco.svg';
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useStore from '#/store/store';
 import { getGamesBySearchQuery } from '#/api/gamesApi';
 import { useQuery } from 'react-query';
@@ -55,13 +55,18 @@ const StyledSearchbar = styled.div<StyledSearchBarProps>`
 `;
 
 const Searchbar = () => {
-  const { storeGames } = useStore();
+  const { storeGames, changeSearchbarVisible } = useStore();
   const [isClicked, setIsClicked] = useState(false);
+  const [isSearchbarTouched, setIsSearchbarTouched] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const debouncedInputValue = useDebounce(inputValue);
 
-  const { data: games } = useQuery(['/games', debouncedInputValue], () =>
-    getGamesBySearchQuery(debouncedInputValue)
+  const { data: games, refetch } = useQuery(
+    ['/games', debouncedInputValue],
+    () => getGamesBySearchQuery(debouncedInputValue),
+    {
+      enabled: false,
+    }
   );
 
   const onSearchbarClick = (e: React.FormEvent<EventTarget>) => {
@@ -70,10 +75,21 @@ const Searchbar = () => {
 
   const handleSearchbarChange = (e: React.FormEvent<EventTarget>) => {
     setInputValue((e.target as HTMLInputElement).value);
+    if ((e.target as HTMLInputElement).value.length >= 3) {
+      setIsSearchbarTouched(true);
+    }
   };
   useEffect(() => {
-    games && storeGames(games.results);
-  }, [games]);
+    !!games && storeGames(games.results);
+    if (isSearchbarTouched && inputValue.length >= 3) {
+      changeSearchbarVisible(false);
+      refetch();
+    }
+    if (isSearchbarTouched && inputValue.length === 0) {
+      changeSearchbarVisible(true);
+      refetch();
+    }
+  }, [games, inputValue]);
   return (
     <StyledSearchbar
       isClicked={isClicked}

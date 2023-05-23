@@ -61,6 +61,7 @@ const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-bottom: 1rem;
 `;
 
 const StyledWrapper = styled.div`
@@ -88,7 +89,7 @@ const StyledWrapper = styled.div`
 const Games = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
-  const { games: storedGames, storeGames } = useStore();
+  const { games: storedGames, storeGames, isSeachbarVisible } = useStore();
   const [page, setPage] = useState(1);
   const { data: games } = useQuery(['/games', page], () => getGames(page), {
     keepPreviousData: true,
@@ -121,14 +122,16 @@ const Games = () => {
         ))}
       </StyledWrapper>
       <ThemeProvider theme={theme}>
-        <Pagination
-          siblingCount={isDesktop ? 1 : 0}
-          size={isDesktop ? 'medium' : 'small'}
-          count={games?.totalPages}
-          variant='outlined'
-          page={page}
-          onChange={handlePageChange}
-        />
+        {isSeachbarVisible && (
+          <Pagination
+            siblingCount={isDesktop ? 1 : 0}
+            size={isDesktop ? 'medium' : 'small'}
+            count={games?.totalPages}
+            variant='outlined'
+            page={page}
+            onChange={handlePageChange}
+          />
+        )}
       </ThemeProvider>
     </StyledContainer>
   );
