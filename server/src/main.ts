@@ -4,6 +4,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { SpotifyAuthService } from './spotify/spotify-auth/spotify-auth.service';
 import scopes from './spotify/scopes';
+import * as passport from 'passport';
+import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -31,6 +33,15 @@ async function bootstrap() {
       },
     })
     .build();
+
+  app.use(
+    session({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: false,
+      cookie: { maxAge: 3600000 },
+    }),
+  );
 
   const document = SwaggerModule.createDocument(app, config);
 
