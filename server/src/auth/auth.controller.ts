@@ -1,24 +1,38 @@
-import { Controller, Post, UseGuards, Get, Req, Res } from '@nestjs/common';
-import { LocalAuthGuard } from './guards/local.guard';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './current-user.decorator';
-import { Response, response } from 'express';
+import { CreateUserDto } from './users/dto/create-user.dto';
+import { LocalAuthGuard } from './guards/local.guard';
+import { AuthenticatedGuard } from './guards/authenticated.guard';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
-  @Post('/auth/login')
-  async login(@CurrentUser() user, @Res({ passthrough: true }) res: Response) {
-    await this.authService.login(user, res);
-    response.send(user);
+  @Post('/signup')
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(LocalAuthGuard)
+  @Post('/login')
+  async login(@Req() req) {
+    return {
+      User: req.user,
+      message: 'Logged in successfully',
+    };
+  }
+
+  @UseGuards(AuthenticatedGuard)
   @Get('/profile')
-  getProfile(@Req() req) {
+  async getProfile(@Req() req) {
     return req.user;
+  }
+
+  @Get('/logout')
+  async logout(@Req() req) {
+    req.session.destroy();
+    return {
+      message: 'Logged out successfully',
+    };
   }
 }

@@ -16,6 +16,10 @@ export class UsersRepository {
     });
   }
 
+  async findById(id: string): Promise<User | undefined> {
+    return this.userModel.findById(id);
+  }
+
   async findOne(email: string): Promise<User | undefined> {
     return this.userModel.findOne({ email: email });
   }
