@@ -175,8 +175,6 @@ export class SteamReviewsService {
       return el.children.length;
     });
 
-    console.log(childrenCount);
-
     return childrenCount === 1 ? true : false;
   }
 }
