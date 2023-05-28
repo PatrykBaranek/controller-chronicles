@@ -15,7 +15,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOne(email);
+    return this.usersRepository.findByEmail(email);
   }
 
   async findById(id: string): Promise<User> {
