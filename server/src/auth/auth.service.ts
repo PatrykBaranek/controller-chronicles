@@ -1,45 +1,44 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UsersService } from './users/users.service';
-import * as bcrypt from 'bcrypt';
+import { HashService } from './users/hash.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly hashService: HashService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   public async register(createUserDto: CreateUserDto) {
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
-
     return this.usersService.createUser({
       ...createUserDto,
-      password: hashedPassword,
     });
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new BadRequestException('Invalid credentials');
+
+    if (
+      !user ||
+      !(await this.hashService.comparePassword(
+        plainTextPassword,
+        user.password,
+      ))
+    ) {
+      return null;
     }
-    await this.verifyPassword(plainTextPassword, user.password);
+
     return user;
   }
 
-  private async verifyPassword(
-    plainTextPassword: string,
-    hashedPassword: string,
-  ) {
-    const isPasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      hashedPassword,
-    );
-    if (!isPasswordMatching) {
-      throw new BadRequestException('Invalid credentials');
-    }
+  public async login(user: any) {
+    const payload = { email: user.email, sub: user._id };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

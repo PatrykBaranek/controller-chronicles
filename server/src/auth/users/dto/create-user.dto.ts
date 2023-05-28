@@ -1,6 +1,7 @@
 import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
+import { User } from '../models/user.schema';
 
-export class CreateUserDto {
+export class CreateUserDto extends User {
   @IsEmail()
   @IsNotEmpty()
   email: string;
