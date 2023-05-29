@@ -6,10 +6,10 @@ import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
 import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
 import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { ReviewsSitesService } from '../reviews-sites.service';
-import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
+import { ReviewSitesGameReviewsGamesRadarDto } from '../dto/review-sites.dto';
 
 @Injectable()
-export class ReviewsSitesGameradarService extends ReviewsSitesService {
+export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSitesGameReviewsGamesRadarDto> {
   siteUrl: string = 'https://www.gamesradar.com/reviews/archive/';
 
   constructor(
@@ -30,6 +30,7 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService {
       throw new HttpException(err.message, err.status);
     }
   }
+
   async getNewGamesReviews() {
     const newGameReleases = await this.rawgGamesService.getNewReleases({
       page: 1,
@@ -41,7 +42,7 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService {
 
   protected async findReviewsForGames(games: RawgGameResponseDto[]) {
     return await this.puppeteerService.withBrowser(async (browser) => {
-      let result: ReviewSitesGameReviewsDto[] = [];
+      let result: ReviewSitesGameReviewsGamesRadarDto[] = [];
       for (const game of games) {
         result.push(...(await this.findReviewForGame(game, browser)));
       }
@@ -53,7 +54,7 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService {
     game: RawgGameResponseDto,
     browser: Browser,
   ) {
-    const result: ReviewSitesGameReviewsDto[] = [];
+    const result: ReviewSitesGameReviewsGamesRadarDto[] = [];
     const month = getMonth(new Date(game.released)) + 1;
     const year = getYear(new Date(game.released));
     const page = await this.puppeteerService.createPage(
@@ -73,7 +74,6 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService {
             url: await review.evaluate((el) => el.href),
           },
         });
-        break;
       }
     }
 
