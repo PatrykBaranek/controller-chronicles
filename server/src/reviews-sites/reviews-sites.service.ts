@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { ReviewSitesGameReviewsDto } from './dto/review-sites.dto';
 import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
-import { Browser, Page } from 'puppeteer';
+import { Browser } from 'puppeteer';
 
 @Injectable()
-export abstract class ReviewsSitesService {
+export abstract class ReviewsSitesService<T> {
   protected abstract siteUrl: string;
 
-  abstract getGameReviewById(
-    gameId: number,
-  ): Promise<ReviewSitesGameReviewsDto[]>;
-  abstract getNewGamesReviews(): Promise<ReviewSitesGameReviewsDto[]>;
+  abstract getGameReviewById(gameId: number): Promise<T[]>;
+  abstract getNewGamesReviews(): Promise<T[]>;
 
   protected abstract findReviewsForGames(
     games: RawgGameResponseDto[],
-  ): Promise<ReviewSitesGameReviewsDto[]>;
+  ): Promise<T[]>;
 
   protected abstract findReviewForGame(
     game: RawgGameResponseDto,
     browser: Browser,
-  ): Promise<ReviewSitesGameReviewsDto[]>;
+  ): Promise<T[]>;
 }
