@@ -18,4 +18,12 @@ export class CollectionsService {
       throw new HttpException(err.message, err.status);
     }
   }
+
+  async getCollections(userId: string) {
+    try {
+      return await this.collectionsRepository.getCollections(userId);
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
+  }
 }

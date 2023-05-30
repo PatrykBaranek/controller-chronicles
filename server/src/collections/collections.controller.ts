@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AddGameToCollectionDto } from './dto/add-game-to-collection.dto';
@@ -17,5 +17,11 @@ export class CollectionsController {
       AddGameToCollectionDto.gameId,
       req.user.userId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getCollections')
+  async getCollections(@Req() req) {
+    return this.collectionsService.getCollections(req.user.userId);
   }
 }
