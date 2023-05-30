@@ -16,7 +16,7 @@ export class ReviewsSitesController {
     return this.gameradarService.getGameReviewById(id);
   }
 
-  @Get('gameradar/new-games-reviews')
+  @Get('gamesradar/new-games-reviews')
   async getNewGamesReviewsFromGameradar() {
     return this.gameradarService.getNewGamesReviews();
   }
