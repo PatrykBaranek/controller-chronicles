@@ -27,7 +27,7 @@ export class RawgGamesService {
 
           if (!existingGame) {
             const gameToSave: Game = {
-              game_id: game.id,
+              _id: game.id,
               rawgGame: game,
               howLongToBeat: null,
             };
@@ -56,13 +56,13 @@ export class RawgGamesService {
     const hltbGame = await this.hltbService.getGameByName(rawgGame.name);
 
     const gameData: Game = {
-      game_id: rawgGame.id,
+      _id: gameInDb._id,
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
     };
 
     if (gameInDb) {
-      await this.gamesRepository.updateGame(gameData.game_id, gameData);
+      await this.gamesRepository.updateGame(gameInDb._id, gameData);
     } else {
       await this.gamesRepository.saveGame(gameData);
     }

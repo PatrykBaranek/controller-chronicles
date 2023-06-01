@@ -127,7 +127,7 @@ export type GameDocument = Game & Document;
 @Schema({ collection: 'games' })
 export class Game {
   @Prop()
-  game_id: number;
+  _id: number;
 
   @Prop({ type: RawgGame })
   rawgGame: RawgGame;
