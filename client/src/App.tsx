@@ -4,6 +4,7 @@ import Games from './pages/Games';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from 'react-auth-kit';
 import PrivateRoute from './components/PrivateRoute';
+import Home from './pages/Home';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
-      { index: true, element: <h1>Home</h1> },
+      { index: true, element: <Home /> },
       {
         path: 'games',
         element: <Games />,
