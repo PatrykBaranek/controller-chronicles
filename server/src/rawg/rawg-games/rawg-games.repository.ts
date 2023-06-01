@@ -10,7 +10,7 @@ export class RawgGamesRepository {
 
   async saveGames(games: RawgGameResponseDto[]) {
     const gamesToSave = games.map(
-      (game) => new this.gameModel({ game_id: game.id, rawgGame: game }),
+      (game) => new this.gameModel({ _id: game.id, rawgGame: game }),
     );
     return this.gameModel.insertMany(gamesToSave);
   }
@@ -21,12 +21,12 @@ export class RawgGamesRepository {
   }
 
   async updateGame(gameId: number, updateGame: Partial<Game>) {
-    await this.gameModel.updateOne({ game_id: gameId }, updateGame);
+    await this.gameModel.updateOne({ _id: gameId }, updateGame);
   }
 
   async findGame(gameId: number): Promise<Game> {
     const game = this.gameModel.findOne({
-      game_id: gameId,
+      _id: gameId,
     });
 
     return game;

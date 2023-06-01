@@ -29,7 +29,7 @@ export class YoutubeService {
     }`;
 
     const video_reviews = await this.getOrFetchGameVideos(
-      game.game_id,
+      game._id,
       game.rawgGame.name,
       searchQuery,
       'reviews',
@@ -44,7 +44,7 @@ export class YoutubeService {
     const searchQuery = `${game.rawgGame.name} Official trailer`;
 
     const game_trailers = await this.getOrFetchGameVideos(
-      game.game_id,
+      game._id,
       game.rawgGame.name,
       searchQuery,
       'trailers',

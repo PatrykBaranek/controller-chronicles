@@ -20,10 +20,30 @@ export class CollectionsRepository {
     @InjectModel(Collection.name)
     private collectionModel: Model<CollectionDocument>,
   ) {}
+
   async createDefaultCollections(userId: string) {
     for (const name of DEFAULT_COLLECTIONS) {
       await this.createCollection(userId, { name, priority: 0 });
     }
+  }
+
+  async addGame(game: Game, userId: string, collectionId: string) {
+    const collection = await this.collectionModel.findOne({
+      _id: collectionId,
+      userId,
+    });
+
+    if (!collection) {
+      throw new NotFoundException('Collection not found');
+    }
+
+    if (collection.games.find((g) => g._id === game._id)) {
+      throw new BadRequestException('Game already exists in this collection');
+    }
+
+    collection.games.push(game);
+
+    return collection.save();
   }
 
   async createCollection(
@@ -66,25 +86,6 @@ export class CollectionsRepository {
     }
 
     return collectionToDelete.deleteOne();
-  }
-
-  async addGame(game: Game, userId: string, collectionId: string) {
-    const collection = await this.collectionModel.findOne({
-      _id: collectionId,
-      userId,
-    });
-
-    if (!collection) {
-      throw new NotFoundException('Collection not found');
-    }
-
-    if (collection.games.find((g) => g.game_id === game.game_id)) {
-      throw new BadRequestException('Game already exists in this collection');
-    }
-
-    collection.games.push(game);
-
-    return collection.save();
   }
 
   async getCollections(userId: string) {
