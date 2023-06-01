@@ -19,7 +19,6 @@ import { RawgApiGamesService } from '../rawg-api/rawg-api-games/rawg-api-games.s
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
     forwardRef(() => YoutubeModule),
     forwardRef(() => SteamModule),
-    PuppeteerModule,
     HowLongToBeatModule,
   ],
   controllers: [RawgGamesController],
