@@ -13,6 +13,12 @@ export class Collection {
 
   @Prop([Game])
   games: Game[];
+
+  @Prop({ min: 0, max: 5, default: 0 })
+  priority: number;
+
+  @Prop({ default: new Date() })
+  createdAt: Date;
 }
 
 export const CollectionSchema = SchemaFactory.createForClass(Collection);
