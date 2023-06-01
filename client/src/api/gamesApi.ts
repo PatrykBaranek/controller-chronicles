@@ -1,9 +1,18 @@
-import { GameDetailsResponse, GamesResponse } from '#/types/types';
+import {
+  BestsellerResponse,
+  GameDetailsResponse,
+  GamesResponse,
+} from '#/types/types';
 import axios from 'axios';
 
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000',
 });
+
+export const getBestsellers = async (): Promise<BestsellerResponse> => {
+  const response = await gamesApi.get('/games/steam/bestsellers');
+  return response.data;
+};
 
 export const getGames = async (
   page = 1,

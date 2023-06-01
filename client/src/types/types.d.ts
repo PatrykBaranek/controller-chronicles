@@ -7,6 +7,14 @@ export type Gamecard = {
 
 export type Children = ReactNode;
 
+export type Bestseller = {
+  img: string;
+  link: string;
+  name: string;
+  price: string;
+};
+
+export type BestsellerResponse = Bestseller[];
 export type GamesResponse = {
   currentPage: number;
   totalItems: number;

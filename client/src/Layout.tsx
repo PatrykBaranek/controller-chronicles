@@ -7,11 +7,7 @@ import useWindowWidth from './hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
 const StyledMain = styled.main`
   display: flex;
-  padding-inline: clamp(1.625rem, 5vw, 3.25rem);
   width: 100%;
-  @media screen and (min-width: 900px) {
-    padding-left: 0;
-  }
 `;
 
 const Layout = () => {
