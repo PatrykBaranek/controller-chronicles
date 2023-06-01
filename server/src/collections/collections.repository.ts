@@ -14,7 +14,7 @@ export class CollectionsRepository {
   async addGame(game: Game, userId: string) {
     const collection = await this.collectionModel.findOne({ userId });
     if (collection) {
-      if (collection.games.find((g) => g.game_id === game.game_id)) {
+      if (collection.games.find((g) => g._id === game._id)) {
         return collection;
       }
       collection.games.push(game);
