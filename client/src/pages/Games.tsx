@@ -62,6 +62,10 @@ const StyledContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: 1rem;
+  padding-inline: clamp(1.625rem, 5vw, 3.25rem);
+  @media screen and (min-width: 900px) {
+    padding-left: 0;
+  }
 `;
 
 const StyledWrapper = styled.div`
