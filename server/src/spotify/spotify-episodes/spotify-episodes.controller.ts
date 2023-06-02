@@ -1,13 +1,20 @@
-import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { FindEpisodeByGameDto } from '../dto/find-episode-by-game.dto';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { FindEpisodeByGameQueryParamsDto } from '../dto/find-episode-by-game.dto';
 import { SpotifyEpisodesService } from './spotify-episodes.service';
 import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiParam,
-  ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -28,12 +35,14 @@ export class SpotifyEpisodesController {
   }
 
   @ApiOperation({ summary: 'Get episodes by game title' })
-  @ApiBody({ type: FindEpisodeByGameDto })
-  @Get('/game/search')
+  @Get('game/:gameId')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async getEpisodesByGameTitle(
-    @Body() findEpisodeByGameTitleDto: FindEpisodeByGameDto,
+    @Param('gameId', ParseIntPipe) gameId: number,
+    @Query() findEpisodeByGameTitleDto: FindEpisodeByGameQueryParamsDto,
   ) {
     return this.spotifyEpisodesService.getEpisodesByGameTitle(
+      gameId,
       findEpisodeByGameTitleDto,
     );
   }
