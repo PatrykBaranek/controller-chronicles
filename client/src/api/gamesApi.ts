@@ -1,8 +1,10 @@
 import {
   BestsellerResponse,
   GameDetailsResponse,
+  Games,
   GamesResponse,
 } from '#/types/types';
+import getNextMonthFromNow from '#/utils/getNextMonthFromNow';
 import axios from 'axios';
 
 const gamesApi = axios.create({
@@ -38,5 +40,16 @@ export const getGamesBySearchQuery = async (
     `/games?page=1&page_size=8&search=${query}`
   );
 
+  return response.data;
+};
+
+export const getNewReleasedGames = async (
+  currentDate: Date
+): Promise<GamesResponse> => {
+  const current = currentDate.toISOString().slice(0, 10);
+  const nextMonth = getNextMonthFromNow(currentDate);
+  const response = await gamesApi.get(
+    `/games?page=1&page_size=5&dates=${current},${nextMonth}`
+  );
   return response.data;
 };
