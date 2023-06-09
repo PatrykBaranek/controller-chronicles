@@ -23,6 +23,7 @@ const StyledPaginationDot = styled.div<StyledProps>`
 `;
 
 const StyledPaginationItem = styled.div<StyledProps>`
+  height: 100%;
   background: ${({ isActive, theme }) =>
     isActive
       ? theme.colors.secondaryGradient
@@ -30,27 +31,36 @@ const StyledPaginationItem = styled.div<StyledProps>`
   cursor: pointer;
   width: 100%;
   display: flex;
-  padding: 0.7rem 1rem;
   border-radius: 0.7rem;
   gap: 10px;
 
+  @media screen and (min-width: 900px) {
+    padding-inline: 1rem;
+  }
   @media screen and (min-width: 1500px) {
-    padding: 0.5rem 1rem;
+    padding-block: 0;
   }
 `;
 
 const StyledImageWrapper = styled.div`
-  width: 30%;
+  width: 40%;
   display: flex;
+  align-items: center;
+  @media screen and (min-width: 1500px) {
+    width: 30%;
+  }
   img {
-    width: 100%;
+    width: 80%;
+    max-height: 80%;
+    border-radius: 0.7rem;
   }
 `;
 const StyledTitleWrapper = styled.div<StyledProps>`
-  width: 70%;
+  width: 60%;
   display: flex;
   align-items: center;
   text-align: center;
+  justify-content: center;
   p {
     color: ${({ isActive, theme }) =>
       isActive ? '#fff' : theme.colors.primary};

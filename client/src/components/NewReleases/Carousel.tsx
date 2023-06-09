@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import useStore from '#/store/store';
-import { Bestseller } from '#/types/types';
+import { Games } from '#/types/types';
 import CarouselItem from './CarouselItem';
 import CarouselPagination from './CarouselPagination';
 type StyledProps = {
@@ -11,16 +11,19 @@ type StyledProps = {
 const StyledCarousel = styled.div`
   display: flex;
   height: 100%;
-  width: 100%;
   position: relative;
+  margin-bottom: 1rem;
 `;
 const StyledCarouselWrapper = styled.div<StyledProps>`
   position: relative;
   z-index: ${({ isActive }) => (isActive ? '-1' : 0)};
   width: 100%;
-  height: 100%;
   @media screen and (min-width: 900px) {
     min-height: 25rem;
+    width: 68%;
+  }
+  @media screen and (min-width: 1000px) {
+    min-height: 30rem;
     width: 68%;
   }
 `;
@@ -28,29 +31,24 @@ const StyledCarouselWrapper = styled.div<StyledProps>`
 const StyledPagination = styled.div`
   display: flex;
   position: absolute;
-  bottom: 10px;
+  bottom: -8%;
   left: 50%;
   transform: translate(-50%, 0);
 
   @media screen and (min-width: 900px) {
+    justify-content: center;
+    height: 100%;
     right: 0;
     width: 30%;
     left: unset;
     transform: unset;
     bottom: unset;
     flex-direction: column;
-    gap: 1.5rem;
-  }
-  @media screen and (min-width: 1500px) {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 `;
 
-const Carousel = ({
-  bestsellers,
-}: {
-  bestsellers: Bestseller[] | undefined;
-}) => {
+const Carousel = ({ newReleases }: { newReleases: Games[] | undefined }) => {
   const { isMenuOpen } = useStore();
   const [current, setCurrent] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -59,13 +57,13 @@ const Carousel = ({
     if (autoPlay) {
       timeOut = setTimeout(() => {
         slideRight();
-      }, 3500);
+      }, 5000);
     }
   });
 
   const slideRight = () => {
     setCurrent(
-      bestsellers && current === bestsellers.length - 1 ? 0 : current + 1
+      newReleases && current === newReleases.length - 1 ? 0 : current + 1
     );
   };
 
@@ -80,24 +78,24 @@ const Carousel = ({
       }}
     >
       <StyledCarouselWrapper isActive={isMenuOpen}>
-        {bestsellers?.map((item, index) => {
+        {newReleases?.map((item, index) => {
           return (
             <CarouselItem
+              id={item.id}
               isActive={index === current}
               key={index}
-              link={item.link}
-              image={item.img}
+              image={item.background_image}
             />
           );
         })}
       </StyledCarouselWrapper>
       <StyledPagination>
-        {bestsellers?.map((item, index) => {
+        {newReleases?.map((item, index) => {
           return (
             <CarouselPagination
               key={index}
               name={item.name}
-              image={item.img}
+              image={item.background_image}
               isActive={index === current}
               onClick={() => setCurrent(index)}
             />

@@ -1,17 +1,15 @@
-import { useEffect } from 'react';
-import { getBestsellers } from '#/api/gamesApi';
-import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import Bestsellers from '#/components/Bestsellers/Bestsellers';
+import NewReleases from '#/components/NewReleases/NewReleases';
 
 const StyledHome = styled.div`
   width: 100%;
+  min-height: 100vh;
 `;
 
 const Home = () => {
   return (
     <StyledHome>
-      <Bestsellers />
+      <NewReleases />
     </StyledHome>
   );
 };
