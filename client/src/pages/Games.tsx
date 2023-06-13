@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Pagination, ThemeProvider, createTheme } from '@mui/material';
+import {
+  Pagination,
+  Skeleton,
+  ThemeProvider,
+  createTheme,
+} from '@mui/material';
 import { useQuery } from 'react-query';
 import { getGames } from '#/api/gamesApi';
 import GameCard from '#/components/GameCard/GameCard';
@@ -89,16 +94,31 @@ const StyledWrapper = styled.div`
     grid-template-rows: repeat(2, 23rem);
   }
 `;
+const StyledSkeleton = styled(Skeleton)`
+  height: 300px !important;
+  @media screen and (min-width: 500px) {
+    height: 315px !important;
+  }
+  @media screen and (min-width: 900px) {
+    height: 350px !important;
+  }
+  @media screen and (min-width: 1200px) {
+    height: 370px !important;
+  }
+`;
 
 const Games = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
   const { games: storedGames, storeGames, isSeachbarVisible } = useStore();
   const [page, setPage] = useState(1);
-  const { data: games } = useQuery(['/games', page], () => getGames(page), {
-    keepPreviousData: true,
-  });
-
+  const { data: games, isLoading } = useQuery(
+    ['/games', page],
+    () => getGames(page),
+    {
+      keepPreviousData: true,
+    }
+  );
   useEffect(() => {
     if (!!games) {
       storeGames(games.results);
@@ -115,15 +135,30 @@ const Games = () => {
   return (
     <StyledContainer>
       <StyledWrapper>
-        {storedGames?.map(game => (
-          <GameCard
-            key={game.id}
-            id={game.id}
-            title={game.name}
-            image={game.background_image}
-            rating={game.metacritic / 10}
-          />
-        ))}
+        {isLoading
+          ? Array(8)
+              .fill('')
+              .map(() => (
+                <StyledSkeleton
+                  sx={{
+                    backgroundImage:
+                      'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+                    borderRadius: '1rem ',
+                  }}
+                  animation='wave'
+                  variant='rounded'
+                  width={'100%'}
+                />
+              ))
+          : storedGames?.map(game => (
+              <GameCard
+                key={game.id}
+                id={game.id}
+                title={game.name}
+                image={game.background_image}
+                rating={game.metacritic / 10}
+              />
+            ))}
       </StyledWrapper>
       <ThemeProvider theme={theme}>
         {isSeachbarVisible && (
