@@ -5,6 +5,7 @@ import useStore from '#/store/store';
 import { Games } from '#/types/types';
 import CarouselItem from './CarouselItem';
 import CarouselPagination from './CarouselPagination';
+import { Skeleton } from '@mui/material';
 type StyledProps = {
   isActive: boolean;
 };
@@ -47,8 +48,18 @@ const StyledPagination = styled.div`
     gap: 1rem;
   }
 `;
-
-const Carousel = ({ newReleases }: { newReleases: Games[] | undefined }) => {
+const StyledSkeleton = styled(Skeleton)`
+  @media screen and (min-width: 900px) {
+    border-radius: 1rem !important;
+  }
+`;
+const Carousel = ({
+  newReleases,
+  isLoading,
+}: {
+  newReleases: Games[] | undefined;
+  isLoading: boolean;
+}) => {
   const { isMenuOpen } = useStore();
   const [current, setCurrent] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -78,16 +89,30 @@ const Carousel = ({ newReleases }: { newReleases: Games[] | undefined }) => {
       }}
     >
       <StyledCarouselWrapper isActive={isMenuOpen}>
-        {newReleases?.map((item, index) => {
-          return (
-            <CarouselItem
-              id={item.id}
-              isActive={index === current}
-              key={index}
-              image={item.background_image}
-            />
-          );
-        })}
+        {isLoading ? (
+          <StyledSkeleton
+            sx={{
+              backgroundImage:
+                'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+              borderRadius: '0',
+            }}
+            variant='rounded'
+            animation='wave'
+            height={'100%'}
+            width={'100%'}
+          />
+        ) : (
+          newReleases?.map((item, index) => {
+            return (
+              <CarouselItem
+                id={item.id}
+                isActive={index === current}
+                key={index}
+                image={item.background_image}
+              />
+            );
+          })
+        )}
       </StyledCarouselWrapper>
       <StyledPagination>
         {newReleases?.map((item, index) => {
