@@ -16,7 +16,7 @@ const StyledWrapper = styled.div`
 
 const NewReleases = () => {
   const currentDate = new Date();
-  const { data: games } = useQuery(
+  const { data: games, isLoading } = useQuery(
     ['newReleases'],
     () => getNewReleasedGames(currentDate),
     {
@@ -25,7 +25,10 @@ const NewReleases = () => {
   );
   return (
     <StyledWrapper>
-      <Carousel newReleases={games?.results} />
+      <Carousel
+        newReleases={games?.results}
+        isLoading={isLoading}
+      />
     </StyledWrapper>
   );
 };

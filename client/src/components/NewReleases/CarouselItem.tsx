@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getGameById } from '#/api/gamesApi';
 import iconFilter from '#/utils/iconFilter';
+import { Skeleton } from '@mui/material';
 type CarouseItemProps = {
   id: number;
   isActive: boolean;
