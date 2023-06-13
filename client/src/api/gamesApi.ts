@@ -1,8 +1,7 @@
 import {
-  BestsellerResponse,
-  GameDetailsResponse,
-  Games,
-  GamesResponse,
+  type BestsellerResponse,
+  type GameDetailsResponse,
+  type GamesResponse,
 } from '#/types/types';
 import getNextMonthFromNow from '#/utils/getNextMonthFromNow';
 import axios from 'axios';
