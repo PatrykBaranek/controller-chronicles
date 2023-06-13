@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import NewReleases from '#/components/NewReleases/NewReleases';
+import Bestsellers from '#/components/Bestsellers/Bestsellers';
 
 const StyledHome = styled.div`
   width: 100%;
@@ -10,6 +11,7 @@ const Home = () => {
   return (
     <StyledHome>
       <NewReleases />
+      <Bestsellers />
     </StyledHome>
   );
 };
