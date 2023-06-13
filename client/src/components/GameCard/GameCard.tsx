@@ -59,82 +59,49 @@ const StyledDescription = styled.div`
 `;
 
 const GameCard = ({ id, image, title, rating }: Gamecard) => {
-  const { isLoading, data } = useQuery(['/games/:id', id], () =>
+  const { data, isError, isLoading } = useQuery(['/games/:id', id], () =>
     getGameById(id)
   );
   const description = data && data.rawgGame.description_raw;
+
   return (
     <Card>
       <Link to={`${id}`}>
         <StyledImage>
-          {!isLoading && image ? (
-            <img
-              src={image}
-              alt={`${title} image`}
-            />
-          ) : (
-            <Skeleton
-              sx={{
-                minHeight: '154px',
-                backgroundImage:
-                  'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                borderRadius: '1rem 1rem 0 0 ',
-              }}
-              animation='wave'
-              variant='rounded'
-              height={'100%'}
-            />
-          )}
+          <img
+            src={image}
+            alt={`${title} image`}
+          />
         </StyledImage>
 
         <StyledContent>
           <StyledTopSection>
-            {!isLoading && title ? (
-              <h1>{title}</h1>
-            ) : (
-              <Skeleton
-                sx={{
-                  backgroundImage:
-                    'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                  marginRight: '10px',
-                }}
-                animation='wave'
-                variant='rounded'
-              />
-            )}
-            {!isLoading ? (
-              <p>
-                Rating <span>{rating ? rating : 0}/10</span>
-              </p>
-            ) : (
-              <Skeleton
-                sx={{
-                  backgroundImage:
-                    'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                }}
-                animation='wave'
-                variant='rounded'
-              >
-                <p>
-                  Rating <span>{rating}/10</span>
-                </p>
-              </Skeleton>
-            )}
+            <h1>{title}</h1>
+            <p>
+              Rating <span>{rating ? rating : 0}/10</span>
+            </p>
           </StyledTopSection>
           <StyledDescription>
-            {!isLoading && description ? (
-              <p>{description && description.slice(0, 250) + ' ...'}</p>
+            {!isError ? (
+              isLoading ? (
+                <Skeleton
+                  sx={{
+                    backgroundImage:
+                      'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+                    borderRadius: '1rem ',
+                  }}
+                  animation='wave'
+                  variant='rounded'
+                  height={'100px'}
+                  width={'100%'}
+                >
+                  <p>{description && description.slice(0, 250) + ' ...'}</p>
+                </Skeleton>
+              ) : (
+                <p>{description && description.slice(0, 250) + ' ...'}</p>
+              )
             ) : (
-              <Skeleton
-                sx={{
-                  marginBottom: '10px',
-                  backgroundImage:
-                    'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                }}
-                animation='wave'
-                height={'100px'}
-                variant='rounded'
-              />
+              <p>Something went wrong!</p>
             )}
           </StyledDescription>
         </StyledContent>
