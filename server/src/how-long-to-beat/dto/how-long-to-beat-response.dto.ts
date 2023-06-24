@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
-import { HowLongToBeatEntry } from 'howlongtobeat';
 
-export class HowLongToBeatResponseDto implements HowLongToBeatEntry {
+export class HowLongToBeatResponseDto {
   @ApiProperty()
   name: string;
 
@@ -14,28 +12,4 @@ export class HowLongToBeatResponseDto implements HowLongToBeatEntry {
 
   @ApiProperty()
   gameplayCompletionist: number;
-
-  @Exclude()
-  id: string;
-
-  @Exclude()
-  description: string;
-
-  @Exclude()
-  platforms: string[];
-
-  @Exclude()
-  imageUrl: string;
-
-  @Exclude()
-  timeLabels: string[][];
-
-  @Exclude()
-  similarity: number;
-
-  @Exclude()
-  searchTerm: string;
-
-  @Exclude()
-  playableOn: string[];
 }
