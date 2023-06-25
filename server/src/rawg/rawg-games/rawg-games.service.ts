@@ -59,6 +59,7 @@ export class RawgGamesService {
       _id: gameInDb._id,
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
+      steamReviews: null,
     };
 
     if (gameInDb) {
