@@ -7,9 +7,15 @@ import { RawgModule } from './rawg/rawg.module';
 import { ReviewsSitesModule } from './reviews-sites/reviews-sites.module';
 import { AuthModule } from './auth/auth.module';
 import { CollectionsModule } from './collections/collections.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 60000,
+    }),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -23,6 +29,12 @@ import { CollectionsModule } from './collections/collections.module';
     ReviewsSitesModule,
     AuthModule,
     CollectionsModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
   ],
 })
 export class AppModule {}
