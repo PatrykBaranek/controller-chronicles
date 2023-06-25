@@ -2,10 +2,6 @@ import { HttpException } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 
 export class PuppeteerService {
-  async launchBrowser(): Promise<puppeteer.Browser> {
-    return puppeteer.launch({ headless: 'new' });
-  }
-
   async createPage(
     browser: puppeteer.Browser,
     url: string,
@@ -14,10 +10,6 @@ export class PuppeteerService {
 
     await page.goto(url, { waitUntil: 'networkidle2' });
     return page;
-  }
-
-  async closeBrowser(browser: puppeteer.Browser): Promise<void> {
-    await browser.close();
   }
 
   async withBrowser<T>(
@@ -31,5 +23,13 @@ export class PuppeteerService {
     } finally {
       await this.closeBrowser(browser);
     }
+  }
+
+  private async launchBrowser(): Promise<puppeteer.Browser> {
+    return puppeteer.launch({ headless: 'new' });
+  }
+
+  private async closeBrowser(browser: puppeteer.Browser): Promise<void> {
+    await browser.close();
   }
 }

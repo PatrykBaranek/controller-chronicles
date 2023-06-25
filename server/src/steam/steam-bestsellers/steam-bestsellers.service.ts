@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PuppeteerService } from '../../puppeteer/puppeteer.service';
 import { SteamReposiiory } from '../steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { SteamBestSellers } from '../models/steam-bestsellers.schema';
 
 @Injectable()
 export class SteamBestSellersService {
@@ -28,10 +25,9 @@ export class SteamBestSellersService {
   }
 
   @Cron(CronExpression.EVERY_12_HOURS)
-  private async scrapeBestSellers() {
+  private async scrapeBestSellers(): Promise<SteamBestSellers> {
     this.logger.log('Scraping bestsellers from Steam');
-    const browser = await this.puppeteerService.launchBrowser();
-    try {
+    return this.puppeteerService.withBrowser(async (browser) => {
       const page = await this.puppeteerService.createPage(
         browser,
         'https://store.steampowered.com/search/?category1=998&os=win%2Cmac%2Clinux&specials=1&hidef2p=1&filter=topsellers&ndl=1&ignore_preferences=1',
@@ -43,7 +39,7 @@ export class SteamBestSellersService {
         '.ds_collapse_flag',
       );
 
-      const bestSellersJson = await Promise.all(
+      const bestSellingGamesFromSteam = await Promise.all(
         listOfBestSellingGameHTMLElements.map(async (gameHTMLElement) => {
           const img = await gameHTMLElement
             .$('img')
@@ -76,16 +72,17 @@ export class SteamBestSellersService {
         }),
       );
 
+      const bestSellers: SteamBestSellers = {
+        games: bestSellingGamesFromSteam,
+        updateDate: new Date(),
+      };
+
       await this.steamRepository.saveBestSellers({
-        games: bestSellersJson,
+        games: bestSellingGamesFromSteam,
       });
 
-      return bestSellersJson;
-    } catch (err) {
-      throw new InternalServerErrorException(err);
-    } finally {
-      await this.puppeteerService.closeBrowser(browser);
-    }
+      return bestSellers;
+    });
   }
 
   private async checkIfTodaysBestSellersExist() {

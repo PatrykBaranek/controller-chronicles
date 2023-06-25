@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 
 class RawgGame {
   @Prop()
@@ -136,6 +137,11 @@ export class Game {
     type: HowLongToBeat,
   })
   howLongToBeat: HowLongToBeat;
+
+  @Prop({
+    type: SteamReviews,
+  })
+  steamReviews?: SteamReviews;
 }
 
 export const GameSchema = SchemaFactory.createForClass(Game);

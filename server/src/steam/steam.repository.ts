@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   SteamBestSellers,
@@ -9,14 +9,15 @@ import {
   SteamReviews,
   SteamReviewsDocument,
 } from './models/steam-reviews.schema';
+import { Game, GameDocument } from 'src/rawg/rawg-games/models/game.schema';
 
 @Injectable()
 export class SteamReposiiory {
   constructor(
     @InjectModel(SteamBestSellers.name)
     private steamBestSellerModel: Model<SteamBestSellersDocument>,
-    @InjectModel(SteamReviews.name)
-    private steamReviewsModel: Model<SteamReviewsDocument>,
+    @InjectModel(Game.name)
+    private gameModel: Model<GameDocument>,
   ) {}
 
   async saveBestSellers(bestSellers: Partial<SteamBestSellers>) {
@@ -30,16 +31,16 @@ export class SteamReposiiory {
   }
 
   async saveReviews(reviews: SteamReviews) {
-    if (await this.steamReviewsModel.find({ game_id: reviews.game_id })) {
-      await this.steamReviewsModel.deleteOne({ game_id: reviews.game_id });
-    }
-
-    const reviewsToSave = new this.steamReviewsModel({
-      ...reviews,
-      updatedAt: new Date(),
+    const game = await this.gameModel.findOne({
+      _id: reviews.game_id,
     });
 
-    await reviewsToSave.save();
+    if (!game) {
+      throw new NotFoundException('Game not found');
+    }
+
+    game.steamReviews = reviews;
+    await game.save();
   }
 
   async getBestSellers() {
