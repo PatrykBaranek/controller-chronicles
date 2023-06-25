@@ -30,13 +30,7 @@ export class SteamReviewsService {
       throw new NotFoundException('Game is not released yet');
     }
 
-    const stores = await this.rawgGamesService.getGameStoresByGameId(id);
-
-    if (!stores.some((store) => store.name === 'Steam')) {
-      throw new NotFoundException('Game is not available on Steam');
-    }
-
-    const steamUrl = stores.find((store) => store.name === 'Steam').url;
+    const steamUrl = await this.getSteamUrlByGameId(id);
 
     const scrapedData = await this.scrapeSteamReviews(steamUrl);
 
@@ -53,11 +47,20 @@ export class SteamReviewsService {
     };
   }
 
+  private async getSteamUrlByGameId(id: number) {
+    const stores = await this.rawgGamesService.getGameStoresByGameId(id);
+
+    if (!stores.some((store) => store.name === 'Steam')) {
+      throw new NotFoundException('Game is not available on Steam');
+    }
+
+    return stores.find((store) => store.name === 'Steam').url;
+  }
+
   private async scrapeSteamReviews(
     url: string,
   ): Promise<SteamReviewsResultsType> {
-    const browser = await this.puppeteerService.launchBrowser();
-    try {
+    return this.puppeteerService.withBrowser(async (browser) => {
       const page = await this.puppeteerService.createPage(browser, url);
 
       await this.checkIfApproveAgeGateButtonExists(page);
@@ -111,10 +114,7 @@ export class SteamReviewsService {
       }
 
       return steamReviewsResult;
-    } catch (err) {
-    } finally {
-      await this.puppeteerService.closeBrowser(browser);
-    }
+    });
   }
 
   private async getSteamReviewsHelper(
