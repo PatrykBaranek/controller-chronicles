@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Logger, Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   SteamBestSellers,
@@ -13,12 +13,14 @@ import {
   SteamReviews,
   SteamReviewsSchema,
 } from './models/steam-reviews.schema';
+import { Game, GameSchema } from 'src/rawg/rawg-games/models/game.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: SteamBestSellers.name, schema: SteamBestSellersSchema },
       { name: SteamReviews.name, schema: SteamReviewsSchema },
+      { name: Game.name, schema: GameSchema },
     ]),
     forwardRef(() => RawgGamesModule),
     PuppeteerModule,
