@@ -1,26 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GameTrailers, GameTrailersDocument } from './models/trailers.schema';
 import { GameReviews, GameReviewsDocument } from './models/reviews.schema';
+import { SearchResultDto } from './dto/search-result.dto';
+import { Game, GameDocument } from 'src/rawg/rawg-games/models/game.schema';
 
 @Injectable()
 export class YoutubeRepository {
+  private readonly logger = new Logger(YoutubeRepository.name);
+
   constructor(
     @InjectModel(GameTrailers.name)
     private gameTrailersModel: Model<GameTrailersDocument>,
     @InjectModel(GameReviews.name)
     private gameReviewsModel: Model<GameReviewsDocument>,
+    @InjectModel(Game.name)
+    private gameModel: Model<GameDocument>,
   ) {}
 
   async saveGameVideoReviews(
     gameId: number,
-    videoReviews: Array<{
-      title: string;
-      thumbnail: string;
-      author: string;
-      link: string;
-    }>,
+    videoReviews: SearchResultDto[],
   ): Promise<GameReviews> {
     const existingReviews = await this.gameReviewsModel.findOne({
       game_id: gameId,
@@ -36,31 +37,50 @@ export class YoutubeRepository {
       game_id: gameId,
       video_reviews: videoReviews,
     });
+
+    this.logger.log(`Saving video reviews for game ${gameId}`);
+    await this.gameModel
+      .findOneAndUpdate(
+        {
+          _id: gameId,
+        },
+        {
+          video_reviews: gameVideoReviewsToSave.video_reviews,
+        },
+      )
+      .exec();
+
     return gameVideoReviewsToSave.save();
   }
 
   async saveGameTrailers(
     gameId: number,
-    trailers: Array<{
-      title: string;
-      thumbnail: string;
-      author: string;
-      link: string;
-    }>,
+    trailers: SearchResultDto[],
   ): Promise<GameTrailers> {
     const gameTrailersToSave = new this.gameTrailersModel({
       game_id: gameId,
-      trailers: trailers,
+      video_trailers: trailers,
     });
+
+    this.logger.log(`Saving trailers for game ${gameId}`);
+    await this.gameModel
+      .findOneAndUpdate(
+        {
+          _id: gameId,
+        },
+        {
+          game_trailers: gameTrailersToSave.video_trailers,
+        },
+      )
+      .exec();
+
     return gameTrailersToSave.save();
   }
 
   async getGameVideos(
     gameId: number,
     videoType: 'reviews' | 'trailers',
-  ): Promise<
-    Array<{ title: string; thumbnail: string; author: string; link: string }>
-  > {
+  ): Promise<GameTrailers['video_trailers'] | GameReviews['video_reviews']> {
     if (videoType === 'reviews') {
       const gameVideoReviews = await this.gameReviewsModel.findOne({
         game_id: gameId,
@@ -70,7 +90,7 @@ export class YoutubeRepository {
       const gameTrailers = await this.gameTrailersModel.findOne({
         game_id: gameId,
       });
-      return gameTrailers ? gameTrailers.trailers : [];
+      return gameTrailers ? gameTrailers.video_trailers : [];
     }
   }
 }

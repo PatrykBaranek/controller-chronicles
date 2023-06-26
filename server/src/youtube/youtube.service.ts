@@ -1,14 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
 import { YoutubeRepository } from './youtube.repository';
 import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
-
-export interface SearchResult {
-  title: string;
-  thumbnail: string;
-  author: string;
-  link: string;
-}
+import { GameTrailers } from './models/trailers.schema';
+import { GameReviews } from './models/reviews.schema';
+import { SearchResultDto } from './dto/search-result.dto';
 
 @Injectable()
 export class YoutubeService {
@@ -22,24 +18,33 @@ export class YoutubeService {
   async getGameVideoReviewByGameId(
     id: number,
     lang?: 'pl' | 'en',
-  ): Promise<{ video_reviews: SearchResult[] }> {
+  ): Promise<GameReviews> {
     const game = await this.gamesService.getGameById(id);
+
+    if (game.rawgGame.released === null) {
+      throw new NotFoundException('Game not released yet');
+    }
+
     const searchQuery = `${game.rawgGame.name} ${
       lang === 'pl' ? 'recenzja' : 'review'
     }`;
 
-    const video_reviews = await this.getOrFetchGameVideos(
+    const game_reviews = await this.getOrFetchGameVideos(
       game._id,
       game.rawgGame.name,
       searchQuery,
       'reviews',
     );
-    return { video_reviews };
+
+    const result: GameReviews = {
+      game_id: game._id,
+      video_reviews: game_reviews,
+    };
+
+    return result;
   }
 
-  async getGameTrailersByGameId(
-    id: number,
-  ): Promise<{ game_trailers: SearchResult[] }> {
+  async getGameTrailersByGameId(id: number): Promise<GameTrailers> {
     const game = await this.gamesService.getGameById(id);
     const searchQuery = `${game.rawgGame.name} Official trailer`;
 
@@ -50,7 +55,12 @@ export class YoutubeService {
       'trailers',
     );
 
-    return { game_trailers };
+    const result: GameTrailers = {
+      game_id: game._id,
+      video_trailers: game_trailers,
+    };
+
+    return result;
   }
 
   private async getOrFetchGameVideos(
@@ -58,7 +68,7 @@ export class YoutubeService {
     gameTitle: string,
     searchQuery: string,
     videoType: 'reviews' | 'trailers',
-  ): Promise<SearchResult[]> {
+  ): Promise<SearchResultDto[]> {
     const existingVideos = await this.youtubeRepository.getGameVideos(
       gameId,
       videoType,
@@ -80,7 +90,7 @@ export class YoutubeService {
     return newVideos;
   }
 
-  private async youtubeSearch(q: string): Promise<SearchResult[]> {
+  private async youtubeSearch(q: string): Promise<SearchResultDto[]> {
     const requestOptions: youtube_v3.Params$Resource$Search$List = {
       key: process.env.YOUTUBE_API_KEY,
       q: q,

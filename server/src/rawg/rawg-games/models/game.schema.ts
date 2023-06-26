@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
+import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
 
 class RawgGame {
   @Prop()
@@ -142,6 +143,12 @@ export class Game {
     type: SteamReviews,
   })
   steamReviews?: SteamReviews;
+
+  @Prop([SearchResultDto])
+  video_reviews?: SearchResultDto[];
+
+  @Prop([SearchResultDto])
+  game_trailers?: SearchResultDto[];
 }
 
 export const GameSchema = SchemaFactory.createForClass(Game);
