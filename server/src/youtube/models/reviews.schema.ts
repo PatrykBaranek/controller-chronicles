@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { SearchResultDto } from '../dto/search-result.dto';
 
 export type GameReviewsDocument = GameReviews & Document;
 
@@ -7,13 +8,8 @@ export class GameReviews {
   @Prop()
   game_id: number;
 
-  @Prop([{ title: String, thumbnail: String, author: String, link: String }])
-  video_reviews: Array<{
-    title: string;
-    thumbnail: string;
-    author: string;
-    link: string;
-  }>;
+  @Prop([SearchResultDto])
+  video_reviews: SearchResultDto[];
 }
 
 export const GameReviewsSchema = SchemaFactory.createForClass(GameReviews);
