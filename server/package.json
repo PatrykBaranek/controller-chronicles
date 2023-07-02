@@ -42,6 +42,7 @@
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
+    "fuzzysort": "^2.0.4",
     "googleapis": "^118.0.0",
     "mongodb-client-encryption": "^2.7.1",
     "mongoose": "^7.0.3",
