@@ -7,7 +7,6 @@ export abstract class ReviewsSitesService<T> {
   protected abstract siteUrl: string;
 
   abstract getGameReviewById(gameId: number): Promise<T[]>;
-  abstract getNewGamesReviews(): Promise<T[]>;
 
   protected abstract findReviewsForGames(
     games: RawgGameResponseDto[],
