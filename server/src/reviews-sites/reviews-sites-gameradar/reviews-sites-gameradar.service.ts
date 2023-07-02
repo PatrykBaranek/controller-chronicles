@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { getMonth, getYear } from 'date-fns';
 import { Browser } from 'puppeteer';
@@ -6,15 +6,17 @@ import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
 import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
 import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { ReviewsSitesService } from '../reviews-sites.service';
-import { ReviewSitesGameReviewsGamesRadarDto } from '../dto/review-sites.dto';
+import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
+import { FuzzyCompareService } from '../fuzzy-compare.service';
 
 @Injectable()
-export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSitesGameReviewsGamesRadarDto> {
+export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSitesGameReviewsDto> {
   siteUrl: string = 'https://www.gamesradar.com/reviews/archive/';
 
   constructor(
     private readonly puppeteerService: PuppeteerService,
     private readonly rawgGamesService: RawgGamesService,
+    private readonly fuzzyCompareService: FuzzyCompareService,
   ) {
     super();
   }
@@ -31,18 +33,9 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSite
     }
   }
 
-  async getNewGamesReviews() {
-    const newGameReleases = await this.rawgGamesService.getNewReleases({
-      page: 1,
-      page_size: 10,
-    });
-
-    return this.findReviewsForGames(newGameReleases.results);
-  }
-
   protected async findReviewsForGames(games: RawgGameResponseDto[]) {
     return await this.puppeteerService.withBrowser(async (browser) => {
-      let result: ReviewSitesGameReviewsGamesRadarDto[] = [];
+      let result: ReviewSitesGameReviewsDto[] = [];
       for (const game of games) {
         result.push(...(await this.findReviewForGame(game, browser)));
       }
@@ -54,7 +47,6 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSite
     game: RawgGameResponseDto,
     browser: Browser,
   ) {
-    const result: ReviewSitesGameReviewsGamesRadarDto[] = [];
     const month = getMonth(new Date(game.released)) + 1;
     const year = getYear(new Date(game.released));
     const page = await this.puppeteerService.createPage(
@@ -64,23 +56,22 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSite
 
     const reviewsContainerElement = await page.waitForSelector('.archive');
     const reviews = await reviewsContainerElement.$$('a');
-    for (const review of reviews) {
-      const reviewText = await review.evaluate((el) => el.textContent);
-      if (reviewText.includes(game.name)) {
-        result.push({
-          game_id: game.id,
-          gameradarReview: {
-            title: reviewText,
-            url: await review.evaluate((el) => el.href),
-          },
-        });
-      }
-    }
+    const reviewsArray = await Promise.all(
+      reviews.map(async (review) => {
+        return {
+          title: await review.evaluate((el) =>
+            el.textContent.replace(/\n/g, ''),
+          ),
+          url: await review.evaluate((el) => el.href),
+        };
+      }),
+    );
 
-    if (result.length === 0) {
-      throw new NotFoundException('No found reviews');
-    }
+    const matchedArticles = this.fuzzyCompareService.findBestMatch(
+      game.name,
+      reviewsArray,
+    );
 
-    return result;
+    return plainToInstance(ReviewSitesGameReviewsDto, matchedArticles);
   }
 }

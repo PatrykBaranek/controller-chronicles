@@ -5,7 +5,11 @@ import { ReviewsSitesController } from './reviews-sites.controller';
 import { ReviewsSitesEurogamerModule } from './reviews-sites-eurogamer/reviews-sites-eurogamer.module';
 
 @Module({
-  imports: [ReviewsSitesGameradarModule, RawgGamesModule, ReviewsSitesEurogamerModule],
+  imports: [
+    ReviewsSitesGameradarModule,
+    RawgGamesModule,
+    ReviewsSitesEurogamerModule,
+  ],
   controllers: [ReviewsSitesController],
 })
 export class ReviewsSitesModule {}
