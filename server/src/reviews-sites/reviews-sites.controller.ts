@@ -16,13 +16,16 @@ export class ReviewsSitesController {
     return this.gameradarService.getGameReviewById(id);
   }
 
-  @Get('gamesradar/new-games-reviews')
-  async getNewGamesReviewsFromGameradar() {
-    return this.gameradarService.getNewGamesReviews();
-  }
-
   @Get('eurogamer/:id')
   async getGameReviewByIdFromEurogamer(@Param('id') id: number) {
     return this.eurogamerService.getGameReviewById(id);
+  }
+
+  @Get(':gameId')
+  async getGameReviewById(@Param('gameId') gameId: number) {
+    return await Promise.all([
+      ...(await this.gameradarService.getGameReviewById(gameId)),
+      ...(await this.eurogamerService.getGameReviewById(gameId)),
+    ]);
   }
 }
