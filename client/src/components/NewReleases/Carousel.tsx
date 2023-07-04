@@ -56,13 +56,15 @@ const StyledSkeleton = styled(Skeleton)`
 const Carousel = ({
   newReleases,
   isLoading,
+  isError,
 }: {
   newReleases: Games[] | undefined;
   isLoading: boolean;
+  isError: boolean;
 }) => {
   const { isMenuOpen } = useStore();
   const [current, setCurrent] = useState(0);
-  const [autoPlay, setAutoPlay] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(true);
   let timeOut: ReturnType<typeof setTimeout>;
   useEffect(() => {
     if (autoPlay) {
@@ -85,11 +87,11 @@ const Carousel = ({
         clearTimeout(timeOut);
       }}
       onMouseLeave={() => {
-        // setAutoPlay(true);
+        setAutoPlay(true);
       }}
     >
       <StyledCarouselWrapper isActive={isMenuOpen}>
-        {isLoading ? (
+        {isLoading || isError ? (
           <StyledSkeleton
             sx={{
               backgroundImage:
