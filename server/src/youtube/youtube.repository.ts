@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { GameTrailers, GameTrailersDocument } from './models/trailers.schema';
 import { GameReviews, GameReviewsDocument } from './models/reviews.schema';
 import { SearchResultDto } from './dto/search-result.dto';
-import { Game, GameDocument } from 'src/rawg/rawg-games/models/game.schema';
+import { Game, GameDocument } from 'src/games/models/game.schema';
 
 @Injectable()
 export class YoutubeRepository {

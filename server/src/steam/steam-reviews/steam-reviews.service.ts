@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { SteamReposiiory } from '../steam.repository';
 import { ElementHandle, Page } from 'puppeteer';
+import { GamesService } from 'src/games/games.service';
 
 type SteamReviewsResultsType = {
   reviewsSummaryFrom30Days?: {
@@ -18,13 +18,13 @@ type SteamReviewsResultsType = {
 @Injectable()
 export class SteamReviewsService {
   constructor(
-    private readonly rawgGamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
     private readonly puppeteerService: PuppeteerService,
     private readonly steamRepository: SteamReposiiory,
   ) {}
 
   async getSteamReviewByGameId(id: number) {
-    const game = await this.rawgGamesService.getGameById(id);
+    const game = await this.gamesService.getGameById(id);
 
     if (game.rawgGame.released === null) {
       throw new NotFoundException('Game is not released yet');
@@ -48,7 +48,7 @@ export class SteamReviewsService {
   }
 
   private async getSteamUrlByGameId(id: number) {
-    const stores = await this.rawgGamesService.getGameStoresByGameId(id);
+    const stores = await this.gamesService.getGameStoresByGameId(id);
 
     if (!stores.some((store) => store.name === 'Steam')) {
       throw new NotFoundException('Game is not available on Steam');

@@ -7,28 +7,20 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { RawgGamesService } from './rawg-games.service';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
-
-import { PaginationDto } from '../helpers/dto/pagination.dto';
-import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
-import { YoutubeService } from 'src/youtube/youtube.service';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
+import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { SteamBestSellersService } from 'src/steam/steam-bestsellers/steam-bestsellers.service';
-import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
 import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.service';
+import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
+import { YoutubeService } from 'src/youtube/youtube.service';
+import { GamesService } from './games.service';
 
-@ApiTags('games')
 @Controller('games')
-export class RawgGamesController {
+export class GamesController {
   constructor(
-    private readonly gamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
     private readonly youtubeService: YoutubeService,
     private readonly steamBestSellersService: SteamBestSellersService,
     private readonly steamReviewsService: SteamReviewsService,

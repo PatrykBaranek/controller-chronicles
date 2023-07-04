@@ -1,8 +1,8 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { RawgApiService } from '../rawg-api.service';
 import { AxiosResponse } from 'axios';
-import { GetGameQueryParamsDto } from 'src/rawg/rawg-games/dto/get-game-query-params.dto';
-import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
+import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { RawgGameResponse } from 'src/rawg/types/rawg-game-response';
 import { GetGameStoresResponse } from 'src/rawg/types/rawg-game-stores-response';
 import { GetStoresResponse } from 'src/rawg/types/rawg-stores-response';

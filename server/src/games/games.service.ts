@@ -1,18 +1,20 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
-import { RawgGamesRepository } from './rawg-games.repository';
-import { plainToInstance } from 'class-transformer';
-import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
+import { YoutubeService } from 'src/youtube/youtube.service';
+import { GamesRepository } from './games.repository';
+import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
 import { HowLongToBeatService } from 'src/how-long-to-beat/how-long-to-beat.service';
-import { RawgApiGamesService } from '../rawg-api/rawg-api-games/rawg-api-games.service';
+import { plainToInstance } from 'class-transformer';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { Game } from './models/game.schema';
+import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
 
 @Injectable()
-export class RawgGamesService {
+export class GamesService {
   constructor(
-    private readonly gamesRepository: RawgGamesRepository,
     private readonly rawgApiGamesService: RawgApiGamesService,
     private readonly hltbService: HowLongToBeatService,
+    private readonly youtubeService: YoutubeService,
+    private readonly gamesRepository: GamesRepository,
   ) {}
 
   async getGames(options?: GetGameQueryParamsDto) {
@@ -27,7 +29,6 @@ export class RawgGamesService {
             const gameToSave: Game = {
               _id: game.id,
               rawgGame: game,
-              howLongToBeat: null,
             };
 
             await this.gamesRepository.saveGame(gameToSave);
@@ -46,18 +47,30 @@ export class RawgGamesService {
   async getGameById(id: number) {
     const gameInDb = await this.gamesRepository.findGame(id);
 
-    if (gameInDb.rawgGame && gameInDb.howLongToBeat) {
+    if (
+      gameInDb.rawgGame &&
+      gameInDb.howLongToBeat &&
+      gameInDb.game_trailers.length > 0 &&
+      gameInDb.video_reviews.length > 0
+    ) {
       return gameInDb;
     }
 
     const rawgGame = await this.rawgApiGamesService.getGameById(id);
     const hltbGame = await this.hltbService.getGameByName(rawgGame.name);
+    const youtubeReviews = await this.youtubeService.getGameVideoReviewByGameId(
+      id,
+    );
+    // const youtubeTrailers = await this.youtubeService.getGameTrailersByGameId(
+    //   id,
+    // );
 
     const gameData: Game = {
       _id: gameInDb._id,
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
-      steamReviews: null,
+      //   game_trailers: youtubeTrailers.video_trailers,
+      video_reviews: youtubeReviews.video_reviews,
     };
 
     if (gameInDb) {

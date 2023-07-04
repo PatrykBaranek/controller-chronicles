@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
 import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
 
@@ -113,19 +114,6 @@ class RawgGame {
   publishers?: any[] | null;
 }
 
-class HowLongToBeat {
-  @Prop()
-  gameplayMain: number;
-
-  @Prop()
-  gameplayMainExtra: number;
-
-  @Prop()
-  gameplayCompletionist: number;
-}
-
-export type GameDocument = Game & Document;
-
 @Schema({ collection: 'games' })
 export class Game {
   @Prop()
@@ -137,7 +125,7 @@ export class Game {
   @Prop({
     type: HowLongToBeat,
   })
-  howLongToBeat: HowLongToBeat;
+  howLongToBeat?: HowLongToBeat;
 
   @Prop({
     type: SteamReviews,
@@ -151,4 +139,5 @@ export class Game {
   game_trailers?: SearchResultDto[];
 }
 
+export type GameDocument = Game & Document;
 export const GameSchema = SchemaFactory.createForClass(Game);

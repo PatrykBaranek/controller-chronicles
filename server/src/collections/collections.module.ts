@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CollectionsController } from './collections.controller';
-import { RawgGamesModule } from 'src/rawg/rawg-games/rawg-games.module';
 import { CollectionsRepository } from './collections.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Collection } from 'mongoose';
 import { CollectionSchema } from './models/collection.model';
+import { GamesModule } from 'src/games/games.module';
 
 @Module({
   imports: [
-    RawgGamesModule,
+    GamesModule,
     MongooseModule.forFeature([
       { name: Collection.name, schema: CollectionSchema },
     ]),

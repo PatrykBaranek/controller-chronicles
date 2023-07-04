@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
 import { CollectionDocument } from './models/collection.model';
-import { Game } from 'src/rawg/rawg-games/models/game.schema';
+import { Game } from 'src/games/models/game.schema';
 import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
 import { DeleteCollectionDto } from './dto/delete-collection.dto';
 

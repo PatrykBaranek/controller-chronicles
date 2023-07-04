@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ReviewsSitesService } from '../reviews-sites.service';
 import { Browser } from 'puppeteer';
-import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
 import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
+
 import { plainToInstance } from 'class-transformer';
 import { getMonth, getYear } from 'date-fns';
 import { FuzzyCompareService } from '../fuzzy-compare.service';
+import { GamesService } from 'src/games/games.service';
 
 @Injectable()
 export class ReviewsSitesEurogamerService extends ReviewsSitesService<ReviewSitesGameReviewsDto> {
@@ -15,7 +16,7 @@ export class ReviewsSitesEurogamerService extends ReviewsSitesService<ReviewSite
 
   constructor(
     private readonly puppeteerService: PuppeteerService,
-    private readonly rawgGamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
     private readonly fuzzyCompareService: FuzzyCompareService,
   ) {
     super();
@@ -24,7 +25,7 @@ export class ReviewsSitesEurogamerService extends ReviewsSitesService<ReviewSite
   async getGameReviewById(
     gameId: number,
   ): Promise<ReviewSitesGameReviewsDto[]> {
-    const game = await this.rawgGamesService.getGameById(gameId);
+    const game = await this.gamesService.getGameById(gameId);
 
     return await this.findReviewsForGames(
       plainToInstance(RawgGameResponseDto, [game.rawgGame]),

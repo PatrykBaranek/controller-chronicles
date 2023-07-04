@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
-import { YoutubeRepository } from './youtube.repository';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { GameTrailers } from './models/trailers.schema';
 import { GameReviews } from './models/reviews.schema';
 import { SearchResultDto } from './dto/search-result.dto';
+import { GamesService } from 'src/games/games.service';
+import { YoutubeRepository } from './youtube.repository';
 
 @Injectable()
 export class YoutubeService {
   private readonly youtube = google.youtube('v3');
 
   constructor(
-    private readonly gamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
     private readonly youtubeRepository: YoutubeRepository,
   ) {}
 

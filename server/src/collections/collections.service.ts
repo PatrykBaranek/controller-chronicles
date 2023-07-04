@@ -1,15 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CollectionsRepository } from './collections.repository';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
 import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
 import { DeleteCollectionDto } from './dto/delete-collection.dto';
 import { AddGameToCollectionDto } from './dto/add-game-to-collection.dto';
+import { GamesService } from 'src/games/games.service';
 
 @Injectable()
 export class CollectionsService {
   constructor(
     private readonly collectionsRepository: CollectionsRepository,
-    private readonly rawgGamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
   ) {}
 
   async createDefaultCollections(userId: string) {
@@ -45,7 +45,7 @@ export class CollectionsService {
     userId: string,
   ) {
     try {
-      const game = await this.rawgGamesService.getGameById(
+      const game = await this.gamesService.getGameById(
         addGameToCollectionDto.gameId,
       );
 

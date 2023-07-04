@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { Browser } from 'puppeteer';
 
 @Injectable()
