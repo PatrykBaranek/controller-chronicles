@@ -87,17 +87,21 @@ const StyledDescription = styled.span<StyledProps>`
 const StyledIcon = styled.span<StyledProps>`
   display: flex;
   gap: 1rem;
-  opacity: ${({ $isActive }) => ($isActive ? 0.8 : 0)};
+  opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
   transform: translateY(${({ $isActive }) => ($isActive ? '52%' : '300%')});
   transition: all 1s ease-in-out;
-  width: clamp(1rem, 4vw, 1.8rem);
+  max-width: 3rem;
   position: absolute;
   bottom: 48%;
   left: 5%;
   img {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    aspect-ratio: 3/2;
+    object-fit: contain;
     border-radius: 0;
+    @media screen and (min-width: 1800px) {
+      width: 100%;
+    }
   }
 `;
 const CarouselItem = ({ isActive, image, id }: CarouseItemProps) => {

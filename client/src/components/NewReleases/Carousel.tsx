@@ -56,9 +56,11 @@ const StyledSkeleton = styled(Skeleton)`
 const Carousel = ({
   newReleases,
   isLoading,
+  isError,
 }: {
   newReleases: Games[] | undefined;
   isLoading: boolean;
+  isError: boolean;
 }) => {
   const { isMenuOpen } = useStore();
   const [current, setCurrent] = useState(0);
@@ -89,7 +91,7 @@ const Carousel = ({
       }}
     >
       <StyledCarouselWrapper isActive={isMenuOpen}>
-        {isLoading ? (
+        {isLoading || isError ? (
           <StyledSkeleton
             sx={{
               backgroundImage:

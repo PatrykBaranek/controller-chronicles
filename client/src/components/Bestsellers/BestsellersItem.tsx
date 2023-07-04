@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import getGameIdFromUrl from '#/utils/getGameIdFromUrl';
 
 const StyledBestsellersItem = styled(Link)`
-  min-height: 195px;
   border-radius: 0.7rem;
   overflow: hidden;
   img {
@@ -30,7 +29,7 @@ const StyledOverlay = styled.span`
   }
   span {
     display: flex;
-    width: 90%;
+    width: 80%;
     justify-content: space-between;
     position: absolute;
     bottom: 10%;
@@ -41,9 +40,14 @@ const StyledOverlay = styled.span`
   }
 `;
 
-const BestsellersItem = ({ img, link, name, price }: Bestseller) => {
+const BestsellersItem = ({
+  img,
+  link,
+  name,
+  price,
+  idx,
+}: Bestseller & { idx: number }) => {
   const gameId = getGameIdFromUrl(link);
-
   return (
     <Card>
       <StyledBestsellersItem to={link}>
@@ -58,7 +62,8 @@ const BestsellersItem = ({ img, link, name, price }: Bestseller) => {
         <StyledOverlay>
           <span>
             <p>{name}</p>
-            <p>{price}</p>
+            <p>{idx + 1} / 10</p>
+            <p>{price || '0zł'}</p>
           </span>
         </StyledOverlay>
       </StyledBestsellersItem>
