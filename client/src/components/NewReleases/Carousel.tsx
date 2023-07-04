@@ -62,7 +62,7 @@ const Carousel = ({
 }) => {
   const { isMenuOpen } = useStore();
   const [current, setCurrent] = useState(0);
-  const [autoPlay, setAutoPlay] = useState(true);
+  const [autoPlay, setAutoPlay] = useState(false);
   let timeOut: ReturnType<typeof setTimeout>;
   useEffect(() => {
     if (autoPlay) {
@@ -85,7 +85,7 @@ const Carousel = ({
         clearTimeout(timeOut);
       }}
       onMouseLeave={() => {
-        setAutoPlay(true);
+        // setAutoPlay(true);
       }}
     >
       <StyledCarouselWrapper isActive={isMenuOpen}>
