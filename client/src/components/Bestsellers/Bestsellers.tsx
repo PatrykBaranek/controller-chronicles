@@ -1,12 +1,14 @@
 import { getBestsellers } from '#/api/gamesApi';
-import { useQuery } from 'react-query';
+import { isError, useQuery } from 'react-query';
 import styled from 'styled-components';
 import BestsellersItem from './BestsellersItem';
 import { Skeleton } from '@mui/material';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
 
 const StyledBestsellers = styled.div`
   padding-inline: 1rem;
-  margin-top: 8vw;
+  margin-top: 10vw;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
@@ -21,52 +23,63 @@ const StyledBestsellers = styled.div`
     margin-bottom: 1rem;
   }
 `;
-const StyledWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  @media screen and (min-width: 700px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media screen and (min-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-`;
 
 const Bestsellers = () => {
-  const { data, isLoading } = useQuery(['bestsellers'], () => getBestsellers());
-  const bestsellers = data?.slice(0, 4);
-  console.log(bestsellers);
+  const { data, isLoading, isError } = useQuery(['bestsellers'], () =>
+    getBestsellers()
+  );
+  const bestsellers = data?.slice(0, 10);
   return (
     <StyledBestsellers>
       <h3>Bestsellers</h3>
-      <StyledWrapper>
-        {isLoading
-          ? Array(4)
-              .fill('')
-              .map(() => (
-                <Skeleton
-                  sx={{
-                    backgroundImage:
-                      'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                    borderRadius: '1rem ',
-                  }}
-                  animation='wave'
-                  variant='rounded'
-                  height={'200px'}
-                  width={'100%'}
-                />
-              ))
-          : bestsellers?.map(bestseller => (
+      {isLoading || isError ? (
+        <Skeleton
+          sx={{
+            backgroundImage:
+              'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+            borderRadius: '1rem ',
+          }}
+          animation='wave'
+          variant='rounded'
+          height={'200px'}
+          width={'100%'}
+        />
+      ) : (
+        <Splide
+          options={{
+            arrows: false,
+            pagination: false,
+            autoplay: true,
+            interval: 4000,
+            rewind: true,
+            gap: '1rem',
+            easing: 'ease',
+            fixedWidth: '100%',
+            mediaQuery: 'min',
+            breakpoints: {
+              900: {
+                fixedWidth: '45%',
+              },
+              1500: {
+                fixedWidth: '25%',
+              },
+            },
+            start: 0,
+          }}
+        >
+          {bestsellers?.map((bestseller, idx) => (
+            <SplideSlide key={bestseller.link}>
               <BestsellersItem
-                key={bestseller.link}
                 img={bestseller.img}
                 price={bestseller.price}
                 name={bestseller.name}
                 link={bestseller.link}
+                idx={idx}
               />
-            ))}
-      </StyledWrapper>
+            </SplideSlide>
+          ))}
+        </Splide>
+      )}
     </StyledBestsellers>
   );
 };
