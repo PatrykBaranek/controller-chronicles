@@ -5,6 +5,8 @@ import BestsellersItem from './BestsellersItem';
 import { Skeleton } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
+import { Bestseller } from '#/types/types';
+import { useState } from 'react';
 
 const StyledBestsellers = styled.div`
   padding-inline: 1rem;
@@ -25,10 +27,15 @@ const StyledBestsellers = styled.div`
 `;
 
 const Bestsellers = () => {
-  const { data, isLoading, isError } = useQuery(['bestsellers'], () =>
-    getBestsellers()
+  const [bestsellers, setBestsellers] = useState<Bestseller[]>();
+  const { data, isLoading, isError } = useQuery(
+    ['bestsellers'],
+    () => getBestsellers(),
+    {
+      onSuccess: data => setBestsellers(data.slice(0, 10)),
+    }
   );
-  const bestsellers = data?.slice(0, 10);
+
   return (
     <StyledBestsellers>
       <h3>Bestsellers</h3>

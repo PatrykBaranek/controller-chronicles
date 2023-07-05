@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from 'react-auth-kit';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,8 +28,8 @@ const router = createBrowserRouter([
         children: [{ path: ':id', element: <h1>game :id</h1> }],
       },
       { path: 'podcasts', element: <h1>podcasts</h1> },
-      { path: 'login', element: <h1>login</h1> },
-      { path: 'register', element: <h1>register</h1> },
+      { path: 'login', element: <Login /> },
+      { path: 'signup', element: <SignUp /> },
       {
         path: 'profile',
         element: <h1>profile</h1>,
