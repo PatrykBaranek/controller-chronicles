@@ -6,7 +6,7 @@ import {
   ThemeProvider,
   createTheme,
 } from '@mui/material';
-import { useQuery } from 'react-query';
+import { isError, useQuery } from 'react-query';
 import { getGames } from '#/api/gamesApi';
 import GameCard from '#/components/GameCard/GameCard';
 import useWindowWidth from '#/hooks/useWindowWidth';
@@ -112,13 +112,13 @@ const Games = () => {
   const isDesktop = isDesktopWidth(windowWidth);
   const { games: storedGames, storeGames, isSeachbarVisible } = useStore();
   const [page, setPage] = useState(1);
-  const { data: games, isLoading } = useQuery(
-    ['/games', page],
-    () => getGames(page),
-    {
-      keepPreviousData: true,
-    }
-  );
+  const {
+    data: games,
+    isLoading,
+    isError,
+  } = useQuery(['/games', page], () => getGames(page), {
+    keepPreviousData: true,
+  });
   useEffect(() => {
     if (!!games) {
       storeGames(games.results);
@@ -135,7 +135,7 @@ const Games = () => {
   return (
     <StyledContainer>
       <StyledWrapper>
-        {isLoading
+        {isLoading || isError
           ? Array(8)
               .fill('')
               .map(() => (
