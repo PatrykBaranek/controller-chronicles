@@ -1,4 +1,4 @@
-import { Logger, Module, forwardRef } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   SteamBestSellers,
@@ -8,12 +8,12 @@ import { SteamBestSellersService } from './steam-bestsellers/steam-bestsellers.s
 import { PuppeteerModule } from '../puppeteer/puppeteer.module';
 import { SteamReposiiory } from './steam.repository';
 import { SteamReviewsService } from './steam-reviews/steam-reviews.service';
-import { RawgGamesModule } from 'src/rawg/rawg-games/rawg-games.module';
 import {
   SteamReviews,
   SteamReviewsSchema,
 } from './models/steam-reviews.schema';
-import { Game, GameSchema } from 'src/rawg/rawg-games/models/game.schema';
+import { Game, GameSchema } from 'src/games/models/game.schema';
+import { GamesModule } from 'src/games/games.module';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { Game, GameSchema } from 'src/rawg/rawg-games/models/game.schema';
       { name: SteamReviews.name, schema: SteamReviewsSchema },
       { name: Game.name, schema: GameSchema },
     ]),
-    forwardRef(() => RawgGamesModule),
+    forwardRef(() => GamesModule),
     PuppeteerModule,
   ],
   providers: [SteamBestSellersService, SteamReposiiory, SteamReviewsService],

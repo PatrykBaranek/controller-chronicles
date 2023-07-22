@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ReviewsSitesEurogamerService } from './reviews-sites-eurogamer.service';
 import { PuppeteerModule } from 'src/puppeteer/puppeteer.module';
-import { RawgGamesModule } from 'src/rawg/rawg-games/rawg-games.module';
 import { FuzzyCompareService } from '../fuzzy-compare.service';
+import { GamesModule } from 'src/games/games.module';
 
 @Module({
-  imports: [PuppeteerModule, RawgGamesModule],
+  imports: [PuppeteerModule, GamesModule],
   providers: [ReviewsSitesEurogamerService, FuzzyCompareService],
   exports: [ReviewsSitesEurogamerService],
 })

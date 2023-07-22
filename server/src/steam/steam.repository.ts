@@ -9,7 +9,7 @@ import {
   SteamReviews,
   SteamReviewsDocument,
 } from './models/steam-reviews.schema';
-import { Game, GameDocument } from 'src/rawg/rawg-games/models/game.schema';
+import { Game, GameDocument } from 'src/games/models/game.schema';
 
 @Injectable()
 export class SteamReposiiory {

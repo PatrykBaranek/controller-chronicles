@@ -1,8 +1,8 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { RawgApiService } from '../rawg-api.service';
 import { AxiosResponse } from 'axios';
-import { GetGameQueryParamsDto } from 'src/rawg/rawg-games/dto/get-game-query-params.dto';
-import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
+import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { RawgGameResponse } from 'src/rawg/types/rawg-game-response';
 import { GetGameStoresResponse } from 'src/rawg/types/rawg-game-stores-response';
 import { GetStoresResponse } from 'src/rawg/types/rawg-stores-response';
@@ -16,27 +16,18 @@ export class RawgApiGamesService extends RawgApiService {
   }
 
   async getGames(options?: GetGameQueryParamsDto) {
-    const {
-      page,
-      page_size,
-      stores,
-      metacritic,
-      ordering,
-      search,
-      tags,
-      dates,
-    } = options;
+    const { page, page_size, stores, metacritic, ordering, search, tags, dates } = options;
 
     const paramsObject: Record<string, string> = {
       key: process.env.RAWG_API_KEY,
-      ...(page && { page: page.toString() }),
-      ...(page_size && { page_size: page_size.toString() }),
+      ...(page && { page: String(page) }),
+      ...(page_size && { page_size: String(page_size) }),
       ...(stores && { stores }),
-      ...(metacritic && { metacritic: metacritic.toString() }),
-      ...(ordering && { ordering: ordering.toString() }),
-      ...(tags && { tags: tags.toLocaleLowerCase() }),
+      ...(metacritic && { metacritic: metacritic }),
+      ...(ordering && { ordering: String(ordering) }),
+      ...(tags && { tags: tags.toLowerCase() }),
       ...(search && { search }),
-      ...(dates && { dates: dates.toString() }),
+      ...(dates && { dates: dates }),
     };
 
     const httpParams = new URLSearchParams(paramsObject);

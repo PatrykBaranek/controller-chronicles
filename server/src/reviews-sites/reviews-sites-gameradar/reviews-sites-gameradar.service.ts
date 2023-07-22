@@ -3,11 +3,11 @@ import { plainToInstance } from 'class-transformer';
 import { getMonth, getYear } from 'date-fns';
 import { Browser } from 'puppeteer';
 import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
-import { RawgGameResponseDto } from 'src/rawg/rawg-games/dto/rawg-game-response.dto';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { ReviewsSitesService } from '../reviews-sites.service';
 import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
 import { FuzzyCompareService } from '../fuzzy-compare.service';
+import { GamesService } from 'src/games/games.service';
 
 @Injectable()
 export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSitesGameReviewsDto> {
@@ -15,7 +15,7 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSite
 
   constructor(
     private readonly puppeteerService: PuppeteerService,
-    private readonly rawgGamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
     private readonly fuzzyCompareService: FuzzyCompareService,
   ) {
     super();
@@ -23,7 +23,7 @@ export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSite
 
   async getGameReviewById(gameId: number) {
     try {
-      const game = await this.rawgGamesService.getGameById(gameId);
+      const game = await this.gamesService.getGameById(gameId);
 
       return this.findReviewsForGames(
         plainToInstance(RawgGameResponseDto, [game.rawgGame]),

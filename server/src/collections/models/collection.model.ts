@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Game } from 'src/rawg/rawg-games/models/game.schema';
+import { Game } from 'src/games/models/game.schema';
 
 export type CollectionDocument = Collection & Document;
 

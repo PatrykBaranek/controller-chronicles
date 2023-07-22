@@ -6,14 +6,14 @@ import { ElementHandle, Page } from 'puppeteer';
 const SELECTORS = {
   searchResults: '#search-results-header ul',
   gameTitle: 'h3 a',
-  gameplayTime: '.GameCard_search_list_tidbit__ldrz4',
+  gameplayTime: '.GameCard_search_list_tidbit__0r_OP',
 };
 
 @Injectable()
 export class HowLongToBeatService {
   private HLTB_SEARCH_URL: string = 'https://howlongtobeat.com/?q=';
 
-  constructor(private readonly puppeteerService: PuppeteerService) {}
+  constructor(private readonly puppeteerService: PuppeteerService) { }
 
   async getGameByName(gameName: string): Promise<HowLongToBeatResponseDto> {
     return this.puppeteerService.withBrowser(async (browser) => {
@@ -62,14 +62,15 @@ export class HowLongToBeatService {
               return Number(gameplayTime.replace('½', '.5'));
             }
             if (!isNaN(Number(gameplayTime))) return Number(gameplayTime);
+            return null;
           }
         }),
       )
       .then((times) => times.filter((time) => time !== null));
 
-    const gameplayMain = Number(gameplayTimeElements[0]);
-    const gameplayMainExtra = Number(gameplayTimeElements[1]);
-    const gameplayCompletionist = Number(gameplayTimeElements[2]);
+    const gameplayMain = this.parseOrZero(gameplayTimeElements[0]);
+    const gameplayMainExtra = this.parseOrZero(gameplayTimeElements[1]);
+    const gameplayCompletionist = this.parseOrZero(gameplayTimeElements[2]);
 
     return {
       name: HltbGameTitle,
@@ -77,5 +78,9 @@ export class HowLongToBeatService {
       gameplayMainExtra,
       gameplayCompletionist,
     };
+  }
+
+  private parseOrZero(value: any): number {
+    return isNaN(value) ? 0 : Number(value);
   }
 }

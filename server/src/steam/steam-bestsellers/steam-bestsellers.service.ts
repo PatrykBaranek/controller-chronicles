@@ -4,6 +4,15 @@ import { SteamReposiiory } from '../steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SteamBestSellers } from '../models/steam-bestsellers.schema';
 
+const SELECTORS = {
+  bestSellersList: '#search_resultsRows',
+  game: '.search_result_row',
+  img: 'img',
+  title: '.title',
+  link: 'a',
+  price: '.discount_final_price',
+}
+
 @Injectable()
 export class SteamBestSellersService {
   private readonly logger = new Logger(SteamBestSellersService.name);
@@ -11,7 +20,7 @@ export class SteamBestSellersService {
   constructor(
     private readonly steamRepository: SteamReposiiory,
     private readonly puppeteerService: PuppeteerService,
-  ) {}
+  ) { }
 
   async getBestSellers() {
     if (await this.checkIfTodaysBestSellersExist()) {
@@ -33,34 +42,28 @@ export class SteamBestSellersService {
         'https://store.steampowered.com/search/?category1=998&os=win%2Cmac%2Clinux&specials=1&hidef2p=1&filter=topsellers&ndl=1&ignore_preferences=1',
       );
 
-      const bestsellersList = await page.waitForSelector('#search_resultsRows');
+      const bestsellersList = await page.waitForSelector(SELECTORS.bestSellersList);
 
       const listOfBestSellingGameHTMLElements = await bestsellersList.$$(
-        '.ds_collapse_flag',
+        SELECTORS.game,
       );
 
       const bestSellingGamesFromSteam = await Promise.all(
         listOfBestSellingGameHTMLElements.map(async (gameHTMLElement) => {
           const img = await gameHTMLElement
-            .$('img')
+            .$(SELECTORS.img)
             .then((el) => el.evaluate((el) => el.getAttribute('src')));
 
           const name = await gameHTMLElement
-            .$('.title')
+            .$(SELECTORS.title)
             .then((title) => title.evaluate((title) => title.textContent));
 
           const link = await gameHTMLElement.evaluate((element) =>
             element.getAttribute('href'),
           );
 
-          const price = await gameHTMLElement.$('.search_price').then((el) =>
-            el.evaluate((el) => {
-              const brElement = el.querySelector('br');
-              if (brElement && brElement.nextSibling) {
-                return brElement.nextSibling.textContent.trim();
-              }
-              return null;
-            }),
+          const price = await gameHTMLElement.$(SELECTORS.price).then((el) =>
+            el.evaluate((el) => el.textContent.trim()),
           );
 
           return {

@@ -11,7 +11,7 @@ import {
   TagsEntity,
   PlatformOrEsrbRating,
   RawgGameResponse,
-} from '../../types/rawg-game-response';
+} from '../../../types/rawg-game-response';
 
 export class RawgGameResponseDto implements RawgGameResponse {
   id: number;

@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Game, GameDocument } from './models/game.schema';
 import { Model } from 'mongoose';
-import { RawgGameResponseDto } from './dto/rawg-game-response.dto';
+import { RawgGameResponseDto } from '../rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 
 @Injectable()
-export class RawgGamesRepository {
+export class GamesRepository {
   constructor(@InjectModel(Game.name) private gameModel: Model<GameDocument>) {}
 
   async saveGames(games: RawgGameResponseDto[]) {

@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { FindEpisodeByGameQueryParamsDto } from '../dto/find-episode-by-game.dto';
 import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
-import { RawgGamesService } from 'src/rawg/rawg-games/rawg-games.service';
+import { GamesService } from 'src/games/games.service';
 
 @Injectable()
 export class SpotifyEpisodesService {
   constructor(
     private readonly spotifyAuthService: SpotifyAuthService,
-    private readonly rawgGamesService: RawgGamesService,
+    private readonly gamesService: GamesService,
   ) {}
 
   async getEpisodesByGameTitle(
     gameId: number,
     findEpisodeByGameQueryParamsDto: FindEpisodeByGameQueryParamsDto,
   ) {
-    const game = await this.rawgGamesService.getGameById(gameId);
+    const game = await this.gamesService.getGameById(gameId);
 
     const response = await this.spotifyAuthService.api.searchEpisodes(
       game.rawgGame.name,
