@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { YoutubeService } from 'src/youtube/youtube.service';
 import { GamesRepository } from './games.repository';
 import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
 import { HowLongToBeatService } from 'src/how-long-to-beat/how-long-to-beat.service';
@@ -13,9 +12,8 @@ export class GamesService {
   constructor(
     private readonly rawgApiGamesService: RawgApiGamesService,
     private readonly hltbService: HowLongToBeatService,
-    private readonly youtubeService: YoutubeService,
     private readonly gamesRepository: GamesRepository,
-  ) {}
+  ) { }
 
   async getGames(options?: GetGameQueryParamsDto) {
     try {
@@ -58,19 +56,11 @@ export class GamesService {
 
     const rawgGame = await this.rawgApiGamesService.getGameById(id);
     const hltbGame = await this.hltbService.getGameByName(rawgGame.name);
-    const youtubeReviews = await this.youtubeService.getGameVideoReviewByGameId(
-      id,
-    );
-    // const youtubeTrailers = await this.youtubeService.getGameTrailersByGameId(
-    //   id,
-    // );
 
     const gameData: Game = {
       _id: gameInDb._id,
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
-      //   game_trailers: youtubeTrailers.video_trailers,
-      video_reviews: youtubeReviews.video_reviews,
     };
 
     if (gameInDb) {

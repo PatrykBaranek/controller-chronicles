@@ -13,7 +13,7 @@ export class YoutubeService {
   constructor(
     private readonly gamesService: GamesService,
     private readonly youtubeRepository: YoutubeRepository,
-  ) {}
+  ) { }
 
   async getGameVideoReviewByGameId(
     id: number,
@@ -25,9 +25,8 @@ export class YoutubeService {
       throw new NotFoundException('Game not released yet');
     }
 
-    const searchQuery = `${game.rawgGame.name} ${
-      lang === 'pl' ? 'recenzja' : 'review'
-    }`;
+    const searchQuery = `${game.rawgGame.name} ${lang === 'pl' ? 'recenzja' : 'review'
+      }`;
 
     const game_reviews = await this.getOrFetchGameVideos(
       game._id,

@@ -9,6 +9,7 @@ import { CollectionsModule } from './collections/collections.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GamesModule } from './games/games.module';
+import { YoutubeModule } from './youtube/youtube.module';
 
 @Module({
   imports: [

@@ -1,11 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { GamesModule } from 'src/games/games.module';
 import { YoutubeService } from './youtube.service';
 import { Game, GameSchema } from 'src/games/models/game.schema';
 import { GameReviews, GameReviewsSchema } from './models/reviews.schema';
 import { GameTrailers, GameTrailersSchema } from './models/trailers.schema';
 import { YoutubeRepository } from './youtube.repository';
+import { GamesModule } from 'src/games/games.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { YoutubeRepository } from './youtube.repository';
       { name: GameReviews.name, schema: GameReviewsSchema },
       { name: Game.name, schema: GameSchema },
     ]),
-    forwardRef(() => GamesModule),
+    forwardRef(() => GamesModule)
   ],
   providers: [YoutubeService, YoutubeRepository],
   exports: [YoutubeService],

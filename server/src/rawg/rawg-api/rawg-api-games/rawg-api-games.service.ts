@@ -16,27 +16,18 @@ export class RawgApiGamesService extends RawgApiService {
   }
 
   async getGames(options?: GetGameQueryParamsDto) {
-    const {
-      page,
-      page_size,
-      stores,
-      metacritic,
-      ordering,
-      search,
-      tags,
-      dates,
-    } = options;
+    const { page, page_size, stores, metacritic, ordering, search, tags, dates } = options;
 
     const paramsObject: Record<string, string> = {
       key: process.env.RAWG_API_KEY,
-      ...(page && { page: page.toString() }),
-      ...(page_size && { page_size: page_size.toString() }),
+      ...(page && { page: String(page) }),
+      ...(page_size && { page_size: String(page_size) }),
       ...(stores && { stores }),
-      ...(metacritic && { metacritic: metacritic.toString() }),
-      ...(ordering && { ordering: ordering.toString() }),
-      ...(tags && { tags: tags.toLocaleLowerCase() }),
+      ...(metacritic && { metacritic: metacritic }),
+      ...(ordering && { ordering: String(ordering) }),
+      ...(tags && { tags: tags.toLowerCase() }),
       ...(search && { search }),
-      ...(dates && { dates: dates.toString() }),
+      ...(dates && { dates: dates }),
     };
 
     const httpParams = new URLSearchParams(paramsObject);

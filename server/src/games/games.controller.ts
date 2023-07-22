@@ -7,7 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
 import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
@@ -17,14 +17,15 @@ import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto
 import { YoutubeService } from 'src/youtube/youtube.service';
 import { GamesService } from './games.service';
 
+@ApiTags('Games')
 @Controller('games')
 export class GamesController {
   constructor(
     private readonly gamesService: GamesService,
-    private readonly youtubeService: YoutubeService,
     private readonly steamBestSellersService: SteamBestSellersService,
     private readonly steamReviewsService: SteamReviewsService,
-  ) {}
+    private readonly youtubeService: YoutubeService,
+  ) { }
 
   @ApiOperation({ summary: 'Get games' })
   @ApiResponse({
