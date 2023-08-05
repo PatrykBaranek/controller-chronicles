@@ -1,4 +1,6 @@
+import { AuthError, AuthResponse, SignUpResponse } from '#/types/types';
 import {
+  UserInputs,
   type BestsellerResponse,
   type GameDetailsResponse,
   type GamesResponse,
@@ -7,7 +9,7 @@ import getNextMonthFromNow from '#/utils/getNextMonthFromNow';
 import axios from 'axios';
 
 const gamesApi = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'localhost:3000',
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
@@ -51,4 +53,52 @@ export const getNewReleasedGames = async (
     `/games?page=1&page_size=5&dates=${current},${nextMonth}`
   );
   return response.data;
+};
+
+export const signUpUser = async ({
+  email,
+  password,
+}: UserInputs): Promise<SignUpResponse> => {
+  try {
+    const response = gamesApi.post(
+      '/auth/signup',
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const logInUser = async ({
+  email,
+  password,
+}: UserInputs): Promise<AuthResponse> => {
+  try {
+    const response = gamesApi.post(
+      '/auth/login',
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
 };
