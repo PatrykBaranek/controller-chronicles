@@ -5,10 +5,16 @@ import avatar from '#/assets/avatar.svg';
 import Searchbar from './Searchbar';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import isLocationSearchable from '../../utils/isLocationSearchable';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Filter from './Filter/Filter';
 import isDesktopWidth from '../../utils/isDesktopWidth';
 import Nav from '../Nav/Nav';
+import AuthButton from './AuthButton';
+import { useIsAuthenticated } from 'react-auth-kit';
+
+type Prop = {
+  isAuthLocation:boolean
+}
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -84,10 +90,16 @@ const StyledCtaSection = styled.div`
 const StyledLogo = styled.img`
   width: clamp(10.6rem, 10vw, 18.75rem);
 `;
-
+const StyledAuthWrapper = styled.div<Prop>`
+  display:${({isAuthLocation}) => isAuthLocation ? 'none':'flex'};
+  align-items: center;
+  gap:2rem;
+`
 const Header = () => {
   const windowWidth = useWindowWidth();
   const { pathname: location } = useLocation();
+  const isAuthenticated = useIsAuthenticated();
+  const isAuthLocation = location === '/login' || location === '/signup'
   return (
     <StyledHeader>
       {!isDesktopWidth(windowWidth) && <Nav />}
@@ -100,10 +112,17 @@ const Header = () => {
         {isDesktopWidth(windowWidth) && isLocationSearchable(location) && (
           <Searchbar />
         )}
-        <img
-          src={avatar}
-          alt='User avatar'
-        />
+        <StyledAuthWrapper isAuthLocation={isAuthLocation}>
+          {isAuthenticated() && 
+          <Link to={'/auth/profile'}>
+            <img
+              src={avatar}
+              alt='User avatar'
+              />
+          </Link>
+          }
+          <AuthButton isAuth={isAuthenticated()}/>
+        </StyledAuthWrapper>
       </StyledTopSection>
       {isLocationSearchable(location) && (
         <StyledCtaSection>
