@@ -9,6 +9,7 @@ const StyledNavMenu = styled.ul`
   height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   padding-top: 15vh;
   @media screen and (min-width: 900px) {
     padding-top: 2rem;

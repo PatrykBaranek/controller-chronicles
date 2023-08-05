@@ -6,6 +6,23 @@ export type Gamecard = {
 };
 
 export type Children = ReactNode;
+export type UserInputs = { email: string; password: string };
+export type SignUpResponse = {
+  'email': string;
+  'password': string;
+  '_id': string;
+  '__v': number;
+};
+export type AuthResponse = {
+  access_token:string,
+  message:string,
+  statusCode:number
+}
+export type AuthError = {
+  error: string;
+  message: string;
+  statusCode: number;
+};
 
 export type Bestseller = {
   img: string;

@@ -31,8 +31,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <SignUp /> },
       {
-        path: 'profile',
-        element: <h1>profile</h1>,
+        path: '/auth/profile',
+        element: <PrivateRoute component={<h1>profile</h1>}/>,
         children: [
           {
             path: 'collections',
@@ -49,10 +49,9 @@ const router = createBrowserRouter([
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider
-      authType={'localstorage'}
+      authType={'cookie'}
       authName={'_auth'}
       cookieDomain={window.location.hostname}
-      cookieSecure={window.location.protocol === 'https:'}
     >
       <RouterProvider router={router} />
     </AuthProvider>

@@ -138,8 +138,9 @@ const Games = () => {
         {isLoading || isError
           ? Array(8)
               .fill('')
-              .map(() => (
+              .map((_,idx) => (
                 <StyledSkeleton
+                key={idx}
                   sx={{
                     backgroundImage:
                       'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',

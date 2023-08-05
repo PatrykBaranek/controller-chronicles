@@ -1,15 +1,16 @@
 import Form from '#/components/Form/Form';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import eye from '#/assets/eye.svg';
 import crossedEye from '#/assets/crossedEye.svg';
-import { useState } from 'react';
-import { validateEmail, validatePassword } from '#/utils/formValidation';
-type Inputs = {
-  email: string;
-  password: string;
-};
+import { useEffect, useState } from 'react';
+import { validateEmail } from '#/utils/formValidation';
+import { AuthError, UserInputs } from '#/types/types';
+import { useMutation } from 'react-query';
+import { logInUser } from '#/api/gamesApi';
+import { Alert } from '@mui/material';
+import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 
 export const StyledAuth = styled.div`
   width: 100%;
@@ -149,24 +150,59 @@ export const StyledTextContainer = styled.div`
   }
 `;
 const Login = () => {
+  const logIn = useMutation({
+    mutationFn: (data: UserInputs) => logInUser(data),
+  });
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [error, setError] = useState<AuthError>();
+  const signIn = useSignIn();
+  const isAuthenticated = useIsAuthenticated();
+  const navigate = useNavigate();
+
+  useEffect(() =>{
+    isAuthenticated() && navigate('/')
+  },[])
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = data => {
-    console.log(data);
+  } = useForm<UserInputs>();
+
+  const onSubmit: SubmitHandler<UserInputs> = data => {
+    logIn.mutate(data, {
+      onSuccess: data => {
+        if(signIn({
+          token:data.access_token,
+          expiresIn: 1 * 24 * 60,
+          tokenType:'string',
+        })){
+          navigate('/')
+        }
+      },
+      onError: (error: any) => {
+        setError(error);
+      },
+    });
   };
   return (
     <StyledAuth>
       <StyledAuthWrapper>
+        {error && (
+          <Alert
+            variant='outlined'
+            severity='error'
+            sx={{ color: '#ebebf5bf', marginBottom: '1rem' }}
+          >
+            {error.message}
+          </Alert>
+        )}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <StyledEmailContainer>
             <StyledInput
               type='text'
               defaultValue=''
-              aria-invalid={errors.email ? true : false}
+              aria-invalid={errors.email || error ? true : false}
               placeholder='Email'
               {...register('email', {
                 validate: v => validateEmail(v),
@@ -178,7 +214,7 @@ const Login = () => {
             <StyledInput
               type={isPasswordShown ? 'text' : 'password'}
               defaultValue=''
-              aria-invalid={errors.password ? true : false}
+              aria-invalid={errors.password || error ? true : false}
               placeholder='Password'
               {...register('password', {
                 required: true,
