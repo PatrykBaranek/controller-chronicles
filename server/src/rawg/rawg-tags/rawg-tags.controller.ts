@@ -2,8 +2,8 @@ import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { RawgTagsService } from './rawg-tags.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('tags')
-@Controller('tags')
+@ApiTags('api/tags')
+@Controller('api/tags')
 export class RawgTagsController {
   constructor(private readonly tagsService: RawgTagsService) {}
 

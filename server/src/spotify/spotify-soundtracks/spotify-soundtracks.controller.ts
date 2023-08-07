@@ -10,8 +10,8 @@ import { SpotifySoundtracksService } from './spotify-soundtracks.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
 
-@ApiTags('spotify/soundtracks')
-@Controller('spotify/soundtracks')
+@ApiTags('api/spotify/soundtracks')
+@Controller('api/spotify/soundtracks')
 @UseGuards(SpotifyAuthGuard)
 export class SpotifySoundtracksController {
   constructor(

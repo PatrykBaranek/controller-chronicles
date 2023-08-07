@@ -17,8 +17,8 @@ import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto
 import { YoutubeService } from 'src/youtube/youtube.service';
 import { GamesService } from './games.service';
 
-@ApiTags('Games')
-@Controller('games')
+@ApiTags('api/games')
+@Controller('api/games')
 export class GamesController {
   constructor(
     private readonly gamesService: GamesService,

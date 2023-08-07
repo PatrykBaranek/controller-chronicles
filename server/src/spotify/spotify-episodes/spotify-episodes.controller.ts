@@ -18,9 +18,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('spotify/episodes')
+@ApiTags('api/spotify/episodes')
 @ApiBearerAuth()
-@Controller('spotify/episodes')
+@Controller('api/spotify/episodes')
 @UseGuards(SpotifyAuthGuard)
 export class SpotifyEpisodesController {
   constructor(

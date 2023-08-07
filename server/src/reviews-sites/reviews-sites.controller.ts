@@ -3,8 +3,8 @@ import { ReviewsSitesGameradarService } from './reviews-sites-gameradar/reviews-
 import { ReviewsSitesEurogamerService } from './reviews-sites-eurogamer/reviews-sites-eurogamer.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('reviews-sites')
-@Controller('reviews-sites')
+@ApiTags('api/reviews-sites')
+@Controller('api/reviews-sites')
 export class ReviewsSitesController {
   constructor(
     private readonly gameradarService: ReviewsSitesGameradarService,

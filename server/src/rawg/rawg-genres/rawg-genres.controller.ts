@@ -2,8 +2,8 @@ import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { RawgGenresService } from './rawg-genres.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('genres')
-@Controller('genres')
+@ApiTags('api/genres')
+@Controller('api/genres')
 export class RawgGenresController {
   constructor(private readonly genresService: RawgGenresService) {}
 
