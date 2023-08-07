@@ -2,8 +2,8 @@ import { Controller, Get, Redirect, Query } from '@nestjs/common';
 import { SpotifyAuthService } from './spotify-auth.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('spotify/auth')
-@Controller('spotify/auth')
+@ApiTags('api/spotify/auth')
+@Controller('api/spotify/auth')
 export class SpotifyAuthController {
   constructor(private readonly spotifyAuthService: SpotifyAuthService) {}
 

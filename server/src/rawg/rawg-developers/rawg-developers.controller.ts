@@ -3,8 +3,8 @@ import { RawgDevelopersService } from './rawg-developers.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RawgDeveloperResponseDto } from './dto/rawg-developer-response.dto';
 
-@ApiTags('developers')
-@Controller('developers')
+@ApiTags('api/developers')
+@Controller('api/developers')
 export class RawgDevelopersController {
   constructor(private readonly developersService: RawgDevelopersService) {}
 

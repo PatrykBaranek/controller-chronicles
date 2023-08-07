@@ -14,8 +14,8 @@ import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
 import { DeleteCollectionDto } from './dto/delete-collection.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('collections')
-@Controller('collections')
+@ApiTags('api/collections')
+@Controller('api/collections')
 export class CollectionsController {
   constructor(private collectionsService: CollectionsService) {}
 
