@@ -45,6 +45,7 @@ const StyledCount = styled.p`
 	bottom: 7%;
 	right: 5%;
 	font-size: clamp(0.7rem, 2vw, 0.9rem);
+	font-weight: ${({ theme }) => theme.fontWeights.bold};
 `;
 
 const BestsellersItem = ({
@@ -69,7 +70,7 @@ const BestsellersItem = ({
 					<span>
 						<p>{name}</p>
 					</span>
-					<StyledCount>{idx + 1} / 10</StyledCount>
+					<StyledCount>{idx + 1}</StyledCount>
 				</StyledOverlay>
 			</StyledBestsellersItem>
 		</Card>

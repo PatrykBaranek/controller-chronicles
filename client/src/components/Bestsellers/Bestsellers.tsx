@@ -27,8 +27,8 @@ const StyledBestsellers = styled.div`
 `;
 const StyledSplideSlide = styled(SplideSlide)`
 	@media screen and (min-width: 900px) {
-		padding: 1.1rem;
-		padding-right: 0;
+		padding-block: 1rem;
+		/* padding-left: 1rem; */
 	}
 `;
 const Bestsellers = () => {
@@ -66,20 +66,23 @@ const Bestsellers = () => {
 						rewind: true,
 						gap: '1rem',
 						easing: 'ease',
+						perPage: 1,
 						fixedWidth: '100%',
 						mediaQuery: 'min',
 						breakpoints: {
 							900: {
 								fixedWidth: '45%',
+								padding: '1rem',
 							},
 							1500: {
 								fixedWidth: '25%',
+								perPage: 4,
 							},
 						},
 						start: 0,
 					}}
 				>
-					{bestsellers?.map((bestseller, idx) => (
+					{data?.map((bestseller, idx) => (
 						<StyledSplideSlide key={bestseller.link}>
 							<BestsellersItem
 								img={bestseller.img}
