@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
+import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
 import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
 
@@ -131,6 +132,11 @@ export class Game {
     type: SteamReviews,
   })
   steamReviews?: SteamReviews;
+
+  @Prop({
+    type: SteamPlayersInGame,
+  })
+  steamPlayersInGame?: SteamPlayersInGame;
 
   @Prop([SearchResultDto])
   video_reviews?: SearchResultDto[];
