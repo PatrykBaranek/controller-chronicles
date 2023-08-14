@@ -1,21 +1,19 @@
-import {
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Query,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
-import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
-import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
-import { SteamBestSellersService } from 'src/steam/steam-bestsellers/steam-bestsellers.service';
-import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.service';
+
 import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
-import { YoutubeService } from 'src/youtube/youtube.service';
+import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
 import { GamesService } from './games.service';
+
+import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
+
+import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
+
+import { SteamBestSellersService } from 'src/steam/steam-bestsellers/steam-bestsellers.service';
+import { SteamPlayersInGameService } from 'src/steam/steam-in-game/steam-players-in-game.service';
+import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.service';
+
+import { YoutubeService } from 'src/youtube/youtube.service';
 
 @ApiTags('api/games')
 @Controller('api/games')
@@ -24,6 +22,7 @@ export class GamesController {
     private readonly gamesService: GamesService,
     private readonly steamBestSellersService: SteamBestSellersService,
     private readonly steamReviewsService: SteamReviewsService,
+    private readonly steamPlayersInGameService: SteamPlayersInGameService,
     private readonly youtubeService: YoutubeService,
   ) { }
 
@@ -89,5 +88,11 @@ export class GamesController {
   @Get(':id/steam/reviews')
   async getSteamReviewsByGameId(@Param('id', ParseIntPipe) id: number) {
     return this.steamReviewsService.getSteamReviewByGameId(id);
+  }
+
+  @ApiOperation({ summary: 'Get steam players count by game ID' })
+  @Get(':id/steam/players-count')
+  async getSteamPlayersCountByGameId(@Param('id', ParseIntPipe) id: number) {
+    return this.steamPlayersInGameService.getSteamPlayersCountByGameId(id);
   }
 }
