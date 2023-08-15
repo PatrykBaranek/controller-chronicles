@@ -39,6 +39,24 @@ export type GamesResponse = {
 	results: Games[];
 };
 
+export type TrailersResponse = {
+	game_id: number;
+	video_trailers: Trailer[];
+};
+
+export type Trailer = {
+	title: string;
+	thumbnail: string;
+	author: string;
+	link: string;
+};
+
+export type Review = {
+	title: string;
+	url: string;
+};
+export type ReviewResponse = Review[];
+
 export type Games = {
 	id: number;
 	slug: string;
