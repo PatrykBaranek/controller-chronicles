@@ -7,55 +7,57 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
+	defaultOptions: {
+		queries: {
+			refetchOnWindowFocus: false,
+		},
+	},
 });
 
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      { index: true, element: <Home /> },
-      {
-        path: 'games',
-        element: <Games />,
-        children: [{ path: ':id', element: <h1>game :id</h1> }],
-      },
-      { path: 'podcasts', element: <h1>podcasts</h1> },
-      { path: 'login', element: <Login /> },
-      { path: 'signup', element: <SignUp /> },
-      {
-        path: '/auth/profile',
-        element: <PrivateRoute component={<h1>profile</h1>}/>,
-        children: [
-          {
-            path: 'collections',
-            element: <h1>collections</h1>,
-            children: [{ path: ':id', element: <h1>collections :id</h1> }],
-          },
-          { path: 'details', element: <h1>profile details</h1> },
-        ],
-      },
-    ],
-  },
+	{
+		path: '/',
+		element: <Layout />,
+		children: [
+			{ index: true, element: <Home /> },
+			{
+				path: 'games',
+				element: <Games />,
+				children: [{ path: ':id', element: <h1>game :id</h1> }],
+			},
+			{ path: 'podcasts', element: <h1>podcasts</h1> },
+			{ path: 'login', element: <Login /> },
+			{ path: 'signup', element: <SignUp /> },
+			{
+				path: '/profile',
+				element: <Profile />,
+				children: [
+					{
+						path: 'collections',
+						element: <h1>collections</h1>,
+						children: [
+							{ path: ':id', element: <h1>collections :id</h1> },
+						],
+					},
+				],
+			},
+		],
+	},
 ]);
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider
-      authType={'cookie'}
-      authName={'_auth'}
-      cookieDomain={window.location.hostname}
-    >
-      <RouterProvider router={router} />
-    </AuthProvider>
-  </QueryClientProvider>
+	<QueryClientProvider client={queryClient}>
+		<AuthProvider
+			authType={'cookie'}
+			authName={'_auth'}
+			cookieDomain={window.location.hostname}
+		>
+			<RouterProvider router={router} />
+		</AuthProvider>
+	</QueryClientProvider>
 );
 
 export default App;
