@@ -40,6 +40,24 @@ export const StyledContainer = styled.div`
 			mask-composite: exclude;
 			pointer-events: none;
 		}
+		&::after {
+			position: absolute;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			content: '';
+			height: 100%;
+			width: 100%;
+			opacity: 1;
+			pointer-events: none;
+			opacity: 0.15;
+			background: linear-gradient(
+				180deg,
+				#48319d 0%,
+				#48319d7d 30%,
+				rgba(255, 255, 255, 0) 100%
+			);
+		}
 	}
 	@media screen and (min-width: 1200px) {
 		width: 50%;
