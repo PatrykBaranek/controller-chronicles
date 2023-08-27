@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 type Props = {
-	length: number;
+	length?: number;
 };
 
 const StyledCollectionCard = styled.div<Props>`
@@ -17,12 +17,33 @@ const StyledCollectionCard = styled.div<Props>`
 		position: relative;
 		left: 0px;
 		cursor: pointer;
+		overflow: hidden;
+		position: relative;
+		padding: 1px;
+		transition: all 0.2s ease-in-out;
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			border-radius: 1rem;
+			padding: 1.5px;
+			background: linear-gradient(
+				270deg,
+				#00ebff7a 100%,
+				rgba(255, 255, 255, 0) 70%
+			);
+			mask: linear-gradient(#fff 0 0) content-box,
+				linear-gradient(#fff 0 0);
+			mask-composite: xor;
+			mask-composite: exclude;
+			pointer-events: none;
+		}
 		&:not(:first-child) {
 			margin-left: -50px;
 		}
 		&:hover {
 			transform: ${({ length }) =>
-				length > 1 ? 'translateY(-8px)' : ''};
+				length && length > 1 ? 'translateY(-8px)' : ''};
 			transition: 0.4s ease-out;
 		}
 		&:hover ~ & {
@@ -32,13 +53,12 @@ const StyledCollectionCard = styled.div<Props>`
 		}
 		img {
 			border-radius: 1rem;
-			width: ${({ length }) => `${18 - 1.5 * length}vw`};
+			width: ${({ length }) => length && `${18 - 1.5 * length}vw`};
 		}
 	}
 `;
 
-const CollectionCard = ({ img, length }: { img: string; length: number }) => {
-	console.log(length);
+const CollectionCard = ({ img, length }: { img: string; length?: number }) => {
 	return (
 		<StyledCollectionCard length={length}>
 			<img src={img} alt='' />
