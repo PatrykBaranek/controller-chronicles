@@ -40,10 +40,7 @@ const CollectionsMobile = ({ games }: { games: any[] }) => {
 		>
 			{games.map((game, idx) => (
 				<StyledSplideSlide key={game._id}>
-					<CollectionCard
-						title={game.rawgGame.name}
-						img={game.rawgGame.background_image}
-					/>
+					<CollectionCard img={game.rawgGame.background_image} />
 				</StyledSplideSlide>
 			))}
 		</Splide>
