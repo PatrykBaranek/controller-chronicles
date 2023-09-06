@@ -9,11 +9,11 @@ import getNextMonthFromNow from '#/utils/getNextMonthFromNow';
 import axios from 'axios';
 
 const gamesApi = axios.create({
-  baseURL: 'localhost:3000'
+  baseURL: 'http://localhost:3000/api'
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
-  const response = await gamesApi.get('api/games/steam/bestsellers');
+  const response = await gamesApi.get('/games/steam/bestsellers');
   return response.data;
 };
 
@@ -22,7 +22,7 @@ export const getGames = async (
   pageSize = 8
 ): Promise<GamesResponse> => {
   const response = await gamesApi.get(
-    `api/games?page=${page}&page_size=${pageSize}`
+    `/games?page=${page}&page_size=${pageSize}`
   );
 
   return response.data;
@@ -38,7 +38,7 @@ export const getGamesBySearchQuery = async (
   query = ''
 ): Promise<GamesResponse> => {
   const response = await gamesApi.get(
-    `api/games?page=1&page_size=8&search=${query}`
+    `/games?page=1&page_size=8&search=${query}`
   );
 
   return response.data;
@@ -50,7 +50,7 @@ export const getNewReleasedGames = async (
   const current = currentDate.toISOString().slice(0, 10);
   const nextMonth = getNextMonthFromNow(currentDate);
   const response = await gamesApi.get(
-    `api/games?page=1&page_size=5&dates=${current},${nextMonth}`
+    `/games?page=1&page_size=5&dates=${current},${nextMonth}`
   );
   return response.data;
 };
@@ -61,7 +61,7 @@ export const signUpUser = async ({
 }: UserInputs): Promise<SignUpResponse> => {
   try {
     const response = gamesApi.post(
-      'api/auth/signup',
+      '/auth/signup',
       {
         email,
         password,
@@ -85,7 +85,7 @@ export const logInUser = async ({
 }: UserInputs): Promise<AuthResponse> => {
   try {
     const response = gamesApi.post(
-      'api/auth/login',
+      '/auth/login',
       {
         email,
         password,

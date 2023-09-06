@@ -32,7 +32,7 @@ const StyledSplideSlide = styled(SplideSlide)`
 `;
 const Bestsellers = () => {
 	const [bestsellers, setBestsellers] = useState<Bestseller[]>();
-	const { data, isLoading, isError } = useQuery(
+	const { isLoading, isError } = useQuery(
 		['bestsellers'],
 		() => getBestsellers(),
 		{
