@@ -22,7 +22,7 @@ export class SpotifyAuthService {
     this.spotifyApi = new SpotifyWebApi({
       clientId: process.env.SPOTIFY_CLIENT_ID,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-      redirectUri: 'http://localhost:3000/spotify/auth/callback',
+      redirectUri: 'http://localhost:3000/api/spotify/auth/callback',
     });
   }
 

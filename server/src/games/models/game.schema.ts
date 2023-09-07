@@ -1,8 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
+
+import { ReviewsSites } from 'src/reviews-sites/models/reviews-sites.schema';
+import { SteamPlayersCountInGameDto } from 'src/steam/dto/steam-players-in-game.dto';
+import { SteamReviewsDto } from 'src/steam/dto/steam-reviews.dto';
+
 import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
 import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
+
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
 
 class RawgGame {
@@ -16,7 +23,7 @@ class RawgGame {
   name_original: string;
 
   @Prop()
-  description: string;
+  description_raw: string;
 
   @Prop()
   metacritic: number;
@@ -115,7 +122,7 @@ class RawgGame {
   publishers?: any[] | null;
 }
 
-@Schema({ collection: 'games' })
+@Schema({ collection: 'games', timestamps: true })
 export class Game {
   @Prop()
   _id: number;
@@ -129,20 +136,23 @@ export class Game {
   howLongToBeat?: HowLongToBeat;
 
   @Prop({
-    type: SteamReviews,
+    type: SteamReviewsDto,
   })
-  steamReviews?: SteamReviews;
+  steam_reviews?: SteamReviewsDto;
 
   @Prop({
-    type: SteamPlayersInGame,
+    type: SteamPlayersCountInGameDto,
   })
-  steamPlayersInGame?: SteamPlayersInGame;
+  steam_players_in_game?: SteamPlayersCountInGameDto;
 
   @Prop([SearchResultDto])
   video_reviews?: SearchResultDto[];
 
   @Prop([SearchResultDto])
   game_trailers?: SearchResultDto[];
+
+  @Prop()
+  reviews_sites?: ReviewsSites[];
 }
 
 export type GameDocument = Game & Document;

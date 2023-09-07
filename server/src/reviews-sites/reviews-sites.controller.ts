@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ReviewsSitesGameradarService } from './reviews-sites-gameradar/reviews-sites-gameradar.service';
+import { ReviewsSitesGamesradarService } from './reviews-sites-gameradar/reviews-sites-gamesradar.service';
 import { ReviewsSitesEurogamerService } from './reviews-sites-eurogamer/reviews-sites-eurogamer.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -7,7 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('api/reviews-sites')
 export class ReviewsSitesController {
   constructor(
-    private readonly gameradarService: ReviewsSitesGameradarService,
+    private readonly gameradarService: ReviewsSitesGamesradarService,
     private readonly eurogamerService: ReviewsSitesEurogamerService,
   ) {}
 

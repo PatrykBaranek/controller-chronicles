@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ElementHandle, Page } from 'puppeteer';
 import { plainToInstance } from 'class-transformer';
 
-import { GamesService } from 'src/games/games.service';
+import { GamesService } from 'src/games/services/games.service';
 import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
 
 import { SteamUtilityService } from '../util/steam-utility.service';
@@ -37,13 +37,6 @@ export class SteamReviewsService {
     const steamUrl = await this.steamUtilityService.getSteamUrlByGameId(id);
 
     const scrapedData = await this.scrapeSteamReviews(steamUrl);
-
-    this.steamRepository.saveReviews({
-      game_id: id,
-      reviewsSummaryFrom30Days: scrapedData.reviewsSummaryFrom30Days,
-      reviewsSummaryOverall: scrapedData.reviewsSummaryOverall,
-      updatedAt: new Date(),
-    });
 
     return plainToInstance(SteamReviewsDto, scrapedData);
   }

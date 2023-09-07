@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ElementHandle, Page } from "puppeteer";
 
-import { GamesService } from "src/games/games.service";
+import { GamesService } from "src/games/services/games.service";
 import { PuppeteerService } from "src/puppeteer/puppeteer.service";
 
 import { SteamUtilityService } from "../util/steam-utility.service";
@@ -32,12 +32,6 @@ export class SteamPlayersInGameService {
     const steamUrl = await this.steamUtilityService.getSteamUrlByGameId(id);
 
     const scrapedData = await this.scrapeGamePlayersInGame(steamUrl);
-
-    this.steamRepository.savePlayersInGameCount({
-      game_id: id,
-      playersCount: scrapedData.playersCount,
-      updatedAt: new Date(),
-    });
 
     return {
       playersCount: scrapedData.playersCount,

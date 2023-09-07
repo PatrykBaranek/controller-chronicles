@@ -1,17 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { GamesRepository } from './games.repository';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { GamesRepository } from '../games.repository';
 import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
-import { HowLongToBeatService } from 'src/how-long-to-beat/how-long-to-beat.service';
-import { plainToInstance } from 'class-transformer';
-import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
-import { Game } from './models/game.schema';
-import { GetGameQueryParamsDto } from './dto/get-game-query-params.dto';
-
+import { Game } from '../models/game.schema';
+import { GetGameQueryParamsDto } from '../dto/get-game-query-params.dto';
+ 
 @Injectable()
 export class GamesService {
+  private readonly logger = new Logger(GamesService.name);
   constructor(
     private readonly rawgApiGamesService: RawgApiGamesService,
-    private readonly hltbService: HowLongToBeatService,
     private readonly gamesRepository: GamesRepository,
   ) { }
 
@@ -19,8 +16,7 @@ export class GamesService {
     try {
       const response = await this.rawgApiGamesService.getGames(options);
 
-      response.results = await Promise.all(
-        response.results.map(async (game) => {
+      const results = response.results.map(async (game) => {
           const existingGame = await this.gamesRepository.findGame(game.id);
 
           if (!existingGame) {
@@ -33,8 +29,9 @@ export class GamesService {
           }
 
           return game;
-        }),
-      );
+        });
+
+      response.results = await Promise.all(results);
 
       return response;
     } catch (err) {
@@ -45,24 +42,18 @@ export class GamesService {
   async getGameById(id: number) {
     const gameInDb = await this.gamesRepository.findGame(id);
 
-    if (gameInDb) {
+    if (gameInDb && gameInDb.rawgGame.description_raw) {
       return gameInDb;
     }
 
     const rawgGame = await this.rawgApiGamesService.getGameById(id);
-    const hltbGame = await this.hltbService.getGameByName(rawgGame.name);
 
     const gameData: Game = {
       _id: id,
-      rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
-      howLongToBeat: hltbGame,
+      rawgGame,
     };
 
-    if (gameInDb) {
-      await this.gamesRepository.updateGame(gameInDb._id, gameData);
-    } else {
-      await this.gamesRepository.saveGame(gameData);
-    }
+    await this.gamesRepository.updateGame(gameData._id, gameData);
 
     return gameData;
   }

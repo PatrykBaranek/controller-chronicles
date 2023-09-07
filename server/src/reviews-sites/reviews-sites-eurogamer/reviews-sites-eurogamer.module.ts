@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
+import { FuzzyCompareService } from '../util/fuzzy-compare.service';
+
 import { ReviewsSitesEurogamerService } from './reviews-sites-eurogamer.service';
+
 import { PuppeteerModule } from 'src/puppeteer/puppeteer.module';
-import { FuzzyCompareService } from '../fuzzy-compare.service';
+
 import { GamesModule } from 'src/games/games.module';
 
 @Module({

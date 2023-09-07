@@ -4,7 +4,7 @@ import { SearchResultDto } from '../dto/search-result.dto';
 
 export type GameTrailersDocument = GameTrailers & Document;
 
-@Schema({ collection: 'game_trailers' })
+@Schema({ collection: 'game_trailers', timestamps: true })
 export class GameTrailers {
   @Prop()
   game_id: number;

@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
-import { GamesService } from 'src/games/games.service';
+import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()
 export class SpotifySoundtracksService {

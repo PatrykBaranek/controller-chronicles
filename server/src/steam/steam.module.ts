@@ -35,6 +35,10 @@ import { SteamUtilityService } from './util/steam-utility.service';
     SteamRepository,
     SteamUtilityService
   ],
-  exports: [SteamBestSellersService, SteamReviewsService, SteamPlayersInGameService],
+  exports: [
+    SteamBestSellersService, 
+    SteamReviewsService, 
+    SteamPlayersInGameService,
+  ],
 })
 export class SteamModule {}

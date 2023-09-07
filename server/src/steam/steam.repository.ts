@@ -21,7 +21,6 @@ export class SteamRepository {
 
     const bestSellersToSave = new this.steamBestSellerModel({
       ...bestSellers,
-      updateDate: new Date(),
     });
     await bestSellersToSave.save();
   }
@@ -35,7 +34,7 @@ export class SteamRepository {
       throw new NotFoundException('Game not found');
     }
 
-    game.steamReviews = reviews;
+    game.steam_reviews = reviews;
     await game.save();
   }
 
@@ -48,7 +47,7 @@ export class SteamRepository {
       throw new NotFoundException('Game not found');
     }
 
-    game.steamPlayersInGame = playersCount;
+    game.steam_players_in_game = playersCount;
     await game.save();
   }
 

@@ -3,7 +3,7 @@ import { SearchResultDto } from '../dto/search-result.dto';
 
 export type GameReviewsDocument = GameReviews & Document;
 
-@Schema({ collection: 'game_video_reviews' })
+@Schema({ collection: 'game_video_reviews', timestamps: true })
 export class GameReviews {
   @Prop()
   game_id: number;

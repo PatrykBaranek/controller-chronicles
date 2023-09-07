@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { ElementHandle, Page } from "puppeteer";
 import { isBefore } from "date-fns";
 
-import { GamesService } from "src/games/games.service";
+import { GamesService } from "src/games/services/games.service";
 import { Game } from "src/games/models/game.schema";
 import { SteamRepository } from "../steam.repository";
 

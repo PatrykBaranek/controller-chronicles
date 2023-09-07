@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema({ collection: 'steam_bestsellers' })
+@Schema({ collection: 'steam_bestsellers', timestamps: true })
 export class SteamBestSellers {
   @Prop([
     {
@@ -16,9 +16,6 @@ export class SteamBestSellers {
     link: string;
     price: string;
   }>;
-
-  @Prop()
-  updateDate: Date;
 }
 
 export type SteamBestSellersDocument = SteamBestSellers & Document;

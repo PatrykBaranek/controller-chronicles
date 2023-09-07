@@ -26,7 +26,7 @@ async function bootstrap() {
       flows: {
         authorizationCode: {
           authorizationUrl: spotifyAuthService.getAuthorizeURL(),
-          tokenUrl: 'http://localhost:3000/spotify/auth/token',
+          tokenUrl: 'http://localhost:3000/api/spotify/auth/token',
           scopes: {
             ...scopes,
           },

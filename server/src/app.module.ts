@@ -15,7 +15,7 @@ import { YoutubeModule } from './youtube/youtube.module';
   imports: [
     CacheModule.register({
       isGlobal: true,
-      ttl: 60000,
+      ttl: 100,
     }),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',

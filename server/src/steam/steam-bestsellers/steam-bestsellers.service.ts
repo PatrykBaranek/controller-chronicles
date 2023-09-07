@@ -80,7 +80,6 @@ export class SteamBestSellersService {
 
       const bestSellers: SteamBestSellers = {
         games: bestSellingGamesFromSteam,
-        updateDate: new Date(),
       };
 
       await this.steamRepository.saveBestSellers({

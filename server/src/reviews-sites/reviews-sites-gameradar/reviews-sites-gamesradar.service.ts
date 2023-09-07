@@ -6,11 +6,11 @@ import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { ReviewsSitesService } from '../reviews-sites.service';
 import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
-import { FuzzyCompareService } from '../fuzzy-compare.service';
-import { GamesService } from 'src/games/games.service';
+import { FuzzyCompareService } from '../util/fuzzy-compare.service';
+import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()
-export class ReviewsSitesGameradarService extends ReviewsSitesService<ReviewSitesGameReviewsDto> {
+export class ReviewsSitesGamesradarService extends ReviewsSitesService<ReviewSitesGameReviewsDto> {
   siteUrl: string = 'https://www.gamesradar.com/reviews/archive/';
 
   constructor(
