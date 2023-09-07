@@ -6,6 +6,9 @@ export class ReviewsSummary {
 
   @Prop()
   textSummary: string;
+
+  @Prop()
+  positivePercentage: number;
 }
 
 const ReviewsSummarySchema = SchemaFactory.createForClass(ReviewsSummary);
