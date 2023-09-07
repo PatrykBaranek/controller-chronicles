@@ -17,6 +17,7 @@ const SELECTORS = {
   gameReviewsSummaryColumn: '.summary.column',
   gameReviewsSummary: '.game_review_summary',
   usersCount: '.responsive_hidden',
+  positivePercentage: '.nonresponsive_hidden.responsive_reviewdesc'
 }
 
 @Injectable()
@@ -79,12 +80,16 @@ export class SteamReviewsService {
     const usersCountElement = await reviewsSummaryElement.$(SELECTORS.usersCount);
     const usersCountRawText = await this.steamUtilityService.extractTextContent(page, usersCountElement);
     const usersCountText = usersCountRawText.trim().replace(/[\(\)]/g, '');
-
     const usersCount = Number(usersCountText.split(',').join(''));
+
+    const positivePercentageElement = await reviewsSummaryElement.$(SELECTORS.positivePercentage);
+    const positivePercentageRawText = await this.steamUtilityService.extractTextContent(page, positivePercentageElement);
+    const positivePercentage = Number(positivePercentageRawText.split('%')[0].replace('- ', ''))
 
     const reviewsSummary = {
       usersCount: usersCount,
       textSummary: gameReviewSummaryText,
+      positivePercentage: positivePercentage,
     }
 
     return reviewType === '30Days' 
