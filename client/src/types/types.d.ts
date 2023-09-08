@@ -31,7 +31,9 @@ export type Bestseller = {
 	price: string;
 };
 
-export type BestsellerResponse = Bestseller[];
+export type BestsellerResponse = {
+	games: Bestseller[];
+} 
 export type GamesResponse = {
 	currentPage: number;
 	totalItems: number;

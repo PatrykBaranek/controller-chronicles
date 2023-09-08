@@ -50,7 +50,7 @@ export class GamesService {
 
     const gameData: Game = {
       _id: id,
-      rawgGame,
+      rawgGame: rawgGame,
     };
 
     await this.gamesRepository.updateGame(gameData._id, gameData);

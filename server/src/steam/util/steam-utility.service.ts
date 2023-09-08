@@ -69,11 +69,7 @@ export class SteamUtilityService {
   public async checkIfTodaysBestSellersExist() {
     const bestSellers = await this.steamRepository.getBestSellers();
 
-    if (bestSellers.length === 0) {
-      return false;
-    }
-
-    return true;
+    return bestSellers.games.length !== 0;
   }
 
   public async extractTextContent(page: Page, element: ElementHandle<Element>): Promise<string> {
