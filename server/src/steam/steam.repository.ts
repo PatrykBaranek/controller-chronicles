@@ -1,18 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  SteamBestSellers,
-  SteamBestSellersDocument,
-} from './models/steam-bestsellers.schema';
 import { Model } from 'mongoose';
-import {
-  SteamReviews,
-  SteamReviewsDocument,
-} from './models/steam-reviews.schema';
+
+import { SteamBestSellers, SteamBestSellersDocument } from './models/steam-bestsellers.schema';
+import { SteamReviews, SteamReviewsDocument} from './models/steam-reviews.schema';
 import { Game, GameDocument } from 'src/games/models/game.schema';
+import { SteamPlayersInGame } from './models/steam-players-in-game.schema';
 
 @Injectable()
-export class SteamReposiiory {
+export class SteamRepository {
   constructor(
     @InjectModel(SteamBestSellers.name)
     private steamBestSellerModel: Model<SteamBestSellersDocument>,
@@ -40,6 +36,19 @@ export class SteamReposiiory {
     }
 
     game.steamReviews = reviews;
+    await game.save();
+  }
+
+  async savePlayersInGameCount(playersCount: SteamPlayersInGame) {
+    const game = await this.gameModel.findOne({
+      _id: playersCount.game_id,
+    })
+
+    if (!game) {
+      throw new NotFoundException('Game not found');
+    }
+
+    game.steamPlayersInGame = playersCount;
     await game.save();
   }
 

@@ -1,17 +1,18 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
 export class ReviewsSummary {
   @Prop()
   usersCount: number;
 
   @Prop()
   textSummary: string;
+
+  @Prop()
+  positivePercentage: number;
 }
 
 const ReviewsSummarySchema = SchemaFactory.createForClass(ReviewsSummary);
 
-@Schema({ collection: 'steam_reviews' })
 export class SteamReviews {
   @Prop()
   game_id: number;

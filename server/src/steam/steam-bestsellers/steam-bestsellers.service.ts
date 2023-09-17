@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PuppeteerService } from '../../puppeteer/puppeteer.service';
-import { SteamReposiiory } from '../steam.repository';
+import { SteamRepository } from '../steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SteamBestSellers } from '../models/steam-bestsellers.schema';
+import { SteamUtilityService } from '../util/steam-utility.service';
 
 const SELECTORS = {
   bestSellersList: '#search_resultsRows',
@@ -16,14 +17,16 @@ const SELECTORS = {
 @Injectable()
 export class SteamBestSellersService {
   private readonly logger = new Logger(SteamBestSellersService.name);
+  private readonly steamBestsellersUrl = 'https://store.steampowered.com/search/?category1=998&os=win%2Cmac%2Clinux&specials=1&hidef2p=1&filter=topsellers&ndl=1&ignore_preferences=1';
 
   constructor(
-    private readonly steamRepository: SteamReposiiory,
+    private readonly steamRepository: SteamRepository,
+    private readonly steamUtilityService: SteamUtilityService,
     private readonly puppeteerService: PuppeteerService,
   ) { }
 
   async getBestSellers() {
-    if (await this.checkIfTodaysBestSellersExist()) {
+    if (await this.steamUtilityService.checkIfTodaysBestSellersExist()) {
       this.logger.log('Getting bestsellers from DB');
       return this.steamRepository.getBestSellers();
     }
@@ -39,7 +42,7 @@ export class SteamBestSellersService {
     return this.puppeteerService.withBrowser(async (browser) => {
       const page = await this.puppeteerService.createPage(
         browser,
-        'https://store.steampowered.com/search/?category1=998&os=win%2Cmac%2Clinux&specials=1&hidef2p=1&filter=topsellers&ndl=1&ignore_preferences=1',
+        this.steamBestsellersUrl,
       );
 
       const bestsellersList = await page.waitForSelector(SELECTORS.bestSellersList);
@@ -86,15 +89,5 @@ export class SteamBestSellersService {
 
       return bestSellers;
     });
-  }
-
-  private async checkIfTodaysBestSellersExist() {
-    const bestSellers = await this.steamRepository.getBestSellers();
-
-    if (bestSellers.length === 0) {
-      return false;
-    }
-
-    return true;
   }
 }

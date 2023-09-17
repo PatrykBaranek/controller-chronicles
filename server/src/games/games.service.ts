@@ -45,12 +45,7 @@ export class GamesService {
   async getGameById(id: number) {
     const gameInDb = await this.gamesRepository.findGame(id);
 
-    if (
-      gameInDb.rawgGame &&
-      gameInDb.howLongToBeat &&
-      gameInDb.game_trailers.length > 0 &&
-      gameInDb.video_reviews.length > 0
-    ) {
+    if (gameInDb) {
       return gameInDb;
     }
 
@@ -58,7 +53,7 @@ export class GamesService {
     const hltbGame = await this.hltbService.getGameByName(rawgGame.name);
 
     const gameData: Game = {
-      _id: gameInDb._id,
+      _id: id,
       rawgGame: plainToInstance(RawgGameResponseDto, rawgGame),
       howLongToBeat: hltbGame,
     };
