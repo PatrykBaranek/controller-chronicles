@@ -48,8 +48,8 @@ const Reviews = () => {
 					options={{
 						arrows: false,
 						pagination: false,
-						autoplay: false,
-						// interval: 4000,
+						autoplay: true,
+						interval: 4000,
 						rewind: true,
 						gap: '1rem',
 						easing: 'ease',
