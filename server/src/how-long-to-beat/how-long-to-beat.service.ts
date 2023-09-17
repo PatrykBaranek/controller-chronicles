@@ -54,7 +54,6 @@ export class HowLongToBeatService {
         const HltbGameTitle = await this.getGameTitle(result);
 
         if (this.isMatchingGame(HltbGameTitle, gameName)) {
-
           return this.getGameDetails(result, HltbGameTitle);
         }
       }

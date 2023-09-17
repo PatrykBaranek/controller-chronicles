@@ -1,10 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetGameVideoReviewDto } from 'src/youtube/dto/get-game-video-review.dto';
 import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
 import { GamesService } from './services/games.service';
-import { GamesUpdateService } from './services/games-update.service';
+import { GamesUpdateService } from '../games-update/services/games-update.service';
 
 import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
 
@@ -16,12 +16,12 @@ import { SteamReviewsService } from 'src/steam/steam-reviews/steam-reviews.servi
 
 import { YoutubeService } from 'src/youtube/services/youtube.service';
 
+
 @ApiTags('api/games')
 @Controller('api/games')
 export class GamesController {
   constructor(
     private readonly gamesService: GamesService,
-    private readonly gamesUpdateService: GamesUpdateService,
     private readonly steamBestSellersService: SteamBestSellersService,
     private readonly steamReviewsService: SteamReviewsService,
     private readonly steamPlayersInGameService: SteamPlayersInGameService,
@@ -41,6 +41,13 @@ export class GamesController {
   @Get(':id')
   async getGameById(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.getGameById(id);
+  }
+
+  @ApiOperation({ summary: 'Update game reviews embargo date'})
+  @ApiResponse({ status: 201, description: 'Manualy set game review embargo date' })
+  @Post(':id/embarge-date')
+  async setEmbargeDate(@Param('id', ParseIntPipe) id: number, @Query('date') date: Date) {
+    return this.gamesService.setGameReviewEmbargoDate(id, date);
   }
 
   @ApiOperation({ summary: 'Get game trailers from YouTube by game ID' })

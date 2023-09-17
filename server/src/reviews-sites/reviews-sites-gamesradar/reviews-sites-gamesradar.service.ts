@@ -1,21 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { getMonth, getYear } from 'date-fns';
-import { plainToInstance } from 'class-transformer';
+import { Injectable }         from '@nestjs/common';
+import { plainToInstance }    from 'class-transformer';
+import { getMonth, getYear }  from 'date-fns';
+import { Browser }            from 'puppeteer';
 
-import { Browser } from 'puppeteer';
-import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService }    from 'src/puppeteer/puppeteer.service';
 
-import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
-import { FuzzyCompareService } from '../util/fuzzy-compare.service';
-
-import { ReviewsSitesUtil } from '../util/reviews-sites-util.service';
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
+
+import { ReviewsSitesUtil }          from '../util/reviews-sites-util.service';
+import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
+import { FuzzyCompareService }       from '../util/fuzzy-compare.service';
 
 import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()
-export class ReviewsSitesEurogamerService extends ReviewsSitesUtil<ReviewSitesGameReviewsDto> {
-  protected siteUrl: string = 'https://www.eurogamer.net/archive/';
+export class ReviewsSitesGamesradarService extends ReviewsSitesUtil<ReviewSitesGameReviewsDto> {
+  protected siteUrl: string = 'https://www.gamesradar.com/reviews/archive/';
 
   constructor(
     private readonly puppeteerService: PuppeteerService,
@@ -28,7 +28,7 @@ export class ReviewsSitesEurogamerService extends ReviewsSitesUtil<ReviewSitesGa
   async getGameReviewById(gameId: number): Promise<ReviewSitesGameReviewsDto[]> {
     const game = await this.gamesService.getGameById(gameId);
 
-    return await this.findReviewsForGames(plainToInstance(RawgGameResponseDto, [game.rawgGame]));
+    return this.findReviewsForGames(plainToInstance(RawgGameResponseDto, [game.rawgGame]));
   }
 
   protected async findReviewsForGames(games: RawgGameResponseDto[]): Promise<ReviewSitesGameReviewsDto[]> {
@@ -42,15 +42,15 @@ export class ReviewsSitesEurogamerService extends ReviewsSitesUtil<ReviewSitesGa
     const month = getMonth(new Date(game.released)) + 1;
     const year  = getYear(new Date(game.released));
 
-    const page = await this.puppeteerService.createPage(browser, this.siteUrl + `${year}/${month >= 10 ? month : '0' + month}/`);
+    const page = await this.puppeteerService.createPage(browser, this.siteUrl + `${year}/${month}/`);
 
-    const reviewsContainerElement = await page.waitForSelector('.archive_by_date_items');
+    const reviewsContainerElement = await page.waitForSelector('.archive');
     const reviews = await reviewsContainerElement.$$('a');
 
     const reviewsArray = await Promise.all(
       reviews.map(async (review) => {
-        return {
-          title: await review.evaluate((el) => el.textContent.replace(/\n/g, '').trim()),
+        return {     
+          title: await review.evaluate((el) => el.textContent.replace(/\n/g, '')),
           url:   await review.evaluate((el) => el.href),
         };
       }),

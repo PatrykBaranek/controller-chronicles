@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
-import { GameTrailers } from '../models/trailers.schema';
-import { GameReviews } from '../models/reviews.schema';
 import { SearchResultDto } from '../dto/search-result.dto';
 import { GamesService } from 'src/games/services/games.service';
 import { YoutubeRepository } from '../youtube.repository';
@@ -20,24 +18,18 @@ export class YoutubeService {
     private readonly youtubeRepository: YoutubeRepository,
   ) { }
 
-  async getGameVideoReviewByGameId(id: number, lang?: 'pl' | 'en'): Promise<GameReviews> {
+  async getGameVideoReviewByGameId(id: number, lang?: 'pl' | 'en'): Promise<SearchResultDto[]> {
     const game = await this.fetchGame(id);
     const query = this.constructQuery(game.rawgGame.name, VideoType.REVIEWS, lang);
     const videos = await this.getOrFetchGameVideos(id, query, VideoType.REVIEWS);
-    return {
-      game_id: id,
-      video_reviews: videos,
-    };
+    return videos;
   }
 
-  async getGameTrailersByGameId(id: number): Promise<GameTrailers> {
+  async getGameTrailersByGameId(id: number): Promise<SearchResultDto[]> {
     const game = await this.fetchGame(id);
     const query = this.constructQuery(game.rawgGame.name, VideoType.TRAILERS);
     const videos = await this.getOrFetchGameVideos(id, query, VideoType.TRAILERS);
-    return {
-      game_id: id,
-      video_trailers: videos,
-    };
+    return videos;
   }
 
   private constructQuery(gameName: string, videoType: VideoType, lang?: 'pl' | 'en'): string {

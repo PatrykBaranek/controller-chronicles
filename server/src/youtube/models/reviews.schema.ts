@@ -3,13 +3,12 @@ import { SearchResultDto } from '../dto/search-result.dto';
 
 export type GameReviewsDocument = GameReviews & Document;
 
-@Schema({ collection: 'game_video_reviews', timestamps: true })
+@Schema({ collection: 'game_video_reviews', autoCreate: false })
 export class GameReviews {
-  @Prop()
-  game_id: number;
 
   @Prop([SearchResultDto])
   video_reviews: SearchResultDto[];
+
 }
 
 export const GameReviewsSchema = SchemaFactory.createForClass(GameReviews);

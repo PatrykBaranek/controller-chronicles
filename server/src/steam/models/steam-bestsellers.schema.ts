@@ -7,14 +7,12 @@ export class SteamBestSellers {
       img: String,
       name: String,
       link: String,
-      price: String,
     },
   ])
   games: Array<{
     img: string;
     name: string;
     link: string;
-    price: string;
   }>;
 }
 

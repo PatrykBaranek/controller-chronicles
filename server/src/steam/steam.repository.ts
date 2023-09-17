@@ -38,19 +38,6 @@ export class SteamRepository {
     await game.save();
   }
 
-  async savePlayersInGameCount(playersCount: SteamPlayersInGame) {
-    const game = await this.gameModel.findOne({
-      _id: playersCount.game_id,
-    })
-
-    if (!game) {
-      throw new NotFoundException('Game not found');
-    }
-
-    game.steam_players_in_game = playersCount;
-    await game.save();
-  }
-
   async getBestSellers(): Promise<SteamBestSellers> {
     const start = new Date();
     start.setHours(0, 0, 0, 0);

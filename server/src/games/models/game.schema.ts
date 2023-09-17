@@ -11,6 +11,8 @@ import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schem
 import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
+import { GameReviews } from 'src/youtube/models/reviews.schema';
+import { GameTrailers } from 'src/youtube/models/trailers.schema';
 
 class RawgGame {
   @Prop()
@@ -74,18 +76,6 @@ class RawgGame {
   reddit_logo: string;
 
   @Prop()
-  reddit_count: number;
-
-  @Prop()
-  twitch_count: number;
-
-  @Prop()
-  youtube_count: number;
-
-  @Prop()
-  ratings_count: number;
-
-  @Prop()
   suggestions_count: number;
 
   @Prop({ type: Array })
@@ -141,17 +131,28 @@ export class Game {
   steam_reviews?: SteamReviewsDto;
 
   @Prop({
-    type: SteamPlayersCountInGameDto,
+    type: SteamPlayersInGame,
   })
-  steam_players_in_game?: SteamPlayersCountInGameDto;
+  steam_players_in_game?: SteamPlayersInGame;
 
-  @Prop([SearchResultDto])
+  @Prop({
+    type: GameReviews
+  })
   video_reviews?: SearchResultDto[];
 
-  @Prop([SearchResultDto])
+  @Prop({
+    type: GameTrailers
+  })
   game_trailers?: SearchResultDto[];
 
-  @Prop()
+  @Prop({
+    type: Date,
+  })
+  review_embargo_date?: Date;
+
+  @Prop({
+    type: Array<ReviewsSites>
+  })
   reviews_sites?: ReviewsSites[];
 }
 
