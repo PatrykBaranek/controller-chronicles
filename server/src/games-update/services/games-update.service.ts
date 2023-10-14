@@ -1,6 +1,4 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { Cron, CronExpression } from "@nestjs/schedule";
-import { isAfter } from "date-fns";
 
 import { GamesRepository } from "../../games/games.repository";
 import { Game } from "../../games/models/game.schema";
@@ -9,7 +7,7 @@ import { GamesUpdateRepository } from "../games-update.repository";
 import { SteamReviewsService } from "src/steam/steam-reviews/steam-reviews.service";
 import { SteamPlayersInGameService } from "src/steam/steam-in-game/steam-players-in-game.service";
 
-import { YoutubeService } from "src/youtube/services/youtube.service";
+import { VideoType, YoutubeService } from "src/youtube/services/youtube.service";
 
 import { HowLongToBeatService } from "src/how-long-to-beat/how-long-to-beat.service";
 import { HowLongToBeatResponseDto } from "src/how-long-to-beat/dto/how-long-to-beat-response.dto";
@@ -65,8 +63,8 @@ export class GamesUpdateService {
         throw new Error(`Youtube update is disabled for ${game._id} ${game.rawgGame.name}`);
       }
 
-      const game_trailers = await this.youtubeService.getGameTrailersByGameId(game._id);
-      const video_reviews = await this.youtubeService.getGameVideoReviewByGameId(game._id);
+      const game_trailers = await this.youtubeService.getGameVideosByGameId(game._id, VideoType.TRAILER);
+      const video_reviews = await this.youtubeService.getGameVideosByGameId(game._id, VideoType.REVIEW);
 
       this.logger.warn(`Found ${game_trailers.length} trailers and ${video_reviews.length} reviews for ${game._id} ${game.rawgGame.name}`);
 

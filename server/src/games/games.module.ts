@@ -12,15 +12,12 @@ import { RawgApiModule } from 'src/rawg/rawg-api/rawg-api.module';
 
 import { SteamModule } from 'src/steam/steam.module';
 
-import { YoutubeModule } from 'src/youtube/youtube.module';
-
 import { ReviewsSitesModule } from 'src/reviews-sites/reviews-sites.module';
 
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
-    forwardRef(() => YoutubeModule),
     forwardRef(() => SteamModule),
     ReviewsSitesModule,
     HowLongToBeatModule,

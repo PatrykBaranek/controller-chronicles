@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { subDays } from 'date-fns';
 import { Model } from 'mongoose';
@@ -9,6 +9,8 @@ import { RawgGameResponseDto } from '../rawg/rawg-api/rawg-api-games/dto/rawg-ga
 
 @Injectable()
 export class GamesRepository {
+  private readonly logger = new Logger(GamesRepository.name);
+
   constructor(@InjectModel(Game.name) private gameModel: Model<GameDocument>) {}
 
   async saveGames(games: RawgGameResponseDto[]) {
@@ -45,7 +47,7 @@ export class GamesRepository {
       
       await this.gameModel.bulkWrite(updateOperations);
     } catch(err) {
-      console.error('Error updating games:', err);
+      this.logger.error('Error updating games:', err);
     }
   }
 
@@ -106,5 +108,4 @@ export class GamesRepository {
       return game;
     });
   }
-   
 }
