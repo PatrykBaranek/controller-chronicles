@@ -1,4 +1,4 @@
-import { TextField, Autocomplete as AutocompleteComponent } from '@mui/material';
+import { Autocomplete as AutocompleteComponent, TextField } from '@mui/material';
 import styled from 'styled-components';
 
 type Option = {
@@ -11,7 +11,7 @@ type Props = {
 };
 const StyledAutocompleteWrapper = styled.div`
 	.MuiAutocomplete-popper > * {
-		background: linear-gradient(135deg, #0f54e860 0%, #9ddff360 100%);
+		background: linear-gradient(90deg, #223682 0%, #547c95 100%);
 		border-radius: 10px;
 		color: ${({ theme }) => theme.colors.secondary};
 		font-family: inherit;
