@@ -4,8 +4,8 @@ import { GamesRepository } from "../../games/games.repository";
 import { Game } from "../../games/models/game.schema";
 import { GamesUpdateRepository } from "../games-update.repository";
 
-import { SteamReviewsService } from "src/steam/steam-reviews/steam-reviews.service";
-import { SteamPlayersInGameService } from "src/steam/steam-in-game/steam-players-in-game.service";
+import { SteamReviewsService } from "src/steam/services/steam-reviews/steam-reviews.service";
+import { SteamPlayersInGameService } from "src/steam/services/steam-players-in-game/steam-players-in-game.service";
 
 import { VideoType, YoutubeService } from "src/youtube/services/youtube.service";
 

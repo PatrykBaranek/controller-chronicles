@@ -1,9 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PuppeteerService } from '../../puppeteer/puppeteer.service';
-import { SteamRepository } from '../steam.repository';
+import { PuppeteerService } from '../../../puppeteer/puppeteer.service';
+import { SteamRepository } from '../../steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { SteamBestSellers } from '../models/steam-bestsellers.schema';
-import { SteamUtilityService } from '../util/steam-utility.service';
+import { SteamBestSellers } from '../../models/steam-bestsellers.schema';
+import { SteamUtilityService } from '../../util/steam-utility.service';
 
 const SELECTORS = {
   bestSellersList: '#search_resultsRows',

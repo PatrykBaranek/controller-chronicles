@@ -10,15 +10,12 @@ import { HowLongToBeatModule } from 'src/how-long-to-beat/how-long-to-beat.modul
 
 import { RawgApiModule } from 'src/rawg/rawg-api/rawg-api.module';
 
-import { SteamModule } from 'src/steam/steam.module';
-
 import { ReviewsSitesModule } from 'src/reviews-sites/reviews-sites.module';
 
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
-    forwardRef(() => SteamModule),
     ReviewsSitesModule,
     HowLongToBeatModule,
     RawgApiModule,

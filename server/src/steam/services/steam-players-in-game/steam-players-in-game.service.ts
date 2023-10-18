@@ -4,9 +4,9 @@ import { ElementHandle, Page } from "puppeteer";
 import { GamesService } from "src/games/services/games.service";
 import { PuppeteerService } from "src/puppeteer/puppeteer.service";
 
-import { SteamUtilityService } from "../util/steam-utility.service";
-import { SteamPlayersCountInGameDto } from "../dto/steam-players-in-game.dto";
-import { SteamRepository } from "../steam.repository";
+import { SteamUtilityService } from "../../util/steam-utility.service";
+import { SteamPlayersCountInGameDto } from "../../dto/steam-players-in-game.dto";
+import { SteamRepository } from "../../steam.repository";
 
 const SELECTORS = {
   communityButton: '.apphub_HomeHeaderContent a.btnv6_blue_hoverfade.btn_medium',

@@ -5,17 +5,18 @@ import { GamesModule } from 'src/games/games.module';
 
 import { Game, GameSchema } from 'src/games/models/game.schema';
 
-import { SteamBestSellersService } from './steam-bestsellers/steam-bestsellers.service';
+import { SteamBestSellersService } from './services/steam-bestsellers/steam-bestsellers.service';
 import { SteamBestSellers, SteamBestSellersSchema } from './models/steam-bestsellers.schema';
 
-import { SteamReviewsService } from './steam-reviews/steam-reviews.service';
+import { SteamReviewsService } from './services/steam-reviews/steam-reviews.service';
 import { SteamReviews, SteamReviewsSchema } from './models/steam-reviews.schema';
 
-import { SteamPlayersInGameService } from './steam-in-game/steam-players-in-game.service';
+import { SteamPlayersInGameService } from './services/steam-players-in-game/steam-players-in-game.service';
 import { SteamPlayersInGameSchema } from './models/steam-players-in-game.schema';
 
 import { SteamRepository } from './steam.repository';
 import { SteamUtilityService } from './util/steam-utility.service';
+import { SteamController } from './steam.controller';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { SteamUtilityService } from './util/steam-utility.service';
       { name: SteamPlayersInGameService.name, schema: SteamPlayersInGameSchema },
       { name: Game.name, schema: GameSchema },
     ]),
-    forwardRef(() => GamesModule),
+    GamesModule,
     PuppeteerModule,
   ],
   providers: [
@@ -41,5 +42,6 @@ import { SteamUtilityService } from './util/steam-utility.service';
     SteamPlayersInGameService,
     SteamUtilityService,
   ],
+  controllers: [SteamController],
 })
 export class SteamModule {}

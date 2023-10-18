@@ -5,9 +5,9 @@ import { plainToInstance } from 'class-transformer';
 import { GamesService } from 'src/games/services/games.service';
 import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
 
-import { SteamUtilityService } from '../util/steam-utility.service';
-import { SteamRepository } from '../steam.repository';
-import { SteamReviewsDto } from '../dto/steam-reviews.dto';
+import { SteamUtilityService } from '../../util/steam-utility.service';
+import { SteamRepository } from '../../steam.repository';
+import { SteamReviewsDto } from '../../dto/steam-reviews.dto';
 
 type ReviewType = '30Days' | 'Overall';
 

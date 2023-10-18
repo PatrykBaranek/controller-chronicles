@@ -18,7 +18,7 @@ const gamesApi = axios.create({
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
-	const response = await gamesApi.get('/games/steam/bestsellers');
+	const response = await gamesApi.get('/steam/bestsellers');
 	return response.data;
 };
 
