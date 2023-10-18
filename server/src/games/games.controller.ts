@@ -13,7 +13,7 @@ import { SteamPlayersInGameService } from 'src/steam/steam-in-game/steam-players
 import { SteamReviewsService }       from 'src/steam/steam-reviews/steam-reviews.service';
 
 @ApiTags('api/games')
-@Controller('api/games')
+@Controller('games')
 export class GamesController {
   constructor(
     private readonly gamesService: GamesService,

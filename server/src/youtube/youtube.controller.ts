@@ -5,7 +5,7 @@ import { TrailerOrReviewRequestDto } from './dto/get-videos-by-date-range.dto';
 import { GetGameVideoReviewDto } from './dto/get-game-video-review.dto';
 
 @ApiTags('api/youtube')
-@Controller('api/youtube')
+@Controller('youtube')
 export class YoutubeController {
 
   constructor(private readonly youtubeService: YoutubeService) {}

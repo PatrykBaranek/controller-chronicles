@@ -13,6 +13,8 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
 
+  app.setGlobalPrefix('api');
+
   app.use(cookieParser());
 
   const spotifyAuthService = app.get(SpotifyAuthService);
