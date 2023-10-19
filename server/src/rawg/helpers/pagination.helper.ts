@@ -16,7 +16,7 @@ export function paginateResponse<T>(
     throw new NotFoundException('Page number cannot be greater than page size');
   }
 
-  const results = response.data.results.map((result) =>
+  const results = response.data.results.map((result: T) =>
     plainToInstance(returnType, result),
   );
 

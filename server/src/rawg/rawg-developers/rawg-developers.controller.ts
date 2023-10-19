@@ -4,7 +4,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RawgDeveloperResponseDto } from './dto/rawg-developer-response.dto';
 
 @ApiTags('api/developers')
-@Controller('api/developers')
+@Controller('developers')
 export class RawgDevelopersController {
   constructor(private readonly developersService: RawgDevelopersService) {}
 

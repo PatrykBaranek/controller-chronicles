@@ -19,7 +19,7 @@ import {
 
 @ApiTags('api/spotify/podcasts')
 @ApiBearerAuth()
-@Controller('api/spotify/podcasts')
+@Controller('spotify/podcasts')
 @UseGuards(SpotifyAuthGuard)
 export class SpotifyPodcastsController {
   constructor(

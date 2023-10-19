@@ -3,7 +3,7 @@ import { SpotifyAuthService } from './spotify-auth.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/spotify/auth')
-@Controller('api/spotify/auth')
+@Controller('spotify/auth')
 export class SpotifyAuthController {
   constructor(private readonly spotifyAuthService: SpotifyAuthService) {}
 
@@ -16,18 +16,18 @@ export class SpotifyAuthController {
     };
   }
 
-  @Get('/login')
+  @Get('login')
   @Redirect()
   async authorize() {
     const url = this.spotifyAuthService.getAuthorizeURL();
     return { url };
   }
 
-  @Get('/callback')
+  @Get('callback')
   @Redirect()
   async handleCallback(@Query('code') code: string) {
     await this.spotifyAuthService.handleAuthorizationCallback(code);
 
-    return { url: 'http://localhost:3000/spotify/podcasts' };
+    return { url: 'http://localhost:3000/api/spotify/podcasts' };
   }
 }

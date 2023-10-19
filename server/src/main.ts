@@ -13,6 +13,8 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
 
+  app.setGlobalPrefix('api');
+
   app.use(cookieParser());
 
   const spotifyAuthService = app.get(SpotifyAuthService);
@@ -26,7 +28,7 @@ async function bootstrap() {
       flows: {
         authorizationCode: {
           authorizationUrl: spotifyAuthService.getAuthorizeURL(),
-          tokenUrl: 'http://localhost:3000/spotify/auth/token',
+          tokenUrl: 'http://localhost:3000/api/spotify/auth/token',
           scopes: {
             ...scopes,
           },

@@ -14,11 +14,11 @@ import getPrevMonthFromNow from '#/utils/getPrevMonthFromNow';
 import axios from 'axios';
 
 const gamesApi = axios.create({
-	baseURL: import.meta.env.VITE_BASE_API_URL,
+	baseURL: "http://localhost:3000/api",
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
-	const response = await gamesApi.get('/games/steam/bestsellers');
+	const response = await gamesApi.get('/steam/bestsellers');
 	return response.data;
 };
 

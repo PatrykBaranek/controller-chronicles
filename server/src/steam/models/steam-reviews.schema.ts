@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export class ReviewsSummary {
   @Prop()
@@ -11,20 +11,16 @@ export class ReviewsSummary {
   positivePercentage: number;
 }
 
-const ReviewsSummarySchema = SchemaFactory.createForClass(ReviewsSummary);
-
+@Schema({ autoCreate: false, timestamps: true })
 export class SteamReviews {
   @Prop()
   game_id: number;
 
-  @Prop({ type: ReviewsSummarySchema })
+  @Prop({ type: ReviewsSummary })
   reviewsSummaryFrom30Days: ReviewsSummary;
 
-  @Prop({ type: ReviewsSummarySchema })
+  @Prop({ type: ReviewsSummary })
   reviewsSummaryOverall: ReviewsSummary;
-
-  @Prop()
-  updatedAt: Date;
 }
 
 export type SteamReviewsDocument = SteamReviews & Document;

@@ -3,7 +3,7 @@ import { RawgGenresService } from './rawg-genres.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/genres')
-@Controller('api/genres')
+@Controller('genres')
 export class RawgGenresController {
   constructor(private readonly genresService: RawgGenresService) {}
 

@@ -36,13 +36,13 @@ const Bestsellers = () => {
 		['bestsellers'],
 		() => getBestsellers(),
 		{
-			onSuccess: (data) => setBestsellers(data.slice(0, 35)),
+			onSuccess: (data) => setBestsellers(data.games.slice(0, 50)),
 		}
 	);
 
 	return (
 		<StyledBestsellers>
-			<h3>Bestsellers</h3>
+			<h3>Steam Bestsellers</h3>
 			{isLoading || isError ? (
 				<Skeleton
 					sx={{

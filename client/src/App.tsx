@@ -3,7 +3,6 @@ import Layout from './Layout';
 import Games from './pages/Games';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from 'react-auth-kit';
-import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';

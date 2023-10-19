@@ -1,14 +1,9 @@
-import { Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
+@Schema({ autoCreate: false, timestamps: true })
 export class SteamPlayersInGame {
     @Prop()
-    game_id: number;
-
-    @Prop()
     playersCount: number;
-
-    @Prop()
-    updatedAt: Date;
 }
 
 export type SteamPlayersInGameDocument = SteamPlayersInGame & Document;

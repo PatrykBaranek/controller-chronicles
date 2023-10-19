@@ -1,19 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
-import { Browser } from 'puppeteer';
+import { Injectable, Scope } from '@nestjs/common';
+import { ReviewsSitesEurogamerService } from './reviews-sites-eurogamer/reviews-sites-eurogamer.service';
+import { ReviewsSitesGamesradarService } from './reviews-sites-gamesradar/reviews-sites-gamesradar.service';
 
 @Injectable()
-export abstract class ReviewsSitesService<T> {
-  protected abstract siteUrl: string;
+export class ReviewsSitesService {
 
-  abstract getGameReviewById(gameId: number): Promise<T[]>;
+  constructor(
+    private readonly reviewsSitesEurogamerService: ReviewsSitesEurogamerService,
+    private readonly reviewsSitesGameradarService: ReviewsSitesGamesradarService,
+  ) { }
 
-  protected abstract findReviewsForGames(
-    games: RawgGameResponseDto[],
-  ): Promise<T[]>;
+  async getReviews(gameId: number) {
+    const eurogamerReviews  = await this.getEurogamerReviews(gameId);
+    const gamesradarReviews = await this.getGamesradarReviews(gameId);
 
-  protected abstract findReviewForGame(
-    game: RawgGameResponseDto,
-    browser: Browser,
-  ): Promise<T[]>;
+    const result = [...eurogamerReviews, ...gamesradarReviews];
+
+    return result;
+  }
+
+  async getEurogamerReviews(gameId: number) {
+    return this.reviewsSitesEurogamerService.getGameReviewById(gameId);
+  }
+
+  async getGamesradarReviews(gameId: number) {
+    return this.reviewsSitesGameradarService.getGameReviewById(gameId);
+  }
 }

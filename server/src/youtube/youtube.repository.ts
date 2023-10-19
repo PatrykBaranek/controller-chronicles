@@ -10,17 +10,16 @@ export class YoutubeRepository {
   constructor(
     @InjectModel(GameTrailers.name)
     private gameTrailersModel: Model<GameTrailersDocument>,
+
     @InjectModel(GameReviews.name)
     private gameReviewsModel: Model<GameReviewsDocument>,
   ) {}
 
-  async saveGameVideoReviews(
-    gameId: number,
-    videoReviews: SearchResultDto[],
-  ): Promise<GameReviews> {
+  async saveGameVideoReviews(gameId: number, videoReviews: SearchResultDto[]): Promise<GameReviews> {
     const existingReviews = await this.gameReviewsModel.findOne({
       game_id: gameId,
     });
+
     if (existingReviews) {
       return this.gameReviewsModel.findOneAndUpdate(
         { game_id: gameId },
@@ -36,10 +35,7 @@ export class YoutubeRepository {
     return gameVideoReviewsToSave.save();
   }
 
-  async saveGameTrailers(
-    gameId: number,
-    trailers: SearchResultDto[],
-  ): Promise<GameTrailers> {
+  async saveGameTrailers(gameId: number, trailers: SearchResultDto[]): Promise<GameTrailers> {
     const gameTrailersToSave = new this.gameTrailersModel({
       game_id: gameId,
       video_trailers: trailers,
@@ -48,19 +44,20 @@ export class YoutubeRepository {
     return gameTrailersToSave.save();
   }
 
-  async getGameVideos(
-    gameId: number,
-    videoType: 'reviews' | 'trailers',
-  ): Promise<GameTrailers['video_trailers'] | GameReviews['video_reviews']> {
+  async getGameVideos(gameId: number, videoType: 'reviews' | 'trailers'): Promise<GameTrailers['video_trailers'] | GameReviews['video_reviews']> {
     if (videoType === 'reviews') {
       const gameVideoReviews = await this.gameReviewsModel.findOne({
         game_id: gameId,
       });
+
       return gameVideoReviews ? gameVideoReviews.video_reviews : [];
+
     } else {
+
       const gameTrailers = await this.gameTrailersModel.findOne({
         game_id: gameId,
       });
+
       return gameTrailers ? gameTrailers.video_trailers : [];
     }
   }
