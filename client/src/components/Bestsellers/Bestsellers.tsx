@@ -36,7 +36,7 @@ const Bestsellers = () => {
 		['bestsellers'],
 		() => getBestsellers(),
 		{
-			onSuccess: (data) => setBestsellers(data.games.slice(0, 50)),
+			onSuccess: (data) => setBestsellers(data.games.slice(0, 35)),
 		}
 	);
 
