@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CollectionsRepository } from './collections.repository';
-import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
-import { DeleteCollectionDto } from './dto/delete-collection.dto';
-import { AddGameToCollectionDto } from './dto/add-game-to-collection.dto';
+import { CollectionsRepository } from '../database/collections.repository';
+import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
+import { DeleteCollectionDto } from '../dto/delete-collection.dto';
+import { AddGameToCollectionDto } from '../dto/add-game-to-collection.dto';
 import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()

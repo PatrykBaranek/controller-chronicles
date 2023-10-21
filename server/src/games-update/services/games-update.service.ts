@@ -1,15 +1,15 @@
 import { Injectable, Logger } from "@nestjs/common";
 
-import { GamesRepository } from "../../games/games.repository";
+import { GamesRepository } from "../../games/database/games.repository";
 import { Game } from "../../games/models/game.schema";
-import { GamesUpdateRepository } from "../games-update.repository";
+import { GamesUpdateRepository } from "../database/games-update.repository";
 
 import { SteamReviewsService } from "src/steam/services/steam-reviews/steam-reviews.service";
 import { SteamPlayersInGameService } from "src/steam/services/steam-players-in-game/steam-players-in-game.service";
 
 import { VideoType, YoutubeService } from "src/youtube/services/youtube.service";
 
-import { HowLongToBeatService } from "src/how-long-to-beat/how-long-to-beat.service";
+import { HowLongToBeatService } from "src/how-long-to-beat/services/how-long-to-beat.service";
 import { HowLongToBeatResponseDto } from "src/how-long-to-beat/dto/how-long-to-beat-response.dto";
 
 import { RawgApiGamesService } from "src/rawg/rawg-api/rawg-api-games/rawg-api-games.service";

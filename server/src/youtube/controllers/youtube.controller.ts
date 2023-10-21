@@ -1,8 +1,8 @@
 import { Controller, Get, Param, ParseIntPipe, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { YoutubeService } from './services/youtube.service';
-import { TrailerOrReviewRequestDto } from './dto/get-videos-by-date-range.dto';
-import { GetGameVideoReviewDto } from './dto/get-game-video-review.dto';
+import { YoutubeService } from '../services/youtube.service';
+import { TrailerOrReviewRequestDto } from '../dto/get-videos-by-date-range.dto';
+import { GetGameVideoReviewDto } from '../dto/get-game-video-review.dto';
 
 @ApiTags('api/youtube')
 @Controller('youtube')

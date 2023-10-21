@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
-import { GetAllGamingPodcastsDto } from '../dto/get-all-gaming-podcasts.dto';
+import { SpotifyAuthService } from '../../spotify-auth/services/spotify-auth.service';
+import { GetAllGamingPodcastsDto } from '../../dto/get-all-gaming-podcasts.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()

@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
 import { SearchResultDto } from '../dto/search-result.dto';
 import { GamesService } from 'src/games/services/games.service';
-import { YoutubeRepository } from '../youtube.repository';
+import { YoutubeRepository } from '../database/youtube.repository';
 import { format } from 'date-fns';
 
 export enum VideoType {

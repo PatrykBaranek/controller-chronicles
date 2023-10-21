@@ -8,9 +8,9 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { FindEpisodeByGameQueryParamsDto } from '../dto/find-episode-by-game.dto';
-import { SpotifyEpisodesService } from './spotify-episodes.service';
-import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
+import { FindEpisodeByGameQueryParamsDto } from '../../dto/find-episode-by-game.dto';
+import { SpotifyEpisodesService } from '../services/spotify-episodes.service';
+import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,

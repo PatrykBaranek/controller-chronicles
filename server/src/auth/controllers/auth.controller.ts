@@ -8,11 +8,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateUserDto } from './users/dto/create-user.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthService } from '../services/auth.service';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { Request, Response } from 'express';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import {
   ApiBody,
   ApiOperation,

@@ -3,7 +3,7 @@ import { plainToInstance }    from 'class-transformer';
 import { getMonth, getYear }  from 'date-fns';
 import { Browser }            from 'puppeteer';
 
-import { PuppeteerService }    from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService }    from 'src/puppeteer/services/puppeteer.service';
 
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 

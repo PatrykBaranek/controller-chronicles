@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule }     from '@nestjs/mongoose';
 
-import { GamesController }  from './games.controller';
+import { GamesController }  from './controllers/games.controller';
 import { GamesService }     from './services/games.service';
-import { GamesRepository }  from './games.repository';
+import { GamesRepository }  from './database/games.repository';
 import { Game, GameSchema } from './models/game.schema';
 
 import { HowLongToBeatModule } from 'src/how-long-to-beat/how-long-to-beat.module';

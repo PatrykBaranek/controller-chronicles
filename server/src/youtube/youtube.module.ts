@@ -6,9 +6,9 @@ import { GameReviews, GameReviewsSchema } from './models/reviews.schema';
 import { GameTrailers, GameTrailersSchema } from './models/trailers.schema';
 import { GamesModule } from 'src/games/games.module';
 
-import { YoutubeController } from './youtube.controller';
+import { YoutubeController } from './controllers/youtube.controller';
 import { YoutubeService }    from './services/youtube.service';
-import { YoutubeRepository } from './youtube.repository';
+import { YoutubeRepository } from './database/youtube.repository';
 
 @Module({
   imports: [

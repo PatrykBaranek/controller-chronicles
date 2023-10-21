@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
+import { SpotifyAuthService } from '../../spotify-auth/services/spotify-auth.service';
 import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { HowLongToBeatService } from './how-long-to-beat.service';
+import { HowLongToBeatService } from './services/how-long-to-beat.service';
 import { PuppeteerModule } from 'src/puppeteer/puppeteer.module';
-import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
 @Module({
   providers: [HowLongToBeatService, PuppeteerService],
