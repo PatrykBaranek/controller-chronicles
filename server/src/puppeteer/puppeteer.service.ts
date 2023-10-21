@@ -21,7 +21,7 @@ export class PuppeteerService {
   }
 
   private async launchBrowser(): Promise<puppeteer.Browser> {
-    return puppeteer.launch({ headless: false });
+    return puppeteer.launch({ headless: 'new' });
   }
 
   private async closeBrowser(browser: puppeteer.Browser): Promise<void> {
