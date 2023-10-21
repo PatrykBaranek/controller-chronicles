@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { FindEpisodeByGameQueryParamsDto } from '../dto/find-episode-by-game.dto';
-import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
+import { FindEpisodeByGameQueryParamsDto } from '../../dto/find-episode-by-game.dto';
+import { SpotifyAuthService } from '../../spotify-auth/services/spotify-auth.service';
 import { GamesService } from 'src/games/services/games.service';
 
 @Injectable()

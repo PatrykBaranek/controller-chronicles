@@ -1,5 +1,5 @@
 import { Controller, Get, Redirect, Query } from '@nestjs/common';
-import { SpotifyAuthService } from './spotify-auth.service';
+import { SpotifyAuthService } from '../services/spotify-auth.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/spotify/auth')

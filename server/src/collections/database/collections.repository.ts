@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Collection, Model } from 'mongoose';
-import { CollectionDocument } from './models/collection.model';
+import { CollectionDocument } from '../models/collection.model';
 import { Game } from 'src/games/models/game.schema';
-import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
-import { DeleteCollectionDto } from './dto/delete-collection.dto';
+import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
+import { DeleteCollectionDto } from '../dto/delete-collection.dto';
 
 const MAX_COLLECTIONS = 5;
 const DEFAULT_COLLECTIONS = ['My Collection', 'Followed Games'];

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import SpotifyWebApi from 'spotify-web-api-node';
-import scopes from '../scopes';
+import scopes from '../../constants/scopes';
 
 @Injectable()
 export class SpotifyAuthService {

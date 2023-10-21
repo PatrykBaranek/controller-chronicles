@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ElementHandle, Page } from 'puppeteer';
 import { HowLongToBeatService as HLTBService, HowLongToBeatEntry } from 'howlongtobeat';
 
-import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
-import { HowLongToBeatResponseDto } from './dto/how-long-to-beat-response.dto';
+import { HowLongToBeatResponseDto } from '../dto/how-long-to-beat-response.dto';
 
 const SELECTORS = {
   searchResults: '#search-results-header ul',

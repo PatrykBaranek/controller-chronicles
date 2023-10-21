@@ -7,11 +7,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { CollectionsService } from './collections.service';
+import { CollectionsService } from '../services/collections.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AddGameToCollectionDto } from './dto/add-game-to-collection.dto';
-import { CreateNewCollectionDto } from './dto/create-new-collection.dto';
-import { DeleteCollectionDto } from './dto/delete-collection.dto';
+import { AddGameToCollectionDto } from '../dto/add-game-to-collection.dto';
+import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
+import { DeleteCollectionDto } from '../dto/delete-collection.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/collections')

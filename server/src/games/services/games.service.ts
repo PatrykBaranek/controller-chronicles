@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { GamesRepository } from '../games.repository';
+import { GamesRepository } from '../database/games.repository';
 import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
 import { Game } from '../models/game.schema';
 import { GetGameQueryParamsDto } from '../dto/get-game-query-params.dto';

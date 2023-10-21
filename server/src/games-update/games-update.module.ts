@@ -7,7 +7,7 @@ import { YoutubeModule } from 'src/youtube/youtube.module';
 import { SteamModule } from 'src/steam/steam.module';
 import { HowLongToBeatModule } from 'src/how-long-to-beat/how-long-to-beat.module';
 import { GamesUpdateService } from './services/games-update.service';
-import { GamesUpdateRepository } from './games-update.repository';
+import { GamesUpdateRepository } from './database/games-update.repository';
 import { ReviewsSitesModule } from 'src/reviews-sites/reviews-sites.module';
 import { RawgApiModule } from 'src/rawg/rawg-api/rawg-api.module';
 

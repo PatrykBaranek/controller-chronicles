@@ -2,7 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Post, Query, UsePipes, Validation
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
-import { GamesService } from './services/games.service';
+import { GamesService } from '../services/games.service';
 
 import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
 

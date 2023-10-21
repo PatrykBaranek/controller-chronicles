@@ -3,7 +3,7 @@ import { ElementHandle, Page } from 'puppeteer';
 import { plainToInstance } from 'class-transformer';
 
 import { GamesService } from 'src/games/services/games.service';
-import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
 import { SteamUtilityService } from '../../util/steam-utility.service';
 import { SteamRepository } from '../../steam.repository';

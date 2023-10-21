@@ -1,8 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GameTrailers, GameTrailersDocument } from './models/trailers.schema';
-import { GameReviews, GameReviewsDocument } from './models/reviews.schema';
-import { SearchResultDto } from './dto/search-result.dto';
+import { GameTrailers, GameTrailersDocument } from '../models/trailers.schema';
+import { GameReviews, GameReviewsDocument } from '../models/reviews.schema';
+import { SearchResultDto } from '../dto/search-result.dto';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

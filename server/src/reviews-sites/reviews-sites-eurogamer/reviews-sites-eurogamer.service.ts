@@ -3,7 +3,7 @@ import { getMonth, getYear } from 'date-fns';
 import { plainToInstance } from 'class-transformer';
 
 import { Browser } from 'puppeteer';
-import { PuppeteerService } from 'src/puppeteer/puppeteer.service';
+import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
 import { ReviewSitesGameReviewsDto } from '../dto/review-sites.dto';
 import { FuzzyCompareService } from '../util/fuzzy-compare.service';

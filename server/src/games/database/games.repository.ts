@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { subDays } from 'date-fns';
 import { Model } from 'mongoose';
 
-import { Game, GameDocument } from './models/game.schema';
+import { Game, GameDocument } from '../models/game.schema';
 
-import { RawgGameResponseDto } from '../rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
+import { RawgGameResponseDto } from '../../rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 
 @Injectable()
 export class GamesRepository {

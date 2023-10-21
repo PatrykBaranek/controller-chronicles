@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { SpotifyAuthService } from '../spotify-auth/spotify-auth.service';
+import { SpotifyAuthService } from '../spotify-auth/services/spotify-auth.service';
 import { Reflector } from '@nestjs/core';
 import { Response } from 'express';
 

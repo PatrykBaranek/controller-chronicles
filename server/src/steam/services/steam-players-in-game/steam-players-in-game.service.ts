@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ElementHandle, Page } from "puppeteer";
 
 import { GamesService } from "src/games/services/games.service";
-import { PuppeteerService } from "src/puppeteer/puppeteer.service";
+import { PuppeteerService } from "src/puppeteer/services/puppeteer.service";
 
 import { SteamUtilityService } from "../../util/steam-utility.service";
 import { SteamPlayersCountInGameDto } from "../../dto/steam-players-in-game.dto";

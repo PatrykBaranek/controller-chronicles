@@ -6,9 +6,9 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { SpotifySoundtracksService } from './spotify-soundtracks.service';
+import { SpotifySoundtracksService } from '../services/spotify-soundtracks.service';
 import { ApiTags } from '@nestjs/swagger';
-import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
+import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 
 @ApiTags('api/spotify/soundtracks')
 @Controller('spotify/soundtracks')

@@ -7,8 +7,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { SpotifyPodcastsService } from './spotify-podcasts.service';
-import { SpotifyAuthGuard } from '../guards/spotify-auth.guard';
+import { SpotifyPodcastsService } from '../services/spotify-podcasts.service';
+import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
