@@ -1,15 +1,18 @@
 import { Autocomplete as AutocompleteComponent, TextField } from '@mui/material';
+import { type Control, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 
-type Option = {
+export type Option = {
 	id: string | number;
 	name: string;
 };
 type Props = {
 	options: Option[];
 	label: string;
+	control: Control<any>;
 };
-const StyledAutocompleteWrapper = styled.div`
+
+const StyledAutocompleteWrapper = styled(Controller)`
 	.MuiAutocomplete-popper > * {
 		background: linear-gradient(90deg, #223682 0%, #547c95 100%);
 		border-radius: 10px;
@@ -67,18 +70,22 @@ const StyledAutocomplete = styled(AutocompleteComponent)`
 		display: none;
 	}
 `;
-const Autocomplete = ({ options, label }: Props) => {
+const Autocomplete = ({ options, label, control }: Props) => {
 	return (
-		<StyledAutocompleteWrapper>
-			<StyledAutocomplete
-				options={options}
-				disablePortal={true}
-				getOptionLabel={(option: any) => option.name}
-				onChange={(_, value) => console.log(value)}
-				renderInput={params => <TextField {...params} label={label} />}
-				defaultValue={null}
-			/>
-		</StyledAutocompleteWrapper>
+		<StyledAutocompleteWrapper
+			control={control}
+			name={label}
+			defaultValue={null}
+			render={({ field: { ref, onChange, ...field } }) => (
+				<StyledAutocomplete
+					options={options}
+					disablePortal={true}
+					getOptionLabel={(option: any) => option.name}
+					onChange={(_, value) => onChange(value)}
+					renderInput={params => <TextField inputRef={ref} {...params} {...field} label={label} />}
+				/>
+			)}
+		></StyledAutocompleteWrapper>
 	);
 };
 
