@@ -3,11 +3,12 @@ import Layout from './Layout';
 import Games from './pages/Games';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthProvider } from 'react-auth-kit';
-import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -38,9 +39,7 @@ const router = createBrowserRouter([
 					{
 						path: 'collections',
 						element: <h1>collections</h1>,
-						children: [
-							{ path: ':id', element: <h1>collections :id</h1> },
-						],
+						children: [{ path: ':id', element: <h1>collections :id</h1> }],
 					},
 				],
 			},
@@ -50,12 +49,10 @@ const router = createBrowserRouter([
 
 const App = () => (
 	<QueryClientProvider client={queryClient}>
-		<AuthProvider
-			authType={'cookie'}
-			authName={'_auth'}
-			cookieDomain={window.location.hostname}
-		>
-			<RouterProvider router={router} />
+		<AuthProvider authType={'cookie'} authName={'_auth'} cookieDomain={window.location.hostname}>
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<RouterProvider router={router} />
+			</LocalizationProvider>
 		</AuthProvider>
 	</QueryClientProvider>
 );
