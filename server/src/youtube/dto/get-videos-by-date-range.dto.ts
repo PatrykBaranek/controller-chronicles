@@ -1,16 +1,17 @@
-import { IsEnum, IsNotEmpty, IsBooleanString, Matches } from 'class-validator';
-import { VideoType } from '../services/youtube.service';
+import { IsEnum, IsNotEmpty, IsBooleanString } from 'class-validator';
+import { VideoType } from '../util/youtube-utility.service';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDateStringValid } from './decorators/IsDateStringValidConstraint.decorator';
 
-export class TrailerOrReviewRequestDto {
+export class GetVideosByDateRangeDto {
   @ApiProperty({
     description: 'From date',
     format: 'YYYY-MM-DD',
     required: true,
     type: String
   })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'fromDate must be in YYYY-MM-DD format'
+  @IsDateStringValid({
+    message: 'fromDate must be in YYYY-MM-DD format and valid'
   })
   @IsNotEmpty()
   fromDate: string;
@@ -21,8 +22,8 @@ export class TrailerOrReviewRequestDto {
     required: true,
     type: String
   })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'fromDate must be in YYYY-MM-DD format'
+  @IsDateStringValid({
+    message: 'toDate must be in YYYY-MM-DD format'
   })
   @IsNotEmpty()
   toDate: string;

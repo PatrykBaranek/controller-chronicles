@@ -1,15 +1,16 @@
 import { Injectable, Logger } from "@nestjs/common";
 
-import { GamesRepository } from "../../games/database/games.repository";
-import { Game } from "../../games/models/game.schema";
+import { GamesRepository }       from "../../games/database/games.repository";
+import { Game }                  from "../../games/models/game.schema";
 import { GamesUpdateRepository } from "../database/games-update.repository";
 
-import { SteamReviewsService } from "src/steam/services/steam-reviews/steam-reviews.service";
+import { SteamReviewsService }       from "src/steam/services/steam-reviews/steam-reviews.service";
 import { SteamPlayersInGameService } from "src/steam/services/steam-players-in-game/steam-players-in-game.service";
 
-import { VideoType, YoutubeService } from "src/youtube/services/youtube.service";
+import { YoutubeService } from "src/youtube/services/youtube.service";
+import { VideoType }      from "src/youtube/util/youtube-utility.service";
 
-import { HowLongToBeatService } from "src/how-long-to-beat/services/how-long-to-beat.service";
+import { HowLongToBeatService }     from "src/how-long-to-beat/services/how-long-to-beat.service";
 import { HowLongToBeatResponseDto } from "src/how-long-to-beat/dto/how-long-to-beat-response.dto";
 
 import { RawgApiGamesService } from "src/rawg/rawg-api/rawg-api-games/rawg-api-games.service";
@@ -63,8 +64,8 @@ export class GamesUpdateService {
         throw new Error(`Youtube update is disabled for ${game._id} ${game.rawgGame.name}`);
       }
 
-      const game_trailers = await this.youtubeService.getGameVideosByGameId(game._id, VideoType.TRAILER);
-      const video_reviews = await this.youtubeService.getGameVideosByGameId(game._id, VideoType.REVIEW);
+      const game_trailers = await this.youtubeService.getGameVideosByGameId({ gameId: game._id, videoType: VideoType.TRAILER });
+      const video_reviews = await this.youtubeService.getGameVideosByGameId({ gameId: game._id, videoType: VideoType.REVIEW });
 
       this.logger.warn(`Found ${game_trailers.length} trailers and ${video_reviews.length} reviews for ${game._id} ${game.rawgGame.name}`);
 
