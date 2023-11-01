@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsNumberString } from 'class-validator';
-import { VideoType } from '../services/youtube.service';
+import { VideoType } from '../util/youtube-utility.service';
 
 export class GetGameVideoReviewDto {
   @ApiProperty({

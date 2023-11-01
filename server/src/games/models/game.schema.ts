@@ -4,15 +4,11 @@ import { Document } from 'mongoose';
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
 
 import { ReviewsSites } from 'src/reviews-sites/models/reviews-sites.schema';
-import { SteamPlayersCountInGameDto } from 'src/steam/dto/steam-players-in-game.dto';
 import { SteamReviewsDto } from 'src/steam/dto/steam-reviews.dto';
 
 import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
-import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
-import { GameReviews } from 'src/youtube/models/reviews.schema';
-import { GameTrailers } from 'src/youtube/models/trailers.schema';
 
 class RawgGame {
   @Prop()
@@ -136,12 +132,12 @@ export class Game {
   steam_players_in_game?: SteamPlayersInGame;
 
   @Prop({
-    type: GameReviews
+    type: Array<SearchResultDto>
   })
   video_reviews?: SearchResultDto[];
 
   @Prop({
-    type: GameTrailers
+    type: Array<SearchResultDto>
   })
   game_trailers?: SearchResultDto[];
 
@@ -154,6 +150,12 @@ export class Game {
     type: Array<ReviewsSites>
   })
   reviews_sites?: ReviewsSites[];
+
+  @Prop({ type: Date })
+  createdAt?: Date;
+
+  @Prop({ type: Date })
+  updatedAt?: Date;
 }
 
 export type GameDocument = Game & Document;
