@@ -1,6 +1,7 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 
+@Injectable()
 export class PuppeteerService {
   async createPage(browser: puppeteer.Browser, url: string): Promise<puppeteer.Page> {
     const page = await browser.newPage();
