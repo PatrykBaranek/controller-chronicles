@@ -2,11 +2,60 @@ import { IsIn, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PageQueryParamsDto } from './page-query-params.dto';
 
+const Ordering = [
+  'name',
+  'released',
+  'added',
+  'created',
+  'updated',
+  'rating',
+  'metacritic',
+  '-name',
+  '-released',
+  '-added',
+  '-created',
+  '-updated',
+  '-rating',
+  '-metacritic',
+];
+
 export class GetGameQueryParamsDto extends PageQueryParamsDto {
-  @ApiProperty({ description: 'Search term', required: false, type: String })
+  @ApiProperty({
+    description: 'Search term',
+    required: false,
+    type: String,
+  })
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiProperty({
+    description: 'Search exact term',
+    required: false,
+    default: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsString()
+  search_exact?: string;
+
+  @ApiProperty({
+    description: 'Filter by genres',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  genres?: string;
+
+  @ApiProperty({
+    description: 'Filter by platforms',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  platforms?: string;
 
   @ApiProperty({
     description: 'Filter by stores',
@@ -16,6 +65,15 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   @IsOptional()
   @IsString()
   stores?: string;
+
+  @ApiProperty({
+    description: 'Filter by publishers',
+    required: false,
+    type: String,
+  })
+  @IsOptional()
+  @IsString()
+  publishers?: string;
 
   @ApiProperty({
     description: 'Filter by Metacritic score',
@@ -47,55 +105,10 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   @ApiProperty({
     description: 'Order results by specific field',
     required: false,
-    enum: [
-      'name',
-      'released',
-      'added',
-      'created',
-      'updated',
-      'rating',
-      'metacritic',
-      '-name',
-      '-released',
-      '-added',
-      '-created',
-      '-updated',
-      '-rating',
-      '-metacritic',
-    ],
+    enum: Ordering,
   })
   @IsOptional()
   @IsString()
-  @IsIn([
-    'name',
-    'released',
-    'added',
-    'created',
-    'updated',
-    'rating',
-    'metacritic',
-    '-name',
-    '-released',
-    '-added',
-    '-created',
-    '-updated',
-    '-rating',
-    '-metacritic',
-  ])
-  ordering?: [
-    'name',
-    'released',
-    'added',
-    'created',
-    'updated',
-    'rating',
-    'metacritic',
-    '-name',
-    '-released',
-    '-added',
-    '-created',
-    '-updated',
-    '-rating',
-    '-metacritic',
-  ];
+  @IsIn(Ordering)
+  ordering?: typeof Ordering;
 }
