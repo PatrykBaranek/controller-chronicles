@@ -75,9 +75,7 @@ const Carousel = ({
 	});
 
 	const slideRight = () => {
-		setCurrent(
-			newReleases && current === newReleases.length - 1 ? 0 : current + 1
-		);
+		setCurrent(newReleases && current === newReleases.length - 1 ? 0 : current + 1);
 	};
 
 	return (
@@ -94,8 +92,7 @@ const Carousel = ({
 				{isLoading || isError ? (
 					<StyledSkeleton
 						sx={{
-							backgroundImage:
-								'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+							backgroundImage: 'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
 							borderRadius: '0',
 						}}
 						variant='rounded'
@@ -117,17 +114,30 @@ const Carousel = ({
 				)}
 			</StyledCarouselWrapper>
 			<StyledPagination>
-				{newReleases?.map((item, index) => {
-					return (
-						<CarouselPagination
-							key={index}
-							name={item.name}
-							image={item.background_image}
-							isActive={index === current}
-							onClick={() => setCurrent(index)}
-						/>
-					);
-				})}
+				{isLoading || isError ? (
+					<StyledSkeleton
+						sx={{
+							backgroundImage: 'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+							borderRadius: '0',
+						}}
+						variant='rounded'
+						animation='wave'
+						height={'100%'}
+						width={'100%'}
+					/>
+				) : (
+					newReleases?.map((item, index) => {
+						return (
+							<CarouselPagination
+								key={index}
+								name={item.name}
+								image={item.background_image}
+								isActive={index === current}
+								onClick={() => setCurrent(index)}
+							/>
+						);
+					})
+				)}
 			</StyledPagination>
 		</StyledCarousel>
 	);
