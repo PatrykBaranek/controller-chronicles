@@ -100,6 +100,7 @@ export class YoutubeService {
         part: ['snippet'],
         type: ['video'],
         order: 'relevance',
+        videoEmbeddable: 'true',
         maxResults: MAX_RESULTS,
         ...apiParams,
       };
@@ -109,7 +110,7 @@ export class YoutubeService {
         title: item.snippet?.title,
         thumbnail: item.snippet?.thumbnails?.high?.url,
         author: item.snippet?.channelTitle,
-        link: `https://www.youtube.com/watch?v=${item.id?.videoId}`,
+        link: `https://www.youtube.com/embed/${item.id?.videoId}`,
       }));
     } catch (err) {
       this.logger.error(`Error fetching videos from Youtube: ${err} for query ${query}`);
