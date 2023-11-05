@@ -5,7 +5,11 @@ import { platforms, sortingOptions, stores } from './Filters.mock';
 import Autocomplete, { Option } from './components/Autocomplete';
 import Datepicker from './components/Datepicker';
 import RadioGroup from './components/RadioGroup';
-import dayjs, { type Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
+import { formatDate, formatParams } from './FilterDrawer.utils';
+import { useQuery } from 'react-query';
+import { getFilteredGames } from '#/api/gamesApi';
+import { useEffect, useState } from 'react';
 
 type ButtonProps = {
 	$action?: boolean;
@@ -25,13 +29,6 @@ export type FormValues = {
 	};
 	From?: Dayjs;
 	To?: Dayjs;
-};
-type Params = {
-	platforms?: string;
-	stores?: string;
-	sort?: string;
-	dates?: string;
-	order?: string;
 };
 
 const StyledDrawer = styled.form<DrawerProps>`
@@ -110,34 +107,13 @@ const radioOptions = [
 ];
 
 const FilterDrawer = () => {
-	const { isFiltersOpen, toggleFiltersOpen } = useStore();
+	const { isFiltersOpen, toggleFiltersOpen, storeGames } = useStore();
 	const { control, handleSubmit, watch } = useForm<FormValues>();
 	const isSorted = watch('Sort');
-
-	const formatDate = (from: Dayjs | undefined, to: Dayjs | undefined): string | undefined => {
-		const dateFormat = 'YYYY-MM-DD';
-		if (!from && !to) return undefined;
-
-		if (from && !to) {
-			return `${from.format(dateFormat)},${dayjs().add(1, 'year').format(dateFormat)}`;
-		}
-		if (!from && to) {
-			return to.format(dateFormat);
-		}
-
-		return `${from?.format(dateFormat)},${to?.format(dateFormat)}`;
-	};
-
-	const formatParams = (params: Params) => {
-		const sortOption = params.sort && (!params.order ? `${params.sort}` : `-${params.sort}`);
-		const newParams: Partial<Params> = {};
-		for (const [key, value] of Object.entries({ ...params, sort: sortOption })) {
-			if (value) {
-				newParams[key.toLowerCase() as keyof Params] = value.toLowerCase();
-			}
-		}
-		return newParams;
-	};
+	const [query, setQuery] = useState('');
+	const { data, refetch } = useQuery(['/games', query], () => getFilteredGames(query), {
+		enabled: false,
+	});
 
 	const onSubmit: SubmitHandler<FormValues> = ({ Platforms, Stores, Sort, Order, From, To }) => {
 		const paramObj = {
@@ -152,10 +128,16 @@ const FilterDrawer = () => {
 			return;
 		}
 		const params = new URLSearchParams(formatParams(paramObj)).toString();
-		console.log(params);
-
+		setQuery(params);
 		toggleFiltersOpen();
 	};
+
+	useEffect(() => {
+		if (query.length > 1) {
+			refetch();
+			data && storeGames(data?.results);
+		}
+	}, [data, query]);
 
 	const onBack = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
