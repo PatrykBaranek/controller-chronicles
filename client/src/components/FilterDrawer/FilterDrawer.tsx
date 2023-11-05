@@ -56,13 +56,13 @@ const StyledDrawer = styled.form<DrawerProps>`
 		rgba(34, 20, 117, 0.4);
 	backdrop-filter: blur(10px);
 	@media screen and (min-width: 900px) {
-		width: 40%;
-		transform: translateX(${({ isOpen }) => (isOpen ? '150%' : '300%')});
+		width: 50%;
+		transform: translateX(${({ isOpen }) => (isOpen ? '100%' : '300%')});
 		box-shadow: 1px 0px 10px 3px rgba(0, 0, 0, 0.253);
 	}
 	@media screen and (min-width: 1300px) {
-		transform: translateX(${({ isOpen }) => (isOpen ? '300%' : '400%')});
-		width: 25vw;
+		transform: translateX(${({ isOpen }) => (isOpen ? '235%' : '400%')});
+		width: 30vw;
 	}
 
 	.MuiAutocomplete-popper > * {

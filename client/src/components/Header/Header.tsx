@@ -50,6 +50,7 @@ const StyledFilterIcon = styled.img`
 	width: 1.18rem;
 	align-self: center;
 	justify-self: end;
+	cursor: pointer;
 `;
 const StyledLogo = styled.img`
 	width: clamp(10.6rem, 10vw, 18.75rem);
