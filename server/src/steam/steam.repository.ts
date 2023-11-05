@@ -21,7 +21,6 @@ export class SteamRepository {
 
     const bestSellersToSave = new this.steamBestSellerModel({
       ...bestSellers,
-      updateDate: new Date(),
     });
     await bestSellersToSave.save();
   }
@@ -35,47 +34,27 @@ export class SteamRepository {
       throw new NotFoundException('Game not found');
     }
 
-    game.steamReviews = reviews;
+    game.steam_reviews = reviews;
     await game.save();
   }
 
-  async savePlayersInGameCount(playersCount: SteamPlayersInGame) {
-    const game = await this.gameModel.findOne({
-      _id: playersCount.game_id,
-    })
-
-    if (!game) {
-      throw new NotFoundException('Game not found');
-    }
-
-    game.steamPlayersInGame = playersCount;
-    await game.save();
-  }
-
-  async getBestSellers() {
+  async getBestSellers(): Promise<SteamBestSellers> {
     const start = new Date();
     start.setHours(0, 0, 0, 0);
 
     const end = new Date();
     end.setHours(23, 59, 59, 999);
 
-    const bestSellersFromDb = await this.steamBestSellerModel
-      .find(
+    const bestSellersFromDb = await this.steamBestSellerModel.find(
         {
-          updateDate: {
+          updatedAt: {
             $gte: start,
             $lte: end,
           },
         },
-        {
-          _id: 0,
-          'games._id': 0,
-        },
-      )
-      .sort({ updateDate: -1 });
+      ).sort({ updatedAt: -1 });
 
-    const games = bestSellersFromDb.map((sellers) => sellers.games).flat();
 
-    return games;
+    return bestSellersFromDb[0];
   }
 }

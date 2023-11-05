@@ -3,7 +3,7 @@ import { RawgTagsService } from './rawg-tags.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/tags')
-@Controller('api/tags')
+@Controller('tags')
 export class RawgTagsController {
   constructor(private readonly tagsService: RawgTagsService) {}
 

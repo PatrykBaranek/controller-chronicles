@@ -1,13 +1,26 @@
 import { Prop, Schema } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 
-@Schema()
+@Schema({ timestamps: true })
 export class HowLongToBeat {
-  @Prop()
+  @ApiProperty({
+    description: 'Gameplay duration for main storyline',
+    type: Number,
+  })
+  @Prop({ required: true, min: 0 })
   gameplayMain: number;
 
-  @Prop()
+  @ApiProperty({
+    description: 'Gameplay duration for main storyline with extra content',
+    type: Number,
+  })
+  @Prop({ required: true, min: 0 })
   gameplayMainExtra: number;
 
-  @Prop()
+  @ApiProperty({
+    description: 'Gameplay duration for completionist',
+    type: Number,
+  })
+  @Prop({ required: true, min: 0 })
   gameplayCompletionist: number;
 }

@@ -1,13 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsOptional } from 'class-validator';
+import { IsIn, IsNumberString } from 'class-validator';
+import { VideoType } from '../util/youtube-utility.service';
 
 export class GetGameVideoReviewDto {
   @ApiProperty({
-    description: 'Language of the video review',
-    required: false,
-    enum: ['pl', 'en'],
+    description: 'Game ID',
+    required: true,
+    type: Number,
   })
-  @IsOptional()
-  @IsIn(['pl', 'en'])
-  lang?: 'pl' | 'en';
+  @IsNumberString()
+  gameId: number;
+
+  @ApiProperty({
+    description: 'Video type',
+    required: true,
+    enum: [
+      VideoType.REVIEW,
+      VideoType.TRAILER,
+    ],
+  })
+  @IsIn([VideoType.REVIEW, VideoType.TRAILER])
+  videoType: VideoType;
 }

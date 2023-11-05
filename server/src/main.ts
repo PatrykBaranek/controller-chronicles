@@ -1,9 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import { SpotifyAuthService } from './spotify/spotify-auth/spotify-auth.service';
-import scopes from './spotify/scopes';
+import { SpotifyAuthService } from './spotify/spotify-auth/services/spotify-auth.service';
+import scopes from './spotify/constants/scopes';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -11,7 +10,8 @@ async function bootstrap() {
     snapshot: true,
     cors: true,
   });
-  app.useGlobalPipes(new ValidationPipe());
+
+  app.setGlobalPrefix('api');
 
   app.use(cookieParser());
 
@@ -26,7 +26,7 @@ async function bootstrap() {
       flows: {
         authorizationCode: {
           authorizationUrl: spotifyAuthService.getAuthorizeURL(),
-          tokenUrl: 'http://localhost:3000/spotify/auth/token',
+          tokenUrl: 'http://localhost:3000/api/spotify/auth/token',
           scopes: {
             ...scopes,
           },

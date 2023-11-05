@@ -1,15 +1,18 @@
-import { Module } from '@nestjs/common';
-import { ReviewsSitesGameradarModule } from './reviews-sites-gameradar/reviews-sites-gameradar.module';
-import { ReviewsSitesController } from './reviews-sites.controller';
+import { Module, forwardRef } from '@nestjs/common';
+
 import { ReviewsSitesEurogamerModule } from './reviews-sites-eurogamer/reviews-sites-eurogamer.module';
+import { ReviewsSitesGamesradarModule } from './reviews-sites-gamesradar/reviews-sites-gamesradar.module';
+import { ReviewsSitesService } from './reviews-sites.service';
+
 import { GamesModule } from 'src/games/games.module';
 
 @Module({
   imports: [
-    ReviewsSitesGameradarModule,
+    ReviewsSitesGamesradarModule,
     ReviewsSitesEurogamerModule,
-    GamesModule,
+    forwardRef(() => GamesModule),
   ],
-  controllers: [ReviewsSitesController],
+  providers: [ReviewsSitesService],
+  exports: [ReviewsSitesService]
 })
 export class ReviewsSitesModule {}

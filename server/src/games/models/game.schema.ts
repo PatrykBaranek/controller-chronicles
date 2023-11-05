@@ -1,8 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
+
+import { ReviewsSites } from 'src/reviews-sites/models/reviews-sites.schema';
+import { SteamReviewsDto } from 'src/steam/dto/steam-reviews.dto';
+
 import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
-import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
+
 import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
 
 class RawgGame {
@@ -16,7 +21,7 @@ class RawgGame {
   name_original: string;
 
   @Prop()
-  description: string;
+  description_raw: string;
 
   @Prop()
   metacritic: number;
@@ -67,18 +72,6 @@ class RawgGame {
   reddit_logo: string;
 
   @Prop()
-  reddit_count: number;
-
-  @Prop()
-  twitch_count: number;
-
-  @Prop()
-  youtube_count: number;
-
-  @Prop()
-  ratings_count: number;
-
-  @Prop()
   suggestions_count: number;
 
   @Prop({ type: Array })
@@ -115,7 +108,7 @@ class RawgGame {
   publishers?: any[] | null;
 }
 
-@Schema({ collection: 'games' })
+@Schema({ collection: 'games', timestamps: true })
 export class Game {
   @Prop()
   _id: number;
@@ -129,20 +122,40 @@ export class Game {
   howLongToBeat?: HowLongToBeat;
 
   @Prop({
-    type: SteamReviews,
+    type: SteamReviewsDto,
   })
-  steamReviews?: SteamReviews;
+  steam_reviews?: SteamReviewsDto;
 
   @Prop({
     type: SteamPlayersInGame,
   })
-  steamPlayersInGame?: SteamPlayersInGame;
+  steam_players_in_game?: SteamPlayersInGame;
 
-  @Prop([SearchResultDto])
+  @Prop({
+    type: Array<SearchResultDto>
+  })
   video_reviews?: SearchResultDto[];
 
-  @Prop([SearchResultDto])
+  @Prop({
+    type: Array<SearchResultDto>
+  })
   game_trailers?: SearchResultDto[];
+
+  @Prop({
+    type: Date,
+  })
+  review_embargo_date?: Date;
+
+  @Prop({
+    type: Array<ReviewsSites>
+  })
+  reviews_sites?: ReviewsSites[];
+
+  @Prop({ type: Date })
+  createdAt?: Date;
+
+  @Prop({ type: Date })
+  updatedAt?: Date;
 }
 
 export type GameDocument = Game & Document;
