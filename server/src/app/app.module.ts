@@ -1,4 +1,4 @@
-import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
@@ -15,6 +15,7 @@ import { GamesModule } from '../games/games.module';
 import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
 import { GamesUpdateModule } from '../games-update/games-update.module';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { HttpExceptionFilter } from './filters/global-exception.filter';
 
 @Module({
   imports: [
@@ -46,6 +47,10 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
     }
   ],
 })
