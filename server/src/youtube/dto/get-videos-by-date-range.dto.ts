@@ -1,7 +1,8 @@
-import { IsEnum, IsNotEmpty, IsBooleanString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsBooleanString, IsNumberString, Min, IsString, IsNumber } from 'class-validator';
 import { VideoType } from '../util/youtube-utility.service';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateStringValid } from './decorators/IsDateStringValidConstraint.decorator';
+import { Transform } from 'class-transformer';
 
 export class GetVideosByDateRangeDto {
   @ApiProperty({
@@ -29,6 +30,17 @@ export class GetVideosByDateRangeDto {
   toDate: string;
 
   @ApiProperty({
+    description: 'Number of games',
+    required: true,
+    default: 5,
+    type: Number
+  })
+  @Min(5)
+  @IsNumber()
+  @Transform(({ value }) => parseInt(value))
+  gamesCount: number;
+
+  @ApiProperty({
     description: 'Video type',
     required: true,
     enum: [
@@ -39,15 +51,4 @@ export class GetVideosByDateRangeDto {
   @IsEnum(VideoType)
   @IsNotEmpty()
   videoType: VideoType;
-
-
-  @ApiProperty({
-    description: 'Review channels',
-    required: true,
-    default: false,
-    type: Boolean
-  })
-  @IsNotEmpty()
-  @IsBooleanString()
-  reviewChannels: boolean;
 }

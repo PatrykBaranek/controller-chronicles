@@ -104,7 +104,7 @@ export const getNewestYoutubeVideos = async (
   }
   try {
     const response = await gamesApi.get(
-      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&reviewChannels=false`
+      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&gamesCount=8`
     );
 
     return await response.data;

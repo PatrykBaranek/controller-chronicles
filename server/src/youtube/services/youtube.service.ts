@@ -29,16 +29,18 @@ export class YoutubeService {
 
   async getGameVideosByGameId(getGameVideoReviewDto: GetGameVideoReviewDto): Promise<SearchResultDto[]> {
     const { gameId, videoType } = getGameVideoReviewDto;
+
     const videos = await this.getOrFetchGameVideos(gameId, videoType);
+
     return videos;
   }
 
   async getVideosByDateRange(getVideosByDateRangeDto: GetVideosByDateRangeDto): Promise<SearchResultDto[]> {
-    const { fromDate, toDate, videoType } = getVideosByDateRangeDto;
+    const { fromDate, toDate, videoType, gamesCount } = getVideosByDateRangeDto;
 
     const dateQuery = `${fromDate},${toDate}`;
 
-    const games = await this.gamesService.getGames({ page: 1, page_size: 5, dates: dateQuery });
+    const games = await this.gamesService.getGames({ page: 1, page_size: gamesCount, dates: dateQuery });
 
     const videos = await Promise.all(games.results.map(async (game) => {
       return await this.getOrFetchGameVideos(game.id, videoType);
@@ -114,6 +116,7 @@ export class YoutubeService {
 
       const response = await this.youtube.search.list(requestOptions);
       return response.data.items.map((item) => ({
+        game_id: gameId,
         title: item.snippet?.title,
         thumbnail: item.snippet?.thumbnails?.high?.url,
         author: item.snippet?.channelTitle,
