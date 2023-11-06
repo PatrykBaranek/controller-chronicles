@@ -1,18 +1,18 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import { AxiosError } from 'axios';
 
 interface ExceptionResponse {
   response: string | object;
   message: string;
   error: string;
 }
-interface ExceptionBody {
+export interface ExceptionBody {
   statusCode: number;
   path: string;
   message: string | null;
-  error: string | null;
+  error?: string | null;
   timestamp: string;
 }
-
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {

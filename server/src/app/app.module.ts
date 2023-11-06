@@ -16,6 +16,7 @@ import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
 import { GamesUpdateModule } from '../games-update/games-update.module';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './filters/global-exception.filter';
+import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 
 @Module({
   imports: [
@@ -51,6 +52,10 @@ import { HttpExceptionFilter } from './filters/global-exception.filter';
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AxiosExceptionFilter,
     }
   ],
 })
