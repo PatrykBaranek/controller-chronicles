@@ -13,57 +13,27 @@ export class CollectionsService {
   ) {}
 
   async createDefaultCollections(userId: string) {
+    console.log(userId);
     return await this.collectionsRepository.createDefaultCollections(userId);
   }
 
-  async createCollection(
-    userId: string,
-    createNewCollectionDto: CreateNewCollectionDto,
-  ) {
-    try {
-      return await this.collectionsRepository.createCollection(
-        userId,
-        createNewCollectionDto,
-      );
-    } catch (err) {
-      throw new HttpException(err.message, err.status);
-    }
+  async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
+    console.log(userId);
+    return await this.collectionsRepository.createCollection(userId, createNewCollectionDto);
   }
 
   async deleteCollection(deleteCollectionDto: DeleteCollectionDto) {
-    try {
-      return await this.collectionsRepository.deleteCollection(
-        deleteCollectionDto,
-      );
-    } catch (err) {
-      throw new HttpException(err.message, err.status);
-    }
+    return await this.collectionsRepository.deleteCollection(deleteCollectionDto);
   }
 
-  async addGame(
-    addGameToCollectionDto: AddGameToCollectionDto,
-    userId: string,
-  ) {
-    try {
-      const game = await this.gamesService.getGameById(
-        addGameToCollectionDto.gameId,
-      );
+  async addGame(userId: string, addGameToCollectionDto: AddGameToCollectionDto) {
+    const game = await this.gamesService.getGameById(addGameToCollectionDto.gameId);
 
-      return await this.collectionsRepository.addGame(
-        game,
-        userId,
-        addGameToCollectionDto.collectionId,
-      );
-    } catch (err) {
-      throw new HttpException(err.message, err.status);
-    }
+    return await this.collectionsRepository.addGame(game, userId, addGameToCollectionDto.collectionId);
   }
 
   async getCollections(userId: string) {
-    try {
-      return await this.collectionsRepository.getCollections(userId);
-    } catch (err) {
-      throw new HttpException(err.message, err.status);
-    }
+    console.log(userId);
+    return await this.collectionsRepository.getCollections(userId);
   }
 }

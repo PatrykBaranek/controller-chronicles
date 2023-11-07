@@ -28,10 +28,7 @@ export class CollectionsRepository {
   }
 
   async addGame(game: Game, userId: string, collectionId: string) {
-    const collection = await this.collectionModel.findOne({
-      _id: collectionId,
-      userId,
-    });
+    const collection = await this.collectionModel.findOne({ _id: collectionId, userId });
 
     if (!collection) {
       throw new NotFoundException('Collection not found');
@@ -46,10 +43,7 @@ export class CollectionsRepository {
     return collection.save();
   }
 
-  async createCollection(
-    userId: string,
-    createNewCollectionDto: CreateNewCollectionDto,
-  ) {
+  async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
     try {
       const userCollections = await this.findAllCollectionsByUserId(userId);
 

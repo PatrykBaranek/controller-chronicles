@@ -12,10 +12,7 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const newUser = await this.usersRepository.create(
-      createUserDto.email,
-      createUserDto.password,
-    );
+    const newUser = await this.usersRepository.create(createUserDto.email, createUserDto.password);
 
     await this.collectionsService.createDefaultCollections(newUser.id);
 
