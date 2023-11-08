@@ -13,21 +13,16 @@ export class AuthService {
   ) {}
 
   public async register(createUserDto: CreateUserDto) {
-    return this.usersService.createUser({
-      ...createUserDto,
-    });
+    return this.usersService.createUser(createUserDto);
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
     const user = await this.usersService.findByEmail(email);
 
-    if (
-      !user ||
-      !(await this.hashService.comparePassword(
-        plainTextPassword,
-        user.password,
-      ))
-    ) {
+    const isPasswordMatching = await this.hashService.comparePassword(plainTextPassword, user.password);
+
+    if (!user || !isPasswordMatching)
+    {
       return null;
     }
 

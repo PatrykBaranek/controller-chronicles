@@ -1,25 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags, ApiResponse, ApiCookieAuth } from '@nestjs/swagger';
+import { Request, Response } from 'express';
+
 import { AuthService } from '../services/auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+
 import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { Request, Response } from 'express';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiCookieAuth,
-} from '@nestjs/swagger';
 
 @ApiTags('api/auth')
 @Controller('auth')
@@ -62,14 +49,14 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Returned user profile' })
   @ApiCookieAuth('access_token')
   @Get('/profile')
-  async getProfile(@Req() req) {
+  async getProfile(@Req() req: Request) {
     return req.user;
   }
 
   @ApiOperation({ summary: 'Log out' })
   @ApiResponse({ status: 200, description: 'Logged out successfully' })
   @Get('/logout')
-  async logout(@Req() req) {
+  async logout(@Req() req: Request) {
     req.res.clearCookie('access_token');
     return {
       message: 'Logged out successfully',
