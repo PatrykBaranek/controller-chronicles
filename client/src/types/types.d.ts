@@ -33,7 +33,7 @@ export type Bestseller = {
 
 export type BestsellerResponse = {
 	games: Bestseller[];
-} 
+};
 export type GamesResponse = {
 	currentPage: number;
 	totalItems: number;
@@ -41,23 +41,13 @@ export type GamesResponse = {
 	results: Games[];
 };
 
-export type TrailersResponse = {
-	game_id: number;
-	video_trailers: Trailer[];
-};
-
-export type Trailer = {
+export type YoutubeVideo = {
 	title: string;
 	thumbnail: string;
 	author: string;
 	link: string;
 };
-
-export type Review = {
-	title: string;
-	url: string;
-};
-export type ReviewResponse = Review[];
+export type YoutubeResponse = YoutubeVideo[];
 
 export type Games = {
 	id: number;
