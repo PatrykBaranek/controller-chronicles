@@ -1,6 +1,9 @@
 import { getLastMonthYoutubeVideos } from '#/api/gamesApi';
 import useWindowWidth from '#/hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
+import { getLastMonthYoutubeVideos } from '#/api/gamesApi';
+import useWindowWidth from '#/hooks/useWindowWidth';
+import isDesktopWidth from '#/utils/isDesktopWidth';
 import { Skeleton } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
@@ -12,7 +15,16 @@ type Props = {
 	variant: 'review' | 'trailer';
 	heading: string;
 };
+import { useQuery } from 'react-query';
+import styled from 'styled-components';
+import VideoSliderItem from './VideoSliderItem';
 
+type Props = {
+	variant: 'review' | 'trailer';
+	heading: string;
+};
+
+const StyledVideoSlider = styled.div`
 const StyledVideoSlider = styled.div`
 	padding-inline: 1rem;
 	margin-top: 10vw;
@@ -61,8 +73,13 @@ const StyledSplideSlide = styled(SplideSlide)`
 	}
 `;
 const VideoSlider = ({ variant, heading }: Props) => {
+const VideoSlider = ({ variant, heading }: Props) => {
 	const windowWidth = useWindowWidth();
 	const isDesktop = isDesktopWidth(windowWidth);
+	const { data, isLoading, isError, isFetched } = useQuery([variant], () =>
+		getLastMonthYoutubeVideos(variant)
+	);
+
 	const { data, isLoading, isError, isFetched } = useQuery([variant], () =>
 		getLastMonthYoutubeVideos(variant)
 	);
@@ -71,8 +88,12 @@ const VideoSlider = ({ variant, heading }: Props) => {
 		<StyledVideoSlider>
 			<h3>{heading}</h3>
 			{isLoading || isError ? (
+		<StyledVideoSlider>
+			<h3>{heading}</h3>
+			{isLoading || isError ? (
 				<Skeleton
 					sx={{
+						backgroundImage: 'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
 						backgroundImage: 'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
 						borderRadius: '1rem ',
 					}}
@@ -106,13 +127,16 @@ const VideoSlider = ({ variant, heading }: Props) => {
 					{isFetched &&
 						data?.map(({ link }, idx) => (
 							<StyledSplideSlide key={idx}>
-								<VideoSliderItem isDesktop={isDesktop} link={link} />
+								<VideoSliderItem link={link} />
 							</StyledSplideSlide>
+						))}
 						))}
 				</Splide>
 			)}
 		</StyledVideoSlider>
+		</StyledVideoSlider>
 	);
 };
 
+export default VideoSlider;
 export default VideoSlider;
