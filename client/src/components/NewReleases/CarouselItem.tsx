@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getGameById } from '#/api/gamesApi';
 import iconFilter from '#/utils/iconFilter';
+import dayjs from 'dayjs';
 type CarouseItemProps = {
 	id: number;
 	isActive: boolean;
@@ -36,11 +37,7 @@ const StyledOverlay = styled.span`
 	width: 100%;
 	height: 100%;
 	left: 0;
-	background: linear-gradient(
-		0deg,
-		rgba(0, 0, 0, 0.7) 30%,
-		rgba(255, 255, 255, 0) 100%
-	);
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 30%, rgba(255, 255, 255, 0) 100%);
 	@media screen and (min-width: 900px) {
 		border-radius: 1rem;
 	}
@@ -61,9 +58,7 @@ const StyledTitle = styled.span<StyledProps>`
 		font-size: clamp(0.5rem, 2vw, 1.2rem);
 	}
 	@media screen and (min-width: 1000px) {
-		transform: translateY(
-			${({ $isActive }) => ($isActive ? '95%' : '300%')}
-		);
+		transform: translateY(${({ $isActive }) => ($isActive ? '95%' : '300%')});
 	}
 `;
 const StyledReleaseDate = styled.span<StyledProps>`
@@ -82,9 +77,7 @@ const StyledReleaseDate = styled.span<StyledProps>`
 		font-size: clamp(0.5rem, 1.75vw, 1rem);
 	}
 	@media screen and (min-width: 1000px) {
-		transform: translateY(
-			${({ $isActive }) => ($isActive ? '45%' : '300%')}
-		);
+		transform: translateY(${({ $isActive }) => ($isActive ? '45%' : '300%')});
 	}
 `;
 const StyledDescription = styled.span<StyledProps>`
@@ -102,9 +95,7 @@ const StyledDescription = styled.span<StyledProps>`
 		font-size: clamp(0.5rem, 1.5vw, 1rem);
 	}
 	@media screen and (min-width: 1000px) {
-		transform: translateY(
-			${({ $isActive }) => ($isActive ? '60%' : '300%')}
-		);
+		transform: translateY(${({ $isActive }) => ($isActive ? '60%' : '300%')});
 	}
 `;
 const StyledIcon = styled.span<StyledProps>`
@@ -118,9 +109,7 @@ const StyledIcon = styled.span<StyledProps>`
 	bottom: 52%;
 	left: 5%;
 	@media screen and (min-width: 1000px) {
-		transform: translateY(
-			${({ $isActive }) => ($isActive ? '100%' : '300%')}
-		);
+		transform: translateY(${({ $isActive }) => ($isActive ? '100%' : '300%')});
 	}
 	img {
 		width: 90%;
@@ -137,23 +126,17 @@ const CarouselItem = ({ isActive, image, id }: CarouseItemProps) => {
 	const title = data?.rawgGame.name;
 	const description = data?.rawgGame.description_raw;
 	const stores = data?.rawgGame.stores;
-	const releaseDate =
-		data &&
-		new Date(data.rawgGame.released)
-			.toLocaleDateString('en-GB')
-			.replaceAll('/', '.');
+	const releaseDate = dayjs(data?.rawgGame.released).format('DD.MM.YYYY');
+
 	return (
 		<StyledCarouselItem $isActive={isActive} to={`/games/${id}`}>
 			<img src={image} />
-
 			<StyledOverlay></StyledOverlay>
-
 			<StyledIcon $isActive={isActive}>
-				{stores?.map((store) => (
+				{stores?.map(store => (
 					<img key={store.id} src={iconFilter(store.store.slug)} />
 				))}
 			</StyledIcon>
-
 			<StyledTitle $isActive={isActive}>{title}</StyledTitle>
 			<StyledReleaseDate $isActive={isActive}>
 				{releaseDate && `Date of release: ${releaseDate}`}

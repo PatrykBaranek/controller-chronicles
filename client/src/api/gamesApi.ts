@@ -1,20 +1,18 @@
+import { dateFormat } from '#/components/FilterDrawer/FilterDrawer.utils';
 import {
 	AuthResponse,
-	ReviewResponse,
-	SignUpResponse,
-	TrailersResponse,
-	UserInputs,
 	BestsellerResponse,
 	GameDetailsResponse,
 	GamesResponse,
-	Games,
+	SignUpResponse,
+	UserInputs,
+	YoutubeResponse,
 } from '#/types/types';
-import getNextMonthFromNow from '#/utils/getNextMonthFromNow';
-import getPrevMonthFromNow from '#/utils/getPrevMonthFromNow';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const gamesApi = axios.create({
-	baseURL: "http://localhost:3000/api",
+	baseURL: 'http://localhost:3000/api',
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
@@ -43,9 +41,9 @@ export const getFilteredGames = async (query: string): Promise<GamesResponse> =>
 	return response.data;
 };
 
-export const getNewReleasedGames = async (currentDate: Date): Promise<GamesResponse> => {
-	const current = currentDate.toISOString().slice(0, 10);
-	const nextMonth = getNextMonthFromNow(currentDate);
+export const getNewReleasedGames = async (): Promise<GamesResponse> => {
+	const current = dayjs().format(dateFormat);
+	const nextMonth = dayjs().add(1, 'month').format(dateFormat);
 	const response = await gamesApi.get(`/games?page=1&page_size=5&dates=${current},${nextMonth}`);
 	return response.data;
 };
@@ -92,33 +90,18 @@ export const logInUser = async ({ email, password }: UserInputs): Promise<AuthRe
 	}
 };
 
-// export const getTrailers = async (id: string): Promise<TrailersResponse> => {
-// 	try {
-// 		const response = await gamesApi.get(`/games/${id}/yt/trailers`);
+export const getLastMonthYoutubeVideos = async (
+	videoType: 'review' | 'trailer'
+): Promise<YoutubeResponse> => {
+	const from = dayjs().subtract(1, 'month').format(dateFormat);
+	const to = dayjs().format(dateFormat);
+	try {
+		const response = await gamesApi.get(
+			`/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&reviewChannels=false`
+		);
 
-// 		return await response.data;
-// 	} catch (error: any) {
-// 		throw error.response?.data;
-// 	}
-// };
-
-// export const getReviews = async (id: number): Promise<ReviewResponse> => {
-// 	try {
-// 		const response = await gamesApi.get(`/reviews-sites/${id}`);
-
-// 		return await response.data;
-// 	} catch (error: any) {
-// 		throw error.response?.data;
-// 	}
-// };
-
-// export const getGamesFromLastMonth = async (
-// 	currentDate: Date
-// ): Promise<Games[]> => {
-// 	const current = currentDate.toISOString().slice(0, 10);
-// 	const prevMonth = getPrevMonthFromNow(currentDate);
-// 	const response = await gamesApi.get(
-// 		`/games?page=1&page_size=10&dates=${prevMonth},${current}`
-// 	);
-// 	return response.data?.results;
-// };
+		return await response.data;
+	} catch (error: any) {
+		throw error.response?.data;
+	}
+};

@@ -1,4 +1,5 @@
 import dayjs, { type Dayjs } from 'dayjs';
+export const dateFormat = 'YYYY-MM-DD';
 
 type Params = {
 	platforms?: string;
@@ -9,7 +10,6 @@ type Params = {
 };
 
 const formatDate = (from: Dayjs | undefined, to: Dayjs | undefined): string | undefined => {
-	const dateFormat = 'YYYY-MM-DD';
 	if (!from && !to) return undefined;
 
 	if (from && !to) {
