@@ -6,8 +6,6 @@ type Store = {
 	toggleMenuOpen: () => void;
 	isFiltersOpen: boolean;
 	toggleFiltersOpen: () => void;
-	isSeachbarVisible: boolean;
-	changeSearchbarVisible: (isVisible: boolean) => void;
 	games: Games[];
 	storeGames: (games: Games[]) => void;
 };
@@ -17,8 +15,6 @@ const useStore = create<Store>()(set => ({
 	toggleMenuOpen: () => set(state => ({ isMenuOpen: !state.isMenuOpen })),
 	isFiltersOpen: false,
 	toggleFiltersOpen: () => set(state => ({ isFiltersOpen: !state.isFiltersOpen })),
-	isSeachbarVisible: true,
-	changeSearchbarVisible: isVisible => set(() => ({ isSeachbarVisible: isVisible })),
 	games: [],
 	storeGames: games => set({ games: [...games] }),
 }));
