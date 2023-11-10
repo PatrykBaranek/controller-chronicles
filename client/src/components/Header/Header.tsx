@@ -15,6 +15,7 @@ const StyledHeader = styled.header`
 	width: 100%;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	flex-direction: column;
 	padding: 1.5rem 2.18rem;
 	overflow: hidden;
@@ -75,6 +76,7 @@ const Header = () => {
 					</>
 				)}
 			</StyledTopSection>
+			{!isDesktopWidth(windowWidth) && isLocationSearchable(location) && <Searchbar />}
 		</StyledHeader>
 	);
 };
