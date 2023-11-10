@@ -1,5 +1,6 @@
-const isDesktopWidth = (windowWidth: number | undefined) => {
-  return windowWidth && windowWidth >= 900;
+const isDesktopWidth = (windowWidth: number | undefined): boolean => {
+	if (windowWidth) return windowWidth >= 900;
+	return false;
 };
 
 export default isDesktopWidth;
