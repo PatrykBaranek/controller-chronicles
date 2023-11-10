@@ -106,7 +106,7 @@ const VideoSlider = ({ variant, heading }: Props) => {
 					{isFetched &&
 						data?.map(({ link }, idx) => (
 							<StyledSplideSlide key={idx}>
-								<VideoSliderItem link={link} />
+								<VideoSliderItem isDesktop={isDesktop} link={link} />
 							</StyledSplideSlide>
 						))}
 				</Splide>
