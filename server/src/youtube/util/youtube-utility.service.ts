@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { isBefore } from 'date-fns';
 import { GamesService } from 'src/games/services/games.service';
 import { SearchResultDto } from '../dto/search-result.dto';
+import { Game, type GameDocument } from 'src/games/models/game.schema';
 
 export enum VideoType {
   REVIEW  = 'review',
@@ -23,11 +24,11 @@ export class YoutubeUtilityService {
     private readonly gamesService: GamesService,
   ) {}
 
-  getVideoFieldName(videoType: VideoType): string {
+  getVideoFieldName(videoType: VideoType): keyof GameDocument {
     return videoType === VideoType.REVIEW ? 'video_reviews' : 'game_trailers';
   }
 
-  async fetchGame(id: number, videoType: VideoType) {
+  async fetchGame(id: number, videoType: VideoType): Promise<Game> {
     const game = await this.gamesService.getGameById(id);
     if (videoType === VideoType.REVIEW && isBefore(new Date(), new Date(game.rawgGame.released))) {
       throw new NotFoundException('Game not released yet');
@@ -35,16 +36,15 @@ export class YoutubeUtilityService {
     return game;
   }
 
-  
-  constructQuery(gameName: string, videoType: VideoType, lang: 'pl' | 'en' = 'en'): string {
+  constructQuery(gameName: string, videoType: VideoType): string {
     if (videoType === VideoType.REVIEW) {
-      return `${gameName} ${lang === 'pl' ? 'recenzja' : 'review'}`;
+      return `${gameName} Game Review`;
     }
-    return `${gameName} Official Trailer`;
+    return `${gameName} Official Game Trailer`;
   }
 
-  filterResults(gameName: string, videos: SearchResultDto[]) {
-    const filteredVideos = videos.filter(video => video.title.toLowerCase().includes(gameName.toLowerCase()));
+  filterResults(gameName: string, videos: SearchResultDto[]): SearchResultDto[] {
+    const filteredVideos = videos.filter(video => video.title.toLowerCase().includes(gameName.toLowerCase() && VideoType.REVIEW.toLowerCase()));
 
     if (filteredVideos.length === 0) {
       return videos;
