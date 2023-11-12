@@ -38,13 +38,13 @@ export class YoutubeUtilityService {
   
   constructQuery(gameName: string, videoType: VideoType, lang: 'pl' | 'en' = 'en'): string {
     if (videoType === VideoType.REVIEW) {
-      return `${gameName} ${lang === 'pl' ? 'recenzja' : 'review'}`;
+      return `${gameName} ${lang === 'pl' ? 'recenzja gry' : 'game review'}`;
     }
     return `${gameName} Official Trailer`;
   }
 
   filterResults(gameName: string, videos: SearchResultDto[]) {
-    const filteredVideos = videos.filter(video => video.title.toLowerCase().includes(gameName.toLowerCase()));
+    const filteredVideos = videos.filter(video => video.title.toLowerCase().includes(gameName.toLowerCase() && 'review'));
 
     if (filteredVideos.length === 0) {
       return videos;
