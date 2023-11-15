@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { google, youtube_v3 } from 'googleapis';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays }   from 'date-fns';
 
 import { SearchResultDto }         from '../dto/search-result.dto';
 import { GamesService }            from 'src/games/services/games.service';
@@ -71,10 +71,11 @@ export class YoutubeService {
     }
 
     try {
-      const videos       = await this.youtubeSearch(searchQuery, apiParams);
+      this.logger.log(`Fetching ${videoType} for game ${gameInDb.rawgGame.name}`);
+      const videos       = await this.youtubeSearch(gameId, searchQuery, apiParams);
       let filteredVideos = this.youtubeUtilityService.filterResults(gameInDb.rawgGame.name, videos);
 
-      if (gameInDb[videoFieldName]) {
+      if (gameInDb[videoFieldName] != null) {
         const existingVideoLinks = new Set(gameInDb[videoFieldName].map(video => video.link));
 
         filteredVideos = videos.filter(video => !existingVideoLinks.has(video.link));
@@ -84,7 +85,7 @@ export class YoutubeService {
 
       await this.gamesRepository.updateGame(gameId, { [videoFieldName]: filteredVideos });
 
-      return filteredVideos;
+      return filteredVideos.map(video => ({ ...video, gameId }));
     } catch (err) {
       this.logger.error(`Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`);
       return gameInDb[videoFieldName] ?? [];
@@ -92,7 +93,7 @@ export class YoutubeService {
 
   }
 
-  private async youtubeSearch(query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
+  private async youtubeSearch(gameId: number, query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
     try {
       const requestOptions: youtube_v3.Params$Resource$Search$List = {
         key: process.env.YOUTUBE_API_KEY,
@@ -111,6 +112,7 @@ export class YoutubeService {
         thumbnail: item.snippet?.thumbnails?.high?.url,
         author: item.snippet?.channelTitle,
         link: `https://www.youtube.com/embed/${item.id?.videoId}`,
+        gameId
       }));
     } catch (err) {
       this.logger.error(`Error fetching videos from Youtube: ${err} for query ${query}`);
