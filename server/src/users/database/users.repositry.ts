@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './models/user.schema';
+import { User, UserDocument } from '../models/user.schema';
 import { Model } from 'mongoose';
-import { HashService } from './hash.service';
+import { HashService } from '../services/hash.service';
 
 @Injectable()
 export class UsersRepository {

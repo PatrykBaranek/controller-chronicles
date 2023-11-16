@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UsersService } from './services/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './models/user.schema';
-import { UsersRepository } from './users.repositry';
-import { HashService } from './hash.service';
+import { UsersRepository } from './database/users.repositry';
+import { HashService } from './services/hash.service';
 import { CollectionsModule } from 'src/collections/collections.module';
 
 @Module({

@@ -1,9 +1,9 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags, ApiResponse, ApiCookieAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { AuthService } from '../services/auth.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
 
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -19,6 +19,7 @@ export class AuthController {
     status: 201,
     description: 'The user has been successfully created.',
   })
+  @HttpCode(HttpStatus.CREATED)
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
