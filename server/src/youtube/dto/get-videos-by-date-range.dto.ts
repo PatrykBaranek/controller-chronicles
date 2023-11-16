@@ -44,8 +44,10 @@ export class GetVideosByDateRangeDto {
   @ApiProperty({
     description: 'Review channels',
     required: true,
+    default: false,
     type: Boolean
   })
+  @IsNotEmpty()
   @IsBooleanString()
   reviewChannels: boolean;
 }
