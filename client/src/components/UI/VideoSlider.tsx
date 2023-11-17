@@ -66,7 +66,6 @@ const VideoSlider = ({ variant, heading }: Props) => {
   const { data, isLoading, isError, isFetched } = useQuery([variant], () =>
     getLastMonthYoutubeVideos(variant)
   );
-  console.log(data?.slice(0, 34));
 
   return (
     <StyledVideoSlider>
