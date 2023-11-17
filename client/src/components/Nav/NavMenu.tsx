@@ -20,6 +20,7 @@ const StyledNavMenu = styled.ul`
   }
   @media screen and (min-width: 900px) {
     padding-top: 2rem;
+    height: unset;
   }
 `;
 

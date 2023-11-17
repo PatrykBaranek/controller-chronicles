@@ -11,6 +11,8 @@ const StyledWrapper = styled.div`
     padding-top: 2rem;
     height: unset;
     padding-inline: 1rem;
+    grid-column-start: 2;
+    grid-column-end: 5;
   }
 `;
 
