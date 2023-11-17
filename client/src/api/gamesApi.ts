@@ -90,11 +90,11 @@ export const logInUser = async ({ email, password }: UserInputs): Promise<AuthRe
   }
 };
 
-export const getLastMonthYoutubeVideos = async (
+export const getNewestYoutubeVideos = async (
   videoType: 'review' | 'trailer'
 ): Promise<YoutubeResponse> => {
-  const from = dayjs().subtract(1, 'month').format(dateFormat);
-  const to = dayjs().format(dateFormat);
+  const to = dayjs().add(1, 'month').format(dateFormat);
+  const from = dayjs().format(dateFormat);
   try {
     const response = await gamesApi.get(
       `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&reviewChannels=false`
