@@ -1,4 +1,4 @@
-import { getLastMonthYoutubeVideos } from '#/api/gamesApi';
+import { getNewestYoutubeVideos } from '#/api/gamesApi';
 import useWindowWidth from '#/hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
 import { Skeleton } from '@mui/material';
@@ -7,6 +7,7 @@ import '@splidejs/react-splide/css';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import VideoSliderItem from './VideoSliderItem';
+import { useState } from 'react';
 
 type Props = {
   variant: 'review' | 'trailer';
@@ -43,6 +44,7 @@ const StyledVideoSlider = styled.div`
     }
   }
   @media screen and (min-width: 900px) {
+    padding-right: 0;
     text-align: left;
     margin-top: 5vw;
     .splide__arrow--prev {
@@ -53,6 +55,7 @@ const StyledVideoSlider = styled.div`
     font-size: 1.2rem;
     font-weight: ${({ theme }) => theme.fontWeights.semiBold};
     margin-bottom: 1rem;
+    margin-left: 1rem;
   }
 `;
 const StyledSplideSlide = styled(SplideSlide)`
@@ -60,11 +63,12 @@ const StyledSplideSlide = styled(SplideSlide)`
     padding-block: 1rem;
   }
 `;
+
 const VideoSlider = ({ variant, heading }: Props) => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
   const { data, isLoading, isError, isFetched } = useQuery([variant], () =>
-    getLastMonthYoutubeVideos(variant)
+    getNewestYoutubeVideos(variant)
   );
 
   return (
@@ -106,12 +110,7 @@ const VideoSlider = ({ variant, heading }: Props) => {
           {isFetched &&
             data?.slice(0, 34).map(({ link, thumbnail, title }, idx) => (
               <StyledSplideSlide key={idx}>
-                <VideoSliderItem
-                  isDesktop={isDesktop}
-                  link={link}
-                  title={title}
-                  thumbnail={thumbnail}
-                />
+                <VideoSliderItem link={link} title={title} thumbnail={thumbnail} />
               </StyledSplideSlide>
             ))}
         </Splide>

@@ -18,11 +18,13 @@ const StyledBestsellers = styled.div`
   @media screen and (min-width: 900px) {
     text-align: left;
     margin-top: 5vw;
+    padding-right: 0;
   }
   h3 {
     font-size: 1.2rem;
     font-weight: ${({ theme }) => theme.fontWeights.semiBold};
     margin-bottom: 1rem;
+    margin-left: 1rem;
   }
 `;
 const StyledSplideSlide = styled(SplideSlide)`
@@ -33,7 +35,7 @@ const StyledSplideSlide = styled(SplideSlide)`
 const Bestsellers = () => {
   const [bestsellers, setBestsellers] = useState<Bestseller[]>();
   const { isLoading, isError } = useQuery(['bestsellers'], () => getBestsellers(), {
-    onSuccess: (data) => setBestsellers(data.games.slice(0, 35)),
+    onSuccess: (data) => setBestsellers(data.games.slice(0, 40)),
   });
 
   return (
@@ -70,7 +72,7 @@ const Bestsellers = () => {
               },
               1500: {
                 fixedWidth: '30%',
-                perPage: 4,
+                perPage: 3,
               },
             },
             start: 0,
