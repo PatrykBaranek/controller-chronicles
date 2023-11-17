@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import BurgerMenu from "../UI/BurgerMenu";
-import logo from "#/assets/logo.svg";
-import Searchbar from "./Searchbar";
-import useWindowWidth from "../../hooks/useWindowWidth";
-import isLocationSearchable from "../../utils/isLocationSearchable";
-import { useLocation } from "react-router-dom";
-import filterIcon from "#/assets/filterIcon.svg";
-import isDesktopWidth from "../../utils/isDesktopWidth";
-import Nav from "../Nav/Nav";
-import useStore from "#/store/store";
-import FilterDrawer from "../FilterDrawer/FilterDrawer";
+import styled from 'styled-components';
+import BurgerMenu from '../UI/BurgerMenu';
+import logo from '#/assets/logo.svg';
+import Searchbar from './Searchbar';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import isLocationSearchable from '../../utils/isLocationSearchable';
+import { useLocation } from 'react-router-dom';
+import filterIcon from '#/assets/filterIcon.svg';
+import isDesktopWidth from '../../utils/isDesktopWidth';
+import Nav from '../Nav/Nav';
+import useStore from '#/store/store';
+import FilterDrawer from '../FilterDrawer/FilterDrawer';
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -36,7 +36,7 @@ const StyledTopSection = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    content: "";
+    content: '';
     height: 1px;
     width: 100%;
     background: linear-gradient(
@@ -67,24 +67,16 @@ const Header = () => {
       {!isDesktopWidth(windowWidth) && <Nav />}
       <StyledTopSection>
         <BurgerMenu />
-        <StyledLogo src={logo} alt="Controller chronicles logo" />
-        {isDesktopWidth(windowWidth) && isLocationSearchable(location) && (
-          <Searchbar />
-        )}
+        <StyledLogo src={logo} alt='Controller chronicles logo' />
+        {isDesktopWidth(windowWidth) && isLocationSearchable(location) && <Searchbar />}
         {isLocationSearchable(location) && (
           <>
-            <StyledFilterIcon
-              src={filterIcon}
-              alt="Filters"
-              onClick={toggleFiltersOpen}
-            />
+            <StyledFilterIcon src={filterIcon} alt='Filters' onClick={toggleFiltersOpen} />
             <FilterDrawer />
           </>
         )}
       </StyledTopSection>
-      {!isDesktopWidth(windowWidth) && isLocationSearchable(location) && (
-        <Searchbar />
-      )}
+      {!isDesktopWidth(windowWidth) && isLocationSearchable(location) && <Searchbar />}
     </StyledHeader>
   );
 };

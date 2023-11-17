@@ -1,15 +1,15 @@
-import { getLastMonthYoutubeVideos } from "#/api/gamesApi";
-import useWindowWidth from "#/hooks/useWindowWidth";
-import isDesktopWidth from "#/utils/isDesktopWidth";
-import { Skeleton } from "@mui/material";
-import { Splide, SplideSlide } from "@splidejs/react-splide";
-import "@splidejs/react-splide/css";
-import { useQuery } from "react-query";
-import styled from "styled-components";
-import VideoSliderItem from "./VideoSliderItem";
+import { getLastMonthYoutubeVideos } from '#/api/gamesApi';
+import useWindowWidth from '#/hooks/useWindowWidth';
+import isDesktopWidth from '#/utils/isDesktopWidth';
+import { Skeleton } from '@mui/material';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+import { useQuery } from 'react-query';
+import styled from 'styled-components';
+import VideoSliderItem from './VideoSliderItem';
 
 type Props = {
-  variant: "review" | "trailer";
+  variant: 'review' | 'trailer';
   heading: string;
 };
 
@@ -74,14 +74,13 @@ const VideoSlider = ({ variant, heading }: Props) => {
       {isLoading || isError ? (
         <Skeleton
           sx={{
-            backgroundImage:
-              "linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)",
-            borderRadius: "1rem ",
+            backgroundImage: 'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+            borderRadius: '1rem ',
           }}
-          animation="wave"
-          variant="rounded"
-          height={isDesktop ? "20vw" : "55vw"}
-          width={"100%"}
+          animation='wave'
+          variant='rounded'
+          height={isDesktop ? '20vw' : '55vw'}
+          width={'100%'}
         />
       ) : (
         <Splide
@@ -89,16 +88,16 @@ const VideoSlider = ({ variant, heading }: Props) => {
             arrows: true,
             pagination: false,
             rewind: true,
-            gap: "1rem",
-            easing: "ease",
+            gap: '1rem',
+            easing: 'ease',
             perPage: 1,
             drag: false,
-            fixedWidth: "100%",
-            mediaQuery: "min",
+            fixedWidth: '100%',
+            mediaQuery: 'min',
             breakpoints: {
               900: {
-                fixedWidth: "45%",
-                padding: "1rem",
+                fixedWidth: '45%',
+                padding: '1rem',
                 perPage: 2,
               },
             },

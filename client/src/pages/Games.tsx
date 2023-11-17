@@ -1,61 +1,56 @@
-import { getGames, getGamesBySearchQuery } from "#/api/gamesApi";
-import GameCard from "#/components/GameCard/GameCard";
-import useWindowWidth from "#/hooks/useWindowWidth";
-import useStore from "#/store/store";
-import isDesktopWidth from "#/utils/isDesktopWidth";
-import {
-  Pagination,
-  Skeleton,
-  ThemeProvider,
-  createTheme,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
-import styled from "styled-components";
+import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
+import GameCard from '#/components/GameCard/GameCard';
+import useWindowWidth from '#/hooks/useWindowWidth';
+import useStore from '#/store/store';
+import isDesktopWidth from '#/utils/isDesktopWidth';
+import { Pagination, Skeleton, ThemeProvider, createTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 const theme = createTheme({
   components: {
     MuiPagination: {
       styleOverrides: {
         root: {
-          display: "flex",
-          justifyContent: "center",
-          marginBlock: "1rem",
+          display: 'flex',
+          justifyContent: 'center',
+          marginBlock: '1rem',
         },
         outlined: {
           button: {
-            fontFamily: "Inter",
-            fontSize: ".8rem",
-            background: "transparent",
-            color: "white",
-            borderColor: "rgba(235, 235, 245, 0.2)",
-            "&:hover": {
+            fontFamily: 'Inter',
+            fontSize: '.8rem',
+            background: 'transparent',
+            color: 'white',
+            borderColor: 'rgba(235, 235, 245, 0.2)',
+            '&:hover': {
               background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
             },
           },
         },
         ul: {
-          gap: ".2rem",
+          gap: '.2rem',
         },
       },
     },
     MuiPaginationItem: {
       styleOverrides: {
         root: {
-          color: "white",
+          color: 'white',
 
-          "&.Mui-selected": {
+          '&.Mui-selected': {
             background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
           },
         },
 
         sizeSmall: {
-          borderRadius: "14px",
-          margin: "0 2px",
-          padding: "0 5px",
-          minWidth: "28px",
-          height: "28px",
+          borderRadius: '14px',
+          margin: '0 2px',
+          padding: '0 5px',
+          minWidth: '28px',
+          height: '28px',
         },
       },
     },
@@ -114,25 +109,21 @@ const Games = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("query");
-  const isSearchbarUsed = Boolean(searchParams.get("query"));
+  const query = searchParams.get('query');
+  const isSearchbarUsed = Boolean(searchParams.get('query'));
   const { games: storedGames, storeGames } = useStore();
   const [page, setPage] = useState(1);
   const {
     data: games,
     isLoading,
     isError,
-  } = useQuery(["/games", page], () => getGames(page), {
+  } = useQuery(['/games', page], () => getGames(page), {
     keepPreviousData: true,
     enabled: !Boolean(query),
   });
-  const { data } = useQuery(
-    ["search", query],
-    () => getGamesBySearchQuery(query || undefined),
-    {
-      enabled: Boolean(query),
-    }
-  );
+  const { data } = useQuery(['search', query], () => getGamesBySearchQuery(query || undefined), {
+    enabled: Boolean(query),
+  });
 
   useEffect(() => {
     if (!!games) {
@@ -144,10 +135,7 @@ const Games = () => {
     }
   }, [games, query, data]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
   return (
@@ -155,18 +143,18 @@ const Games = () => {
       <StyledWrapper>
         {isLoading || isError
           ? Array(8)
-              .fill("")
+              .fill('')
               .map((_, idx) => (
                 <StyledSkeleton
                   key={idx}
                   sx={{
                     backgroundImage:
-                      "linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)",
-                    borderRadius: "1rem ",
+                      'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+                    borderRadius: '1rem ',
                   }}
-                  animation="wave"
-                  variant="rounded"
-                  width={"100%"}
+                  animation='wave'
+                  variant='rounded'
+                  width={'100%'}
                 />
               ))
           : storedGames?.map((game) => (
@@ -183,9 +171,9 @@ const Games = () => {
         {!isSearchbarUsed && (
           <Pagination
             siblingCount={isDesktop ? 1 : 0}
-            size={isDesktop ? "medium" : "small"}
+            size={isDesktop ? 'medium' : 'small'}
             count={games?.totalPages}
-            variant="outlined"
+            variant='outlined'
             page={page}
             onChange={handlePageChange}
           />

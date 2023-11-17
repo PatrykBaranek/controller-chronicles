@@ -63,8 +63,7 @@ const StyledTitleWrapper = styled.div<StyledProps>`
   text-align: center;
   justify-content: center;
   p {
-    color: ${({ isActive, theme }) =>
-      isActive ? '#fff' : theme.colors.primary};
+    color: ${({ isActive, theme }) => (isActive ? '#fff' : theme.colors.primary)};
   }
 `;
 const CarouselPagination = ({ name, image, isActive, onClick }: Props) => {
@@ -74,20 +73,11 @@ const CarouselPagination = ({ name, image, isActive, onClick }: Props) => {
   return (
     <>
       {!isDesktop ? (
-        <StyledPaginationDot
-          isActive={isActive}
-          onClick={onClick}
-        ></StyledPaginationDot>
+        <StyledPaginationDot isActive={isActive} onClick={onClick}></StyledPaginationDot>
       ) : (
-        <StyledPaginationItem
-          isActive={isActive}
-          onClick={onClick}
-        >
+        <StyledPaginationItem isActive={isActive} onClick={onClick}>
           <StyledImageWrapper>
-            <img
-              src={image}
-              alt={`${name} image`}
-            />
+            <img src={image} alt={`${name} image`} />
           </StyledImageWrapper>
           <StyledTitleWrapper isActive={isActive}>
             <p>{name}</p>

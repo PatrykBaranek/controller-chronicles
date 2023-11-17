@@ -1,11 +1,11 @@
-import { getGames, getGamesBySearchQuery } from "#/api/gamesApi";
-import searchIco from "#/assets/searchIco.svg";
-import useStore from "#/store/store";
-import { Alert } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
-import styled from "styled-components";
+import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
+import searchIco from '#/assets/searchIco.svg';
+import useStore from '#/store/store';
+import { Alert } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 type Props = {
   error: string | undefined;
@@ -27,7 +27,7 @@ const StyledSearchbar = styled.form<Props>`
     margin-top: 0;
   }
   span {
-    display: ${({ isEmpty }) => (isEmpty ? "none" : "block")};
+    display: ${({ isEmpty }) => (isEmpty ? 'none' : 'block')};
     cursor: pointer;
     position: absolute;
     left: 5%;
@@ -37,7 +37,7 @@ const StyledSearchbar = styled.form<Props>`
     height: 2px;
     transform: translateY(-50%) rotate(45deg);
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       left: 0;
       top: 50%;
@@ -66,15 +66,10 @@ const StyledSearchbar = styled.form<Props>`
     }
   }
   input {
-    background: linear-gradient(
-      135deg,
-      rgba(15, 85, 232, 0.2) 0%,
-      rgba(157, 223, 243, 0.2) 100%
-    );
+    background: linear-gradient(135deg, rgba(15, 85, 232, 0.2) 0%, rgba(157, 223, 243, 0.2) 100%);
     border-radius: 100vh;
     width: 100%;
-    border: 1px solid
-      ${({ error }) => (error ? "red" : "rgba(255, 255, 255, 0.2)")};
+    border: 1px solid ${({ error }) => (error ? 'red' : 'rgba(255, 255, 255, 0.2)')};
     color: ${({ theme }) => theme.colors.primary};
     text-align: left;
     padding-left: 2rem;
@@ -91,11 +86,11 @@ const StyledSearchbar = styled.form<Props>`
 const Searchbar = () => {
   const { storeGames } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get("query");
-  const [inputValue, setInputValue] = useState(query || "");
+  const query = searchParams.get('query');
+  const [inputValue, setInputValue] = useState(query || '');
   const [error, setError] = useState<string>();
   const { data: games } = useQuery(
-    ["/games", inputValue],
+    ['/games', inputValue],
     () => getGamesBySearchQuery(inputValue),
     {
       enabled: false,
@@ -103,7 +98,7 @@ const Searchbar = () => {
   );
 
   const resetInput = () => {
-    setInputValue("");
+    setInputValue('');
     setSearchParams(undefined);
   };
 
@@ -117,7 +112,7 @@ const Searchbar = () => {
   const searchGames = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputValue.length < 3) {
-      setError("Input should be greater than 3 words");
+      setError('Input should be greater than 3 words');
       return;
     }
     setSearchParams({ query: inputValue });
@@ -131,33 +126,29 @@ const Searchbar = () => {
     <>
       {error && (
         <Alert
-          variant="filled"
-          severity="error"
+          variant='filled'
+          severity='error'
           sx={{
-            color: "#ebebf5bf",
-            position: "absolute",
-            top: "5%",
-            left: "12%",
+            color: '#ebebf5bf',
+            position: 'absolute',
+            top: '5%',
+            left: '12%',
           }}
         >
           {error}
         </Alert>
       )}
-      <StyledSearchbar
-        isEmpty={inputValue.length < 1}
-        error={error}
-        onSubmit={searchGames}
-      >
+      <StyledSearchbar isEmpty={inputValue.length < 1} error={error} onSubmit={searchGames}>
         <span onClick={resetInput}></span>
         <input
-          type="text"
+          type='text'
           onChange={(e) => handleSearchbarChange(e)}
           value={inputValue}
-          aria-label="searchbar"
+          aria-label='searchbar'
         />
 
         <button>
-          <img src={searchIco} alt="Searchbar" />
+          <img src={searchIco} alt='Searchbar' />
         </button>
       </StyledSearchbar>
     </>
