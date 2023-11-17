@@ -1,7 +1,6 @@
 import CollectionCard from './CollectionCard';
 
 const CollectionsDesktop = ({ games, length }: { games: any[]; length: number }) => {
-  console.log(games);
   return (
     <>
       {games.map((game) => (
