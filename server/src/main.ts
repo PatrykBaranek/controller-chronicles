@@ -3,7 +3,6 @@ import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { SpotifyAuthService } from './spotify/spotify-auth/services/spotify-auth.service';
 import scopes from './spotify/constants/scopes';
-import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,8 +11,6 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
-
-  app.use(cookieParser());
 
   const spotifyAuthService = app.get(SpotifyAuthService);
 

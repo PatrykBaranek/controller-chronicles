@@ -1,25 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
+
 import { AuthService } from '../services/auth.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { Request, Response } from 'express';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiCookieAuth,
-} from '@nestjs/swagger';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
+
+import { LoginUserDto } from '../dto/login-user.dto';
+import { AccessTokenGuard } from '../guards/accessToken.guard';
+import { RefreshTokenGuard } from '../guards/refreshToken.guard';
 
 @ApiTags('api/auth')
 @Controller('auth')
@@ -32,45 +20,39 @@ export class AuthController {
     status: 201,
     description: 'The user has been successfully created.',
   })
-  @Post('/signup')
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto);
+  @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
+  async signUp(@Body() createUserDto: CreateUserDto) {
+    return this.authService.signUp(createUserDto);
   }
 
-  @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Log in' })
-  @ApiBody({ description: 'User credentials', type: CreateUserDto })
+  @ApiBody({ description: 'User credentials', type: LoginUserDto })
   @ApiResponse({ status: 200, description: 'Logged in successfully' })
-  @Post('/login')
-  async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const { access_token } = await this.authService.login(req.user);
-    res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
-    });
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Logged in successfully',
-    };
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const result = await this.authService.login(loginUserDto);
+    return result;
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get profile' })
-  @ApiResponse({ status: 200, description: 'Returned user profile' })
-  @ApiCookieAuth('access_token')
-  @Get('/profile')
-  async getProfile(@Req() req) {
-    return req.user;
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  refreshTokens(@Req() req: Request) {
+    const userId = req.user['sub'];
+    const refreshToken = req.user['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 
   @ApiOperation({ summary: 'Log out' })
   @ApiResponse({ status: 200, description: 'Logged out successfully' })
-  @Get('/logout')
-  async logout(@Req() req) {
-    req.res.clearCookie('access_token');
+  @UseGuards(AccessTokenGuard)
+  @Get('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Req() req: Request) {
+    this.authService.logout(req.user['sub']);
     return {
       message: 'Logged out successfully',
     };

@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { UsersService } from './services/users.service';
+import { UsersRepository } from './database/users.repositry';
 import { User, UserSchema } from './models/user.schema';
-import { UsersRepository } from './users.repositry';
-import { HashService } from './hash.service';
+import { UsersController } from './controllers/users.controller';
+
 import { CollectionsModule } from 'src/collections/collections.module';
 
 @Module({
@@ -11,7 +13,8 @@ import { CollectionsModule } from 'src/collections/collections.module';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     CollectionsModule,
   ],
-  providers: [UsersService, UsersRepository, HashService],
-  exports: [UsersService, UsersRepository, HashService],
+  controllers: [UsersController],
+  providers: [UsersService, UsersRepository],
+  exports: [UsersService, UsersRepository],
 })
 export class UsersModule {}
