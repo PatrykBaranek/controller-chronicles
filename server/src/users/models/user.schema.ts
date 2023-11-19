@@ -9,19 +9,22 @@ export class User {
     description: 'User email',
     type: String,
   })
-  @Prop({
-    required: true,
-  })
+  @Prop({ required: true })
   email: string;
 
   @ApiProperty({
     description: 'User password',
     type: String,
   })
-  @Prop({
-    required: true,
-  })
+  @Prop({ required: true, unique: true })
   password: string;
+
+  @ApiProperty({
+    description: 'Refresh token',
+    type: String,
+  })
+  @Prop()
+  refresh_token: string;
 }
 
 export type UserDocument = User & Document;

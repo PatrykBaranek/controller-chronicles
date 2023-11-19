@@ -1,7 +1,6 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CollectionsRepository } from '../database/collections.repository';
 import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
-import { DeleteCollectionDto } from '../dto/delete-collection.dto';
 import { AddGameToCollectionDto } from '../dto/add-game-to-collection.dto';
 import { GamesService } from 'src/games/services/games.service';
 
@@ -13,17 +12,15 @@ export class CollectionsService {
   ) {}
 
   async createDefaultCollections(userId: string) {
-    console.log(userId);
-    return await this.collectionsRepository.createDefaultCollections(userId);
+    await this.collectionsRepository.createDefaultCollections(userId);
   }
 
   async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
-    console.log(userId);
     return await this.collectionsRepository.createCollection(userId, createNewCollectionDto);
   }
 
-  async deleteCollection(deleteCollectionDto: DeleteCollectionDto) {
-    return await this.collectionsRepository.deleteCollection(deleteCollectionDto);
+  async deleteCollection(userId: string, collectionId: string) {
+    return await this.collectionsRepository.deleteCollection(userId, collectionId);
   }
 
   async addGame(userId: string, addGameToCollectionDto: AddGameToCollectionDto) {
@@ -33,7 +30,6 @@ export class CollectionsService {
   }
 
   async getCollections(userId: string) {
-    console.log(userId);
     return await this.collectionsRepository.getCollections(userId);
   }
 }

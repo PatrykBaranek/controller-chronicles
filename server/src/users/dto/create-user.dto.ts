@@ -9,4 +9,6 @@ export class CreateUserDto extends User {
   @IsStrongPassword()
   @IsNotEmpty()
   password: string;
+
+  refresh_token: string;
 }
