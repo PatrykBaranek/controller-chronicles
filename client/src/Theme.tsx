@@ -9,10 +9,8 @@ const theme = {
     secondary: '#ffffff99',
     yellow: '#F4BF4F',
     red: '#ED695E',
-    mainGradient:
-      'linear-gradient(234.73deg, #3c705599 12.85%, #221738 61.83%),#221475',
-    secondaryGradient:
-      'linear-gradient(131.88deg, #A73EE7 14.48%, #00EBFF 83.43%)',
+    mainGradient: 'linear-gradient(234.73deg, #3c705599 12.85%, #221738 61.83%),#221475',
+    secondaryGradient: 'linear-gradient(131.88deg, #A73EE7 14.48%, #00EBFF 83.43%)',
     inputGradient: 'linear-gradient(135deg, #0f55e819 0%, #9ddff319 100%)',
     activeGradient:
       'radial-gradient(50% 128.57% at 50% -36.61%, #3C7055 0%, #52776468 9.38%, transparent 100%)',

@@ -1,17 +1,13 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import {
-  Pagination,
-  Skeleton,
-  ThemeProvider,
-  createTheme,
-} from '@mui/material';
-import { isError, useQuery } from 'react-query';
-import { getGames } from '#/api/gamesApi';
+import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
 import GameCard from '#/components/GameCard/GameCard';
 import useWindowWidth from '#/hooks/useWindowWidth';
-import isDesktopWidth from '#/utils/isDesktopWidth';
 import useStore from '#/store/store';
+import isDesktopWidth from '#/utils/isDesktopWidth';
+import { Pagination, Skeleton, ThemeProvider, createTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
 
 const theme = createTheme({
   components: {
@@ -79,12 +75,14 @@ const StyledWrapper = styled.div`
   grid-template-columns: repeat(1, 1fr);
   row-gap: 2rem;
   @media screen and (min-width: 500px) {
-    padding-top: 2rem;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  @media screen and (min-width: 1000px) {
+
+  @media screen and (min-width: 900px) {
     padding-top: 2rem;
+  }
+  @media screen and (min-width: 1000px) {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
@@ -110,7 +108,10 @@ const StyledSkeleton = styled(Skeleton)`
 const Games = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
-  const { games: storedGames, storeGames, isSeachbarVisible } = useStore();
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
+  const isSearchbarUsed = Boolean(searchParams.get('query'));
+  const { games: storedGames, storeGames } = useStore();
   const [page, setPage] = useState(1);
   const {
     data: games,
@@ -118,18 +119,23 @@ const Games = () => {
     isError,
   } = useQuery(['/games', page], () => getGames(page), {
     keepPreviousData: true,
+    enabled: !Boolean(query),
   });
+  const { data } = useQuery(['search', query], () => getGamesBySearchQuery(query || undefined), {
+    enabled: Boolean(query),
+  });
+
   useEffect(() => {
     if (!!games) {
       storeGames(games.results);
       setPage(games.currentPage);
     }
-  }, [games]);
+    if (!!data) {
+      storeGames(data.results);
+    }
+  }, [games, query, data]);
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
   return (
@@ -138,9 +144,9 @@ const Games = () => {
         {isLoading || isError
           ? Array(8)
               .fill('')
-              .map((_,idx) => (
+              .map((_, idx) => (
                 <StyledSkeleton
-                key={idx}
+                  key={idx}
                   sx={{
                     backgroundImage:
                       'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
@@ -151,7 +157,7 @@ const Games = () => {
                   width={'100%'}
                 />
               ))
-          : storedGames?.map(game => (
+          : storedGames?.map((game) => (
               <GameCard
                 key={game.id}
                 id={game.id}
@@ -162,7 +168,7 @@ const Games = () => {
             ))}
       </StyledWrapper>
       <ThemeProvider theme={theme}>
-        {isSeachbarVisible && (
+        {!isSearchbarUsed && (
           <Pagination
             siblingCount={isDesktop ? 1 : 0}
             size={isDesktop ? 'medium' : 'small'}

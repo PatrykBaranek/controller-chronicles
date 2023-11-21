@@ -33,7 +33,7 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<UserInputs>();
 
-  const onSubmit: SubmitHandler<UserInputs> = async data => {
+  const onSubmit: SubmitHandler<UserInputs> = async (data) => {
     signUp.mutate(data, {
       onSuccess: () => {
         setIsUserRegistered(true);
@@ -75,7 +75,7 @@ const SignUp = () => {
               aria-invalid={errors.email || error ? true : false}
               placeholder='Email'
               {...register('email', {
-                validate: v => validateEmail(v),
+                validate: (v) => validateEmail(v),
               })}
             />
             <p role='alert'>{errors.email?.message}</p>
@@ -87,11 +87,11 @@ const SignUp = () => {
               aria-invalid={errors.password || error ? true : false}
               placeholder='Password'
               {...register('password', {
-                validate: v => validatePassword(v),
+                validate: (v) => validatePassword(v),
               })}
             />
             <img
-              onClick={() => setIsPasswordShown(p => !p)}
+              onClick={() => setIsPasswordShown((p) => !p)}
               src={isPasswordShown ? eye : crossedEye}
               alt='eye icon'
             />

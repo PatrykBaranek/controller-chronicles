@@ -11,25 +11,22 @@ const StyledWrapper = styled.div`
     padding-top: 2rem;
     height: unset;
     padding-inline: 1rem;
+    grid-column-start: 2;
+    grid-column-end: 5;
   }
 `;
 
 const NewReleases = () => {
-  const currentDate = new Date();
   const {
     data: games,
     isLoading,
     isError,
-  } = useQuery(['newReleases'], () => getNewReleasedGames(currentDate), {
+  } = useQuery(['newReleases'], () => getNewReleasedGames(), {
     staleTime: 24 * 60 * 60 * 1000,
   });
   return (
     <StyledWrapper>
-      <Carousel
-        newReleases={games?.results}
-        isLoading={isLoading}
-        isError={isError}
-      />
+      <Carousel newReleases={games?.results} isLoading={isLoading} isError={isError} />
     </StyledWrapper>
   );
 };

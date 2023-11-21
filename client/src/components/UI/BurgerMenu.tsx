@@ -51,10 +51,7 @@ const BurgerMenu = () => {
   const { isMenuOpen, toggleMenuOpen } = useStore();
 
   return (
-    <StyledBurgerMenu
-      isOpen={isMenuOpen}
-      onClick={toggleMenuOpen}
-    >
+    <StyledBurgerMenu isOpen={isMenuOpen} onClick={toggleMenuOpen}>
       <span></span>
     </StyledBurgerMenu>
   );
