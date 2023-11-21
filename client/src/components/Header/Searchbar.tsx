@@ -84,18 +84,10 @@ const StyledSearchbar = styled.form<Props>`
 `;
 
 const Searchbar = () => {
-  const { storeGames } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query');
   const [inputValue, setInputValue] = useState(query || '');
   const [error, setError] = useState<string>();
-  const { data: games } = useQuery(
-    ['/games', inputValue],
-    () => getGamesBySearchQuery(inputValue),
-    {
-      enabled: false,
-    }
-  );
 
   const resetInput = () => {
     setInputValue('');
@@ -117,10 +109,6 @@ const Searchbar = () => {
     }
     setSearchParams({ query: inputValue });
   };
-
-  useEffect(() => {
-    !!games && storeGames(games.results);
-  }, [games]);
 
   return (
     <>
