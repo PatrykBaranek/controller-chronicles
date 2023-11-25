@@ -16,8 +16,8 @@ const Home = () => {
   return (
     <StyledHome>
       <Bestsellers />
-      <VideoSlider variant='review' heading='Reviews' />
-      <VideoSlider variant='trailer' heading='Trailers' />
+      <VideoSlider variant='review' heading='Latests Reviews' />
+      <VideoSlider variant='trailer' heading='Upcoming Game Trailers' />
     </StyledHome>
   );
 };

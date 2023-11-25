@@ -8,7 +8,8 @@ import { GamesRepository }         from 'src/games/database/games.repository';
 import { GetGameVideoReviewDto }   from '../dto/get-game-video-review.dto';
 import { GetVideosByDateRangeDto } from '../dto/get-videos-by-date-range.dto';
 
-import { VideoType, REVIEW_CHANNEL_IDS, YoutubeUtilityService } from '../util/youtube-utility.service';
+import { VideoType, YoutubeUtilityService } from '../util/youtube-utility.service';
+import { Game, GameDocument } from 'src/games/models/game.schema';
 
 const DAY_DIFFERENCE_THRESHOLD = 7;
 
@@ -28,69 +29,76 @@ export class YoutubeService {
 
   async getGameVideosByGameId(getGameVideoReviewDto: GetGameVideoReviewDto): Promise<SearchResultDto[]> {
     const { gameId, videoType } = getGameVideoReviewDto;
+
     const videos = await this.getOrFetchGameVideos(gameId, videoType);
+
     return videos;
   }
 
   async getVideosByDateRange(getVideosByDateRangeDto: GetVideosByDateRangeDto): Promise<SearchResultDto[]> {
-    const { fromDate, toDate, videoType, reviewChannels } = getVideosByDateRangeDto;
+    const { fromDate, toDate, videoType, gamesCount } = getVideosByDateRangeDto;
 
     const dateQuery = `${fromDate},${toDate}`;
 
-    const games = await this.gamesService.getGames({ page: 1, page_size: 5, dates: dateQuery });
+    const games = await this.gamesService.getGames({ page: 1, page_size: gamesCount, dates: dateQuery });
 
     const videos = await Promise.all(games.results.map(async (game) => {
-      if (reviewChannels && videoType === VideoType.REVIEW) {
-        return await this.getGameVideoReviewByGameIdByAllChannels(game.id);
-      } else {
-        return await this.getOrFetchGameVideos(game.id, videoType);
-      }
+      return await this.getOrFetchGameVideos(game.id, videoType);
     }));
 
     return videos.flat();
   }
 
-  private async getGameVideoReviewByGameIdByAllChannels(id: number): Promise<SearchResultDto[]> {
-    const allChannelIds = Object.values(REVIEW_CHANNEL_IDS);
-    const videos = await Promise.all(allChannelIds.map(channelId =>
-      this.getOrFetchGameVideos(id, VideoType.REVIEW, { channelId })
-    ));
-
-    return videos.flat();
-  }
-
   private async getOrFetchGameVideos(gameId: number, videoType: VideoType, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
-    const gameInDb       = await this.youtubeUtilityService.fetchGame(gameId, videoType);
-    const searchQuery    = this.youtubeUtilityService.constructQuery(gameInDb.rawgGame.name, videoType);
+    const gameInDb = await this.youtubeUtilityService.fetchGame(gameId, videoType);
     const videoFieldName = this.youtubeUtilityService.getVideoFieldName(videoType);
 
-    const dayDifference = differenceInDays(new Date(), gameInDb.updatedAt);
+    const cachedVideos = this.getCachedVideosIfValid(gameInDb, videoFieldName);
+    if (cachedVideos) {
+      return cachedVideos;
+    }
 
-    if (gameInDb[videoFieldName] && dayDifference <= DAY_DIFFERENCE_THRESHOLD) {
+    return this.fetchAndUpdateGameVideos(gameInDb, videoFieldName, videoType, apiParams);
+  }
+
+  private getCachedVideosIfValid(gameInDb: Game, videoFieldName: keyof GameDocument): SearchResultDto[] | null {
+    const dayDifference = differenceInDays(new Date(), gameInDb.updatedAt);
+    const isCacheValid = gameInDb[videoFieldName]?.length > 0 && dayDifference <= DAY_DIFFERENCE_THRESHOLD;
+
+    if (isCacheValid) {
+      this.logger.log(`Using cached ${videoFieldName} for game ${gameInDb.rawgGame.name}`);
       return gameInDb[videoFieldName];
     }
 
+    return null;
+  }
+
+  private async fetchAndUpdateGameVideos(gameInDb: Game, videoFieldName: keyof GameDocument, videoType: VideoType, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
     try {
       this.logger.log(`Fetching ${videoType} for game ${gameInDb.rawgGame.name}`);
-      const videos       = await this.youtubeSearch(gameId, searchQuery, apiParams);
-      let filteredVideos = this.youtubeUtilityService.filterResults(gameInDb.rawgGame.name, videos);
+      const searchQuery = this.youtubeUtilityService.constructQuery(gameInDb.rawgGame.name, videoType);
+      const videos = await this.youtubeSearch(gameInDb._id, searchQuery, apiParams);
+      let filteredVideos = this.youtubeUtilityService.filterResults(videos, videoType);
 
-      if (gameInDb[videoFieldName] != null) {
-        const existingVideoLinks = new Set(gameInDb[videoFieldName].map(video => video.link));
+      filteredVideos = this.mergeWithExistingVideos(filteredVideos, gameInDb[videoFieldName]);
+      await this.gamesRepository.updateGame(gameInDb._id, { [videoFieldName]: filteredVideos });
 
-        filteredVideos = videos.filter(video => !existingVideoLinks.has(video.link));
-
-        filteredVideos = [...gameInDb[videoFieldName], ...filteredVideos];
-      }
-
-      await this.gamesRepository.updateGame(gameId, { [videoFieldName]: filteredVideos });
-
-      return filteredVideos.map(video => ({ ...video, gameId }));
+      return filteredVideos.map(video => ({ ...video, gameId: gameInDb._id }));
     } catch (err) {
       this.logger.error(`Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`);
       return gameInDb[videoFieldName] ?? [];
     }
+  }
 
+  private mergeWithExistingVideos(newVideos: SearchResultDto[], existingVideos?: SearchResultDto[]): SearchResultDto[] {
+    if (!existingVideos) {
+      return newVideos;
+    }
+
+    const existingVideoLinks = new Set(existingVideos.map(video => video.link));
+    const uniqueNewVideos = newVideos.filter(video => !existingVideoLinks.has(video.link));
+
+    return [...existingVideos, ...uniqueNewVideos];
   }
 
   private async youtubeSearch(gameId: number, query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
@@ -105,9 +113,10 @@ export class YoutubeService {
         maxResults: MAX_RESULTS,
         ...apiParams,
       };
-      
+
       const response = await this.youtube.search.list(requestOptions);
       return response.data.items.map((item) => ({
+        game_id: gameId,
         title: item.snippet?.title,
         thumbnail: item.snippet?.thumbnails?.high?.url,
         author: item.snippet?.channelTitle,

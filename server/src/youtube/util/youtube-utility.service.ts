@@ -27,10 +27,7 @@ export class YoutubeUtilityService {
 
   async fetchGame(id: number, videoType: VideoType): Promise<Game> {
     const game = await this.gamesService.getGameById(id);
-    if (
-      videoType === VideoType.REVIEW &&
-      isBefore(new Date(), new Date(game.rawgGame.released))
-    ) {
+    if (videoType === VideoType.REVIEW && isBefore(new Date(), new Date(game.rawgGame.released))) {
       throw new NotFoundException('Game not released yet');
     }
     return game;
@@ -43,20 +40,11 @@ export class YoutubeUtilityService {
     return `${gameName} Official Game Trailer`;
   }
 
-  filterResults(
-    gameName: string,
-    videos: SearchResultDto[],
-  ): SearchResultDto[] {
-    const filteredVideos = videos.filter((video) =>
-      video.title
-        .toLowerCase()
-        .includes(gameName.toLowerCase() && VideoType.REVIEW.toLowerCase()),
+  filterResults(videos: SearchResultDto[], videoType: VideoType): SearchResultDto[] {  
+    const filteredVideos = videos.filter(video =>
+      video.title.toLowerCase().includes(videoType),
     );
 
-    if (filteredVideos.length === 0) {
-      return videos;
-    }
-
-    return filteredVideos;
+    return filteredVideos.length > 0 ? filteredVideos : [];
   }
 }
