@@ -40,15 +40,11 @@ export class YoutubeUtilityService {
     return `${gameName} Official Game Trailer`;
   }
 
-  filterResults(gameName: string, videos: SearchResultDto[]): SearchResultDto[] {
-    const filteredVideos = videos.filter(
-      (video) => video.title.toLowerCase().includes(gameName.toLowerCase()) && video.title.toLowerCase().includes('review'),
+  filterResults(videos: SearchResultDto[], videoType: VideoType): SearchResultDto[] {  
+    const filteredVideos = videos.filter(video =>
+      video.title.toLowerCase().includes(videoType),
     );
 
-    if (filteredVideos.length === 0) {
-      return videos;
-    }
-
-    return filteredVideos;
+    return filteredVideos.length > 0 ? filteredVideos : [];
   }
 }

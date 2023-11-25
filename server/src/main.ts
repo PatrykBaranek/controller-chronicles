@@ -5,10 +5,9 @@ import { SpotifyAuthService } from './spotify/spotify-auth/services/spotify-auth
 import scopes from './spotify/constants/scopes';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    snapshot: true,
-    cors: true,
-  });
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
 
   app.setGlobalPrefix('api');
 
