@@ -1,7 +1,7 @@
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from '../auth/auth.module';
@@ -28,7 +28,13 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     SpotifyModule,
     ReviewsSitesModule,
     AuthModule,

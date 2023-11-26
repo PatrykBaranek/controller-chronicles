@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
 import SpotifyWebApi from 'spotify-web-api-node';
 import scopes from '../../constants/scopes';
 
@@ -10,7 +12,9 @@ export class SpotifyAuthService {
     return this.spotifyApi;
   }
 
-  constructor() {
+  constructor(
+    private readonly configService: ConfigService,
+  ) {
     this.initializeSpotifyApi();
   }
 
@@ -20,8 +24,8 @@ export class SpotifyAuthService {
 
   private initializeSpotifyApi() {
     this.spotifyApi = new SpotifyWebApi({
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      clientId: this.configService.get<string>('SPOTIFY_CLIENT_ID'),
+      clientSecret: this.configService.get<string>('SPOTIFY_CLIENT_SECRET'),
       redirectUri: 'http://localhost:3000/api/spotify/auth/callback',
     });
   }
