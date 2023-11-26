@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService }      from '@nestjs/config';
 import { google, youtube_v3 } from 'googleapis';
 import { differenceInDays }   from 'date-fns';
 
@@ -22,6 +23,7 @@ export class YoutubeService {
   private readonly youtube = google.youtube('v3');
 
   constructor(
+    private readonly configService:         ConfigService,
     private readonly gamesService:          GamesService,
     private readonly gamesRepository:       GamesRepository,
     private readonly youtubeUtilityService: YoutubeUtilityService,
@@ -104,7 +106,7 @@ export class YoutubeService {
   private async youtubeSearch(gameId: number, query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
     try {
       const requestOptions: youtube_v3.Params$Resource$Search$List = {
-        key: process.env.YOUTUBE_API_KEY,
+        key: this.configService.get<string>('YOUTUBE_API_KEY'),
         q: query,
         part: ['snippet'],
         type: ['video'],

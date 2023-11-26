@@ -1,4 +1,5 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { AxiosResponse } from 'axios';
 import { plainToInstance } from 'class-transformer';
@@ -17,58 +18,58 @@ import { GetGameStoresResponse } from 'src/rawg/types/rawg-game-stores-response'
 
 @Injectable()
 export class RawgApiGamesService extends RawgApiService {
-  constructor(protected readonly httpService: HttpService) {
+  constructor(
+    protected readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+    ) {
     super(httpService, 'games');
   }
 
+  protected get rawgApiKey() {
+    return this.configService.get<string>('RAWG_API_KEY');
+  }
+
   async getGames(options?: GetGameQueryParamsDto) {
-    const { page, page_size, stores, metacritic, ordering, search, tags, dates } = options;
+      const { page, page_size } = options;
+      
+      const params: Record<string, string> = Object.entries(options).reduce((acc, [key, value]) => {
+        if (value) {
+          acc[key] = String(value);
+        }
+        return acc;
+      }, {});
 
-    const params: Record<string, string> = {
-      key: process.env.RAWG_API_KEY,
-      ...(page && { page: String(page) }),
-      ...(page_size && { page_size: String(page_size) }),
-      ...(stores && { stores }),
-      ...(metacritic && { metacritic: metacritic }),
-      ...(ordering && { ordering: String(ordering) }),
-      ...(tags && { tags: tags.toLowerCase() }),
-      ...(search && { search }),
-      ...(dates && { dates: dates }),
-    };
+      params.key = this.rawgApiKey;
 
-    const httpParams = new URLSearchParams(params);
+      const httpParams = new URLSearchParams(params);
 
-    const url = `${this.rawgApiUrl}`;
+      const url = `${this.rawgApiUrl}`;
 
-    const response: AxiosResponse = await this.httpService.axiosRef.get<RawgGameResponse>(url, {
-      params: httpParams,
-    });
+      const response: AxiosResponse = await this.httpService.axiosRef.get<RawgGameResponse>(url, {
+        params: httpParams,
+      });
 
-    return paginateResponse(response, page, page_size, RawgGameResponseDto, {
-      showTotalPages: true,
-    });
+      return paginateResponse(response, page, page_size, RawgGameResponseDto, {
+        showTotalPages: true,
+      });
   }
 
   async getGameById(id: number) {
-    try {
       const response = await this.httpService.axiosRef.get<RawgGameResponse>(
-        `${this.rawgApiUrl}/${id}?key=${process.env.RAWG_API_KEY}`,
+        `${this.rawgApiUrl}/${id}?key=${this.rawgApiKey}`,
       );
 
       return plainToInstance(RawgGameSingleResponseDto, response.data);
-    } catch (error) {
-      throw new HttpException(error.response.data, error.response.status);
-    }
   }
 
   async getGameStoresByGameId(id: number) {
     const gameStores =
       await this.httpService.axiosRef.get<GetGameStoresResponse>(
-        `${this.rawgApiUrl}/${id}/stores?key=${process.env.RAWG_API_KEY}`,
+        `${this.rawgApiUrl}/${id}/stores?key=${this.rawgApiKey}`,
       );
 
     const stores = await this.httpService.axiosRef.get<GetStoresResponse>(
-      `https://api.rawg.io/api/stores?key=${process.env.RAWG_API_KEY}`,
+      `https://api.rawg.io/api/stores?key=${this.rawgApiKey}`,
     );
 
     const result = gameStores.data.results.map((store) => {
