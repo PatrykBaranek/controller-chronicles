@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import GameDetails from './pages/GameDetails';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'games',
         element: <Games />,
-        children: [{ path: ':id', element: <h1>game :id</h1> }],
+      },
+      {
+        path: 'games/:id',
+        element: <GameDetails />,
       },
       { path: 'podcasts', element: <h1>podcasts</h1> },
       { path: 'login', element: <Login /> },
@@ -35,13 +39,14 @@ const router = createBrowserRouter([
       {
         path: '/profile',
         element: <Profile />,
-        children: [
-          {
-            path: 'collections',
-            element: <h1>collections</h1>,
-            children: [{ path: ':id', element: <h1>collections :id</h1> }],
-          },
-        ],
+      },
+      {
+        path: '/profile/collections',
+        element: <h1>collections</h1>,
+      },
+      {
+        path: '/profile/collections/:id',
+        element: <h1>collection</h1>,
       },
     ],
   },
