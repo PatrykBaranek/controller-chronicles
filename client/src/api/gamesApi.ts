@@ -25,7 +25,9 @@ export const getGames = async (page = 1, pageSize = 8): Promise<GamesResponse> =
 
   return response.data;
 };
-export const getGameById = async (id: number | undefined): Promise<GameDetailsResponse> => {
+export const getGameById = async (
+  id: number | undefined | string
+): Promise<GameDetailsResponse> => {
   const response = await gamesApi.get(`/games/${id}`);
 
   return response.data;
@@ -104,7 +106,7 @@ export const getNewestYoutubeVideos = async (
   }
   try {
     const response = await gamesApi.get(
-      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&gamesCount=8`
+      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&gamesCount=5`
     );
 
     return await response.data;
