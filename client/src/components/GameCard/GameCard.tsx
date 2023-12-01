@@ -59,7 +59,7 @@ const StyledDescription = styled.div`
 `;
 
 const GameCard = ({ id, image, title, rating }: Gamecard) => {
-  const { data, isError, isLoading } = useQuery(['/games/:id', id], () => getGameById(id));
+  const { data, isError, isLoading } = useQuery(['gameCard', id], () => getGameById(id));
   const description = data && data.rawgGame.description_raw;
 
   return (
