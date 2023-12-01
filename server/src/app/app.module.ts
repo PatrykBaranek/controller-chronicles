@@ -12,12 +12,13 @@ import { GamesModule } from '../games/games.module';
 import { GamesUpdateModule } from '../games-update/games-update.module';
 import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
 import { SpotifyModule } from '../spotify/spotify.module';
-import { SteamModule } from 'src/steam/steam.module';
-import { YoutubeModule } from 'src/youtube/youtube.module';
 
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './filters/global-exception.filter';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
+import { YoutubeModule } from 'src/youtube/youtube.module';
+import { SteamModule } from 'src/steam/steam.module';
+import { RssModule } from 'src/rss/rss.module';
 
 @Module({
   imports: [
@@ -42,10 +43,12 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
     AuthModule,
     CollectionsModule,
     GamesModule,
+    GamesUpdateModule,
     SteamModule,
     YoutubeModule,
     GamesUpdateModule,
-    EmailModule
+    EmailModule,
+    RssModule
   ],
   providers: [
     {
