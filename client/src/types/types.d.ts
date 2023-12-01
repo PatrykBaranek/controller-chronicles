@@ -67,9 +67,10 @@ export type Games = {
 };
 
 export type GameDetailsResponse = {
-  game_id: number;
   rawgGame: RawgGameDetails;
   howLongToBeat: HLTB;
+  video_reviews: YoutubeVideo[];
+  game_trailers: YoutubeVideo[];
   __v: number;
   _id: string;
 };
