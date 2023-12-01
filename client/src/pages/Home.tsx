@@ -1,5 +1,4 @@
 import Bestsellers from '#/components/Bestsellers/Bestsellers';
-import NewReleases from '#/components/NewReleases/NewReleases';
 import VideoSlider from '#/components/UI/VideoSlider';
 import styled from 'styled-components';
 
