@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { SteamBestSellers, SteamBestSellersDocument } from './models/steam-bestsellers.schema';
-import { SteamReviews, SteamReviewsDocument} from './models/steam-reviews.schema';
+import { SteamBestSellers, SteamBestSellersDocument } from '../models/steam-bestsellers.schema';
+import { SteamReviews, SteamReviewsDocument} from '../models/steam-reviews.schema';
 import { Game, GameDocument } from 'src/games/models/game.schema';
-import { SteamPlayersInGame } from './models/steam-players-in-game.schema';
+import { SteamPlayersInGame } from '../models/steam-players-in-game.schema';
 
 @Injectable()
 export class SteamRepository {

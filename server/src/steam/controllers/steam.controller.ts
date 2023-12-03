@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { SteamBestSellersService } from './services/steam-bestsellers/steam-bestsellers.service';
-import { SteamReviewsService } from './services/steam-reviews/steam-reviews.service';
-import { SteamPlayersInGameService } from './services/steam-players-in-game/steam-players-in-game.service';
+import { SteamBestSellersService } from '../services/steam-bestsellers/steam-bestsellers.service';
+import { SteamReviewsService } from '../services/steam-reviews/steam-reviews.service';
+import { SteamPlayersInGameService } from '../services/steam-players-in-game/steam-players-in-game.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/steam')

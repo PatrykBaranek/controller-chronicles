@@ -4,7 +4,11 @@ import { isBefore } from "date-fns";
 
 import { GamesService } from "src/games/services/games.service";
 import { Game } from "src/games/models/game.schema";
-import { SteamRepository } from "../steam.repository";
+import { SteamRepository } from "../database/steam.repository";
+import { SteamReviews } from "../models/steam-reviews.schema";
+import { SteamReviewsDto } from "../dto/steam-reviews.dto";
+import { SteamPlayersCountInGameDto } from "../dto/steam-players-in-game.dto";
+import { SteamPlayersInGame } from "../models/steam-players-in-game.schema";
 
 const SELECTORS = {
   approveAgeGateButton: '.age_gate',
@@ -22,8 +26,8 @@ export class SteamUtilityService {
   ) { }
 
   public async checkIfGameIsReleased(game: Game) {
-    if (isBefore(Date.now(), new Date(game.rawgGame.released))) {
-      throw new NotFoundException('Game is not released yet');
+    if (isBefore(new Date(), new Date(game.rawgGame.released))) {
+      throw new NotFoundException('Game is not released yet ' + game._id);
     }
   }
 
@@ -78,5 +82,23 @@ export class SteamUtilityService {
 
   public async extractTextContent(page: Page, element: ElementHandle<Element>): Promise<string> {
     return await page.evaluate((el) => el.textContent, element);
+  }
+
+  public mapToSteamReviewsDto(steamReviews: SteamReviews): SteamReviewsDto {
+    const dto = new SteamReviewsDto();
+
+    dto.reviewsSummaryFrom30Days = steamReviews?.reviewsSummaryFrom30Days;
+    dto.reviewsSummaryOverall = steamReviews?.reviewsSummaryOverall;
+
+    return dto;
+  }
+
+  public mapToSteamPlayersCountInGameDto(steamPlayersInGame: SteamPlayersInGame): SteamPlayersCountInGameDto {
+    const dto = new SteamPlayersCountInGameDto();
+
+    dto.playersCount = steamPlayersInGame?.playersCount;
+    dto.updatedAt = steamPlayersInGame?.updatedAt;
+
+    return dto;
   }
 }

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService }      from '@nestjs/config';
 import { google, youtube_v3 } from 'googleapis';
 import { differenceInDays }   from 'date-fns';
+import { plainToInstance } from 'class-transformer';
 
 import { SearchResultDto }         from '../dto/search-result.dto';
 import { GamesService }            from 'src/games/services/games.service';
@@ -11,6 +12,7 @@ import { GetVideosByDateRangeDto } from '../dto/get-videos-by-date-range.dto';
 
 import { VideoType, YoutubeUtilityService } from '../util/youtube-utility.service';
 import { Game, GameDocument } from 'src/games/models/game.schema';
+import { YoutubeVideo } from '../models/youtube-video.schema';
 import { DeleteVideoDto } from '../dto/delete-video.dto';
 
 const DAY_DIFFERENCE_THRESHOLD = 7;
@@ -24,9 +26,9 @@ export class YoutubeService {
   private readonly youtube = google.youtube('v3');
 
   constructor(
-    private readonly configService:         ConfigService,
-    private readonly gamesService:          GamesService,
-    private readonly gamesRepository:       GamesRepository,
+    private readonly configService: ConfigService,
+    private readonly gamesService: GamesService,
+    private readonly gamesRepository: GamesRepository,
     private readonly youtubeUtilityService: YoutubeUtilityService,
   ) {}
 
@@ -104,9 +106,9 @@ export class YoutubeService {
       let filteredVideos = this.youtubeUtilityService.filterResults(videos, videoType);
 
       filteredVideos = this.mergeWithExistingVideos(filteredVideos, gameInDb[videoFieldName]);
-      await this.gamesRepository.updateGame(gameInDb._id, { [videoFieldName]: filteredVideos });
+      await this.saveGameVideos(gameInDb._id, filteredVideos, videoFieldName);
 
-      return filteredVideos.map(video => ({ ...video, gameId: gameInDb._id }));
+      return filteredVideos;
     } catch (err) {
       this.logger.error(`Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`);
       return gameInDb[videoFieldName] ?? [];
@@ -122,6 +124,12 @@ export class YoutubeService {
     const uniqueNewVideos = newVideos.filter(video => !existingVideoLinks.has(video.link));
 
     return [...existingVideos, ...uniqueNewVideos];
+  }
+
+  private async saveGameVideos(gameId: number, videos: SearchResultDto[], videoFieldName: keyof GameDocument): Promise<void> {
+    const youtubeVideos = videos.map(videoDto => plainToInstance(YoutubeVideo, videoDto));
+
+    await this.gamesRepository.updateGame(gameId, { [videoFieldName]: youtubeVideos });
   }
 
   private async youtubeSearch(gameId: number, query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
@@ -144,7 +152,6 @@ export class YoutubeService {
         thumbnail: item.snippet?.thumbnails?.high?.url,
         author: item.snippet?.channelTitle,
         link: `https://www.youtube.com/embed/${item.id?.videoId}`,
-        gameId
       }));
     } catch (err) {
       this.logger.error(`Error fetching videos from Youtube: ${err} for query ${query}`);

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ElementHandle, Page } from 'puppeteer';
 import { HowLongToBeatService as HLTBService, HowLongToBeatEntry } from 'howlongtobeat';
 
@@ -22,10 +22,11 @@ export class HowLongToBeatService {
     this.hltbService = new HLTBService();
   }
 
-  async getGameByName(gameName: string): Promise<HowLongToBeatResponseDto> {
+  async getGameByName(gameName: string): Promise<Partial<HowLongToBeatResponseDto>> {
     try {
       this.logger.log(`Searching for ${gameName} in HLTB API`);
       const hltbGame = await this.hltbService.search(gameName);
+
       return this.mapHltbGameToResponseDto(hltbGame[0]);
     } catch (err) {
       this.logger.log('Game not found in HLTB API, scraping game details');
@@ -42,21 +43,23 @@ export class HowLongToBeatService {
     };
   }
 
-  private async scrapeGameDetails(gameName: string): Promise<HowLongToBeatResponseDto> {
+  private async scrapeGameDetails(gameName: string): Promise<Partial<HowLongToBeatResponseDto>> {
     return this.puppeteerService.withBrowser(async (browser) => {
-
       const page = await this.puppeteerService.createPage(browser, this.HLTB_SEARCH_URL + gameName);
 
       const HltbSearchResults = await this.getSearchResults(page);
 
       for (const result of HltbSearchResults) {
-
         const HltbGameTitle = await this.getGameTitle(result);
 
-        if (this.isMatchingGame(HltbGameTitle, gameName)) {
-          return this.getGameDetails(result, HltbGameTitle);
+        if (!this.isMatchingGame(HltbGameTitle, gameName)) {
+          return { notFoundOnHltb: true };
         }
+
+        return this.getGameDetails(result, HltbGameTitle);
       }
+
+      return { notFoundOnHltb: true };
     });
   }
 
@@ -80,7 +83,7 @@ export class HowLongToBeatService {
     const gameplayMain = this.parseOrZero(gameplayTimeElements[0]);
     const gameplayMainExtra = this.parseOrZero(gameplayTimeElements[1]);
     const gameplayCompletionist = this.parseOrZero(gameplayTimeElements[2]);
-    
+
     return {
       name: HltbGameTitle,
       gameplayMain,

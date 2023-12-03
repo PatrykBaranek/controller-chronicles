@@ -14,9 +14,9 @@ import { SteamReviews, SteamReviewsSchema } from './models/steam-reviews.schema'
 import { SteamPlayersInGameService } from './services/steam-players-in-game/steam-players-in-game.service';
 import { SteamPlayersInGameSchema } from './models/steam-players-in-game.schema';
 
-import { SteamRepository } from './steam.repository';
+import { SteamRepository } from './database/steam.repository';
 import { SteamUtilityService } from './util/steam-utility.service';
-import { SteamController } from './steam.controller';
+import { SteamController } from './controllers/steam.controller';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { SteamController } from './steam.controller';
       { name: SteamPlayersInGameService.name, schema: SteamPlayersInGameSchema },
       { name: Game.name, schema: GameSchema },
     ]),
-    GamesModule,
+    forwardRef(() => GamesModule),
     PuppeteerModule,
   ],
   providers: [

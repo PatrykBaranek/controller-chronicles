@@ -32,9 +32,9 @@ export class GamesRepository {
     const games = this.filterEmptyGameProperties(gamesToUpdate);
       
     const updateOperations = games.map(game => ({
-      updateMany: {
+      updateOne: {
         filter: { _id: game._id },
-        update: { $set: { ...game } },
+        update: { $set: game },
       }
     }));
       
@@ -42,11 +42,11 @@ export class GamesRepository {
   }
 
   async getRecentGames(): Promise<Game[]> {
-    const oneWeekAgo = subDays(new Date(), 7);
+    const sevenDaysAgo = subDays(new Date(), 7);
 
     // We can get only 10 games per due to rate limits youtube api
     const games = await this.gameModel.find({
-      updatedAt: { $gte: oneWeekAgo },
+      updatedAt: { $lt: sevenDaysAgo },
     }).limit(10);
 
     return games;

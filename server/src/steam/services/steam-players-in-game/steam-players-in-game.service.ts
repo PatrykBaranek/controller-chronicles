@@ -1,12 +1,15 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { ElementHandle, Page } from "puppeteer";
+import { Injectable, Logger } from '@nestjs/common';
+import { ElementHandle, Page } from 'puppeteer';
+import { differenceInHours } from 'date-fns';
 
-import { GamesService } from "src/games/services/games.service";
-import { PuppeteerService } from "src/puppeteer/services/puppeteer.service";
+import { GamesService } from 'src/games/services/games.service';
+import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
-import { SteamUtilityService } from "../../util/steam-utility.service";
-import { SteamPlayersCountInGameDto } from "../../dto/steam-players-in-game.dto";
-import { SteamRepository } from "../../steam.repository";
+import { SteamUtilityService } from '../../util/steam-utility.service';
+import { SteamPlayersCountInGameDto } from '../../dto/steam-players-in-game.dto';
+import { GamesRepository } from 'src/games/database/games.repository';
+import { plainToInstance } from 'class-transformer';
+import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
 
 const SELECTORS = {
   communityButton: '.apphub_HomeHeaderContent a.btnv6_blue_hoverfade.btn_medium',
@@ -20,12 +23,17 @@ export class SteamPlayersInGameService {
   constructor(
     private readonly puppeteerService: PuppeteerService,
     private readonly gamesService: GamesService,
-    private readonly steamRepository: SteamRepository,
+    private readonly gamesRepository: GamesRepository,
     private readonly steamUtilityService: SteamUtilityService,
   ) { }
 
   async getSteamPlayersCountByGameId(id: number): Promise<SteamPlayersCountInGameDto> {
     const game = await this.gamesService.getGameById(id);
+    const now = new Date();
+
+    if (game.steam_players_in_game && differenceInHours(now, new Date(game.steam_players_in_game?.updatedAt)) < 3) {
+      return this.steamUtilityService.mapToSteamPlayersCountInGameDto(game.steam_players_in_game);
+    }
 
     await this.steamUtilityService.checkIfGameIsReleased(game);
 
@@ -33,10 +41,9 @@ export class SteamPlayersInGameService {
 
     const scrapedData = await this.scrapeGamePlayersInGame(steamUrl);
 
-    return {
-      playersCount: scrapedData.playersCount,
-      updatedAt: new Date(),
-    };
+    await this.gamesRepository.updateGame(id, { steam_players_in_game: plainToInstance(SteamPlayersInGame, scrapedData) })
+
+    return plainToInstance(SteamPlayersCountInGameDto, scrapedData);
   }
 
   private async scrapeGamePlayersInGame(steamUrl: string): Promise<SteamPlayersCountInGameDto> {
@@ -68,13 +75,19 @@ export class SteamPlayersInGameService {
   private async extractPlayersCount(page: Page): Promise<SteamPlayersCountInGameDto> {
     try {
       const playersCountElement = await page.waitForSelector(SELECTORS.playersCount);
+      if (!playersCountElement) {
+        return null;
+      }
       const playersCountRawText = await this.steamUtilityService.extractTextContent(page, playersCountElement);
       const playersCount = Number(playersCountRawText.split(' ')[0].replace(',', ''));
 
-      return { playersCount };
+      return { 
+        playersCount,
+        updatedAt: new Date(),
+      };
     } catch (error) {
       this.logger.error(error);
-      return { playersCount: 0 };
+      return null;
     }
   }
 }
