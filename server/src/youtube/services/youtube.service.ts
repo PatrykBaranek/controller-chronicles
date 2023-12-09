@@ -11,6 +11,7 @@ import { GetVideosByDateRangeDto } from '../dto/get-videos-by-date-range.dto';
 
 import { VideoType, YoutubeUtilityService } from '../util/youtube-utility.service';
 import { Game, GameDocument } from 'src/games/models/game.schema';
+import { DeleteVideoDto } from '../dto/delete-video.dto';
 
 const DAY_DIFFERENCE_THRESHOLD = 7;
 
@@ -49,6 +50,26 @@ export class YoutubeService {
     }));
 
     return videos.flat();
+  }
+
+  async deleteVideo(deleteVideoDto: DeleteVideoDto) {
+    const { gameId, videoId, videoType } = deleteVideoDto;
+
+    const gameInDb = await this.gamesRepository.findGame(gameId);
+
+    if (!gameInDb) {
+      throw new Error(`Game with id ${gameId} not found`);
+    }
+
+    if (videoType === VideoType.REVIEW) {
+      const videoReviews = gameInDb.video_reviews.filter(video => !video.link.includes(videoId));
+      await this.gamesRepository.updateGame(gameId, { video_reviews: videoReviews });
+    }
+
+    if (videoType === VideoType.TRAILER) {
+      const gameTrailers = gameInDb.game_trailers.filter(video => !video.link.includes(videoId));
+      await this.gamesRepository.updateGame(gameId, { game_trailers: gameTrailers });
+    }
   }
 
   private async getOrFetchGameVideos(gameId: number, videoType: VideoType, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
