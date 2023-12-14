@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PuppeteerService } from '../../../puppeteer/services/puppeteer.service';
-import { SteamRepository } from '../../steam.repository';
+import { SteamRepository } from '../../database/steam.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { SteamBestSellers } from '../../models/steam-bestsellers.schema';
 import { SteamUtilityService } from '../../util/steam-utility.service';

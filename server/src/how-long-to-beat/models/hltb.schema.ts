@@ -23,4 +23,10 @@ export class HowLongToBeat {
   })
   @Prop({ required: true, min: 0 })
   gameplayCompletionist: number;
+
+  @Prop({ required: false, default: false })
+  notFoundOnHltb?: boolean;
+
+  updatedAt: Date;
+  createdAt: Date;
 }

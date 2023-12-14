@@ -4,13 +4,13 @@ import { Document } from 'mongoose';
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
 
 import { ReviewsSites } from 'src/reviews-sites/models/reviews-sites.schema';
-import { SteamReviewsDto } from 'src/steam/dto/steam-reviews.dto';
 
 import { SteamPlayersInGame } from 'src/steam/models/steam-players-in-game.schema';
+import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 
-import { SearchResultDto } from 'src/youtube/dto/search-result.dto';
+import { YoutubeVideo } from 'src/youtube/models/youtube-video.schema';
 
-class RawgGame {
+export class RawgGame {
   @Prop()
   slug: string;
 
@@ -122,9 +122,9 @@ export class Game {
   howLongToBeat?: HowLongToBeat;
 
   @Prop({
-    type: SteamReviewsDto,
+    type: SteamReviews,
   })
-  steam_reviews?: SteamReviewsDto;
+  steam_reviews?: SteamReviews;
 
   @Prop({
     type: SteamPlayersInGame,
@@ -132,14 +132,14 @@ export class Game {
   steam_players_in_game?: SteamPlayersInGame;
 
   @Prop({
-    type: Array<SearchResultDto>
+    type: Array<YoutubeVideo>
   })
-  video_reviews?: SearchResultDto[];
+  video_reviews?: YoutubeVideo[];
 
   @Prop({
-    type: Array<SearchResultDto>
+    type: Array<YoutubeVideo>
   })
-  game_trailers?: SearchResultDto[];
+  game_trailers?: YoutubeVideo[];
 
   @Prop({
     type: Date,

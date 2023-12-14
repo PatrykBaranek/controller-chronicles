@@ -7,9 +7,7 @@ import { YoutubeService }    from './services/youtube.service';
 import { YoutubeUtilityService } from './util/youtube-utility.service';
 
 @Module({
-  imports: [
-    GamesModule,
-  ],
+  imports: [GamesModule],
   controllers: [YoutubeController],
   providers: [YoutubeService, YoutubeUtilityService],
   exports: [YoutubeService],

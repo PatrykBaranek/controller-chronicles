@@ -33,7 +33,7 @@ export class GamesController {
 
   @ApiOperation({ summary: 'Update game reviews embargo date'})
   @ApiResponse({ status: 201, description: 'Manualy set game review embargo date' })
-  @Post(':id/embarge-date')
+  @Post(':id/embargo-date')
   async setEmbargeDate(@Param('id', ParseIntPipe) id: number, @Query('date') date: Date) {
     return this.gamesService.setGameReviewEmbargoDate(id, date);
   }
@@ -44,5 +44,12 @@ export class GamesController {
   @Get(':id/stores')
   async getGameStoresById(@Param('id', ParseIntPipe) id: number) {
     return this.gamesService.getGameStoresByGameId(id);
+  }
+
+  @ApiOperation({ summary: 'Force update game by id' })
+  @ApiResponse({ status: 200, description: 'Returns game details by id' })
+  @Post(':id/update')
+  async forceUpdateGameById(@Param('id', ParseIntPipe) id: number) {
+    return this.gamesService.forceUpdateGameById(id);
   }
 }

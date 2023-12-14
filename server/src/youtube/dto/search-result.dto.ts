@@ -4,5 +4,4 @@ export class SearchResultDto {
   thumbnail: string;
   author: string;
   link: string;
-  gameId: number;
 }

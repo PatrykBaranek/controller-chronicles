@@ -5,5 +5,5 @@ export class SteamPlayersCountInGameDto {
     playersCount: number;
 
     @ApiProperty()
-    updatedAt?: Date;
+    updatedAt: Date;
 }

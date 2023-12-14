@@ -1,16 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException, forwardRef } from '@nestjs/common';
+import { differenceInDays } from 'date-fns';
+
 import { GamesRepository } from '../database/games.repository';
 import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
-import { Game } from '../models/game.schema';
 import { GetGameQueryParamsDto } from '../dto/get-game-query-params.dto';
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
+import { GamesUpdateService } from 'src/games-update/services/games-update.service';
 
 @Injectable()
 export class GamesService {
 
   private readonly logger = new Logger(GamesService.name);
   constructor(
+    @Inject(forwardRef(() => GamesUpdateService))
+    private readonly gamesUpdateService: GamesUpdateService,
     private readonly rawgApiGamesService: RawgApiGamesService,
     private readonly gamesRepository: GamesRepository,
   ) { }
@@ -45,27 +49,29 @@ export class GamesService {
   async getGameById(id: number) {
     const gameInDb = await this.gamesRepository.findGame(id);
 
-    if (gameInDb && gameInDb.rawgGame.description_raw) {
+    if (gameInDb?.rawgGame.description_raw && differenceInDays(new Date(), new Date(gameInDb?.updatedAt)) < 7) {
+      this.logger.log(`Game with id ${id} found in db and don't need to be updated`);
       return gameInDb;
     }
 
-    const rawgGame = await this.rawgApiGamesService.getGameById(id);
+    const game = await this.gamesUpdateService.updateGame(gameInDb);
 
-    const gameData: Game = {
-      _id: id,
-      rawgGame: rawgGame,
-    };
+    return game;
+  }
 
-    await this.gamesRepository.updateGame(gameData._id, gameData);
+  async forceUpdateGameById(id: number) {
+    const gameInDb = await this.gamesRepository.findGame(id);
 
-    return gameData;
+    const game = await this.gamesUpdateService.updateGame(gameInDb);
+
+    return game;
   }
 
   async setGameReviewEmbargoDate(id: number, embargoDate: Date) {
     const game = await this.gamesRepository.findGame(id);
 
     if (!game) {
-      throw new Error(`Game with id ${id} not found`);
+      throw new NotFoundException(`Game with id ${id} not found`);
     }
 
     game.review_embargo_date = embargoDate;
