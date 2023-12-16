@@ -153,3 +153,19 @@ export type Store = {
   id: number;
   store: Genre;
 };
+
+export type PlayersCountResponse = {
+  playersCount: number;
+  updatedAt: string;
+};
+
+export type SteamReviewsResponse = {
+  reviewsSummaryFrom30Days: ReviewsSummary;
+  reviewsSummaryOverall: ReviewsSummary;
+};
+
+type ReviewsSummary = {
+  usersCount: number;
+  textSummary: string;
+  positivePercentage: number;
+};
