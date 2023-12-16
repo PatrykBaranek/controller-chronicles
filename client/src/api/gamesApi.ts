@@ -4,7 +4,9 @@ import {
   BestsellerResponse,
   GameDetailsResponse,
   GamesResponse,
+  PlayersCountResponse,
   SignUpResponse,
+  SteamReviewsResponse,
   UserInputs,
   YoutubeResponse,
 } from '#/types/types';
@@ -113,4 +115,20 @@ export const getNewestYoutubeVideos = async (
   } catch (error: any) {
     throw error.response?.data;
   }
+};
+
+export const getSteamReviews = async (
+  id: string | number | undefined
+): Promise<SteamReviewsResponse> => {
+  const response = await gamesApi.get(`/steam/${id}/reviews`);
+
+  return response.data;
+};
+
+export const getSteamPlayersCount = async (
+  id: string | number | undefined
+): Promise<PlayersCountResponse> => {
+  const response = await gamesApi.get(`/steam/${id}/players-count`);
+
+  return response.data;
 };
