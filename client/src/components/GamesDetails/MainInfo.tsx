@@ -1,9 +1,10 @@
+import heartIcon from '#/assets/heartIcon.svg';
 import starIcon from '#/assets/starIcon.svg';
 import { RawgGameDetails } from '#/types/types';
 import iconFilter from '#/utils/iconFilter';
+import { Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import heartIcon from '#/assets/heartIcon.svg';
 type StarProps = {
   rating: number;
   index: number;
@@ -123,6 +124,10 @@ const StyledButtonsWrapper = styled.div`
     &:hover {
       filter: contrast(5);
     }
+    &:disabled {
+      pointer-events: none;
+      background: ${({ theme }) => theme.colors.secondary};
+    }
     img {
       position: absolute;
       top: 50%;
@@ -135,7 +140,7 @@ const StyledButtonsWrapper = styled.div`
 
 const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
-
+  const isLogged = false;
   return (
     <StyledTitleWrapper>
       <h1 className='title'>{gameInfo?.name}</h1>
@@ -172,9 +177,13 @@ const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
         <Link className='link' target='_blank' to={gameInfo?.website || ''}>
           Check publisher website
         </Link>
-        <button className='addToCollection'>
-          <img src={heartIcon} alt='add to collection' />
-        </button>
+        <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>
+          <span>
+            <button disabled={!isLogged} className='addToCollection'>
+              <img src={heartIcon} alt='add to collection' />
+            </button>
+          </span>
+        </Tooltip>
       </StyledButtonsWrapper>
     </StyledTitleWrapper>
   );
