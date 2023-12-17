@@ -19,6 +19,8 @@ export class RawgUpdateStrategy implements UpdateStrategy<RawgGame> {
   async update(game: Game): Promise<RawgGame> {
     const updatedRawgGame = await this.rawgApiGamesService.getGameById(game._id);
 
+    updatedRawgGame.name = updatedRawgGame.name.replace(/\s*\(\d{4}\)/, '');
+
     return updatedRawgGame;
   }
 }
