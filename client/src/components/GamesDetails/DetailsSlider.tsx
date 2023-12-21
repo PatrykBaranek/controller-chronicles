@@ -1,6 +1,5 @@
 import { YoutubeVideo } from '#/types/types';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import '@splidejs/react-splide/css';
 import styled from 'styled-components';
 import VideoSliderItem from '../UI/VideoSliderItem';
 
@@ -41,13 +40,11 @@ const StyledVideoSlider = styled.div`
   @media screen and (min-width: 900px) {
     padding-right: 0;
     text-align: left;
-    margin-top: 5vw;
     .splide__arrow--prev {
       left: -5rem;
     }
   }
   @media screen and (min-width: 1050px) {
-    grid-row-start: 3;
     grid-column: span 2 / span 2;
   }
   h3 {
