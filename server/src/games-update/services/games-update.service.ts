@@ -4,11 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { GamesRepository } from '../../games/database/games.repository';
 import { Game } from '../../games/models/game.schema';
 
-import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
-
-import { HowLongToBeatService } from 'src/how-long-to-beat/services/how-long-to-beat.service';
-
-import { UpdateStrategyFactory, UpdateStrategyType } from './update-strategy/update-strategy-factory';
+import { UpdateStrategyFactory, UpdateStrategyType } from './strategies/update-strategy-factory';
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
 
@@ -17,9 +13,8 @@ export class GamesUpdateService {
   private readonly logger = new Logger(GamesUpdateService.name);
 
   constructor(
-    private readonly rawgApiGamesService: RawgApiGamesService,
-    private readonly howLongToBeatService: HowLongToBeatService,
     private readonly gamesRepository: GamesRepository,
+    private readonly updateStrategyFactory: UpdateStrategyFactory,
   ) { }
 
   @Cron(CronExpression.EVERY_12_HOURS)
@@ -47,14 +42,14 @@ export class GamesUpdateService {
   }
 
   private async updateRawgGame(game: Game) {
-    const rawgApiGamesService = UpdateStrategyFactory.createUpdateStrategy(UpdateStrategyType.RAWG, { rawgApiGamesService: this.rawgApiGamesService });
+    const rawgApiGamesService = this.updateStrategyFactory.createUpdateStrategy(UpdateStrategyType.RAWG);
 
     return await rawgApiGamesService.update(game) as RawgGameResponseDto;
   }
 
   private async updateHowLongToBeat(game: Game): Promise<HowLongToBeat> {
-    const howLongToBeat = UpdateStrategyFactory.createUpdateStrategy(UpdateStrategyType.HLTB, { howLongToBeatService: this.howLongToBeatService });
+    const howLongToBeat = this.updateStrategyFactory.createUpdateStrategy(UpdateStrategyType.HLTB);
 
-    return howLongToBeat.update(game) as Promise<HowLongToBeat>;
+    return await howLongToBeat.update(game) as HowLongToBeat;
   }
 }

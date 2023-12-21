@@ -1,18 +1,21 @@
 import { Module, forwardRef } from '@nestjs/common';
 
-import { ReviewsSitesEurogamerModule } from './reviews-sites-eurogamer/reviews-sites-eurogamer.module';
-import { ReviewsSitesGamesradarModule } from './reviews-sites-gamesradar/reviews-sites-gamesradar.module';
-import { ReviewsSitesService } from './reviews-sites.service';
+import { ReviewsSitesService } from './services/reviews-sites.service';
+import { ReviewsSitesController } from './controllers/reviews-sites.controller';
+import { ReviewsSitesScraperFactory } from './services/strategies/reviews-sites-scraper-factory';
+
+import { FuseJsCompareService } from './util/fuse-js-compare.service';
 
 import { GamesModule } from 'src/games/games.module';
+import { PuppeteerModule } from 'src/puppeteer/puppeteer.module';
 
 @Module({
   imports: [
-    ReviewsSitesGamesradarModule,
-    ReviewsSitesEurogamerModule,
+    PuppeteerModule,
     forwardRef(() => GamesModule),
   ],
-  providers: [ReviewsSitesService],
+  controllers: [ReviewsSitesController],
+  providers: [ReviewsSitesService, ReviewsSitesScraperFactory, FuseJsCompareService],
   exports: [ReviewsSitesService]
 })
 export class ReviewsSitesModule {}

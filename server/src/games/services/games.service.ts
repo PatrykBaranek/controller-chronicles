@@ -22,22 +22,17 @@ export class GamesService {
   async getGames(options?: GetGameQueryParamsDto): Promise<PaginationDto<RawgGameResponseDto>> {
     const response = await this.rawgApiGamesService.getGames(options);
 
-    // Step 1: Prepare a list of game IDs
     const gameIds = response.results.map(game => game.id);
 
-    // Step 2: Find existing games in bulk
     const existingGames = await this.gamesRepository.findGames(gameIds);
 
-    // Step 3: Filter out the games that are already in the database
     const newGames = response.results.filter(game => !existingGames.some(existingGame => existingGame._id === game.id));
 
-    // Step 4: Prepare the games to be saved in the database
     const gamesToSave = newGames.map(game => ({
       _id: game.id,
       rawgGame: game,
     }));
 
-    // Step 5: Save the new games in the database in bulk
     if (gamesToSave.length > 0) {
       this.logger.log(`Saving ${gamesToSave.length} new games in the database`);
       await this.gamesRepository.saveGames(gamesToSave.map(game => game.rawgGame));
