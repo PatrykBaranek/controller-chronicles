@@ -1,7 +1,7 @@
+import leaveIcon from '#/assets/leaveIcon.svg';
+import redditIcon from '#/assets/redditIcon.svg';
 import { RawgGameDetails } from '#/types/types';
 import { Link } from 'react-router-dom';
-import redditIcon from '#/assets/redditIcon.svg';
-import leaveIcon from '#/assets/leaveIcon.svg';
 import styled from 'styled-components';
 
 const StyledTitleWrapper = styled.div`
@@ -32,10 +32,6 @@ const StyledDescription = styled.div`
   font-weight: ${({ theme }) => theme.fontWeights.light};
   margin-bottom: 0.5rem;
 `;
-const StyledDescriptionFallback = styled.p`
-  color: ${({ theme }) => theme.colors.yellow};
-  text-transform: uppercase;
-`;
 
 const RedditInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
   const fallbackUrlName = gameInfo?.reddit_url.split('/r/').at(-1);
@@ -52,15 +48,13 @@ const RedditInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => 
           <img src={leaveIcon} alt='leave icon' />
         </StyledLink>
       )}
-      <div>
-        <StyledDescription>
-          {gameInfo?.reddit_description ? (
+      {gameInfo?.reddit_description && (
+        <div>
+          <StyledDescription>
             <p>{gameInfo?.reddit_description}</p>
-          ) : (
-            <StyledDescriptionFallback>This thread has no description</StyledDescriptionFallback>
-          )}
-        </StyledDescription>
-      </div>
+          </StyledDescription>
+        </div>
+      )}
     </div>
   );
 };
