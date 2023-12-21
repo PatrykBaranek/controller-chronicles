@@ -14,7 +14,7 @@ const iconFilter = (slug: string) => {
     case 'playstation-store':
       return psStore;
 
-    case 'xbox-store' || 'xbox360':
+    case 'xbox-store' && 'xbox360':
       return xbox;
 
     case 'apple-store':

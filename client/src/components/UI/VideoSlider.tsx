@@ -7,7 +7,6 @@ import '@splidejs/react-splide/css';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import VideoSliderItem from './VideoSliderItem';
-import { useState } from 'react';
 
 type Props = {
   variant: 'review' | 'trailer';
@@ -99,9 +98,9 @@ const VideoSlider = ({ variant, heading }: Props) => {
             mediaQuery: 'min',
             breakpoints: {
               900: {
-                fixedWidth: '45%',
+                fixedWidth: '30%',
                 padding: '1rem',
-                perPage: 2,
+                perPage: 3,
               },
             },
             start: 0,

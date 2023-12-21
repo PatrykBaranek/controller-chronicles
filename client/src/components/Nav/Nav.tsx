@@ -27,6 +27,7 @@ const StyledNav = styled.nav<NavStyleProps>`
     position: unset;
     transform: unset;
     opacity: unset;
+    backdrop-filter: none;
   }
   @media screen and (min-width: 1050px) {
     width: 18vw;

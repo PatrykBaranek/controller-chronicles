@@ -67,9 +67,10 @@ export type Games = {
 };
 
 export type GameDetailsResponse = {
-  game_id: number;
   rawgGame: RawgGameDetails;
   howLongToBeat: HLTB;
+  video_reviews: YoutubeVideo[];
+  game_trailers: YoutubeVideo[];
   __v: number;
   _id: string;
 };
@@ -151,4 +152,20 @@ export type ShortScreenshot = {
 export type Store = {
   id: number;
   store: Genre;
+};
+
+export type PlayersCountResponse = {
+  playersCount: number;
+  updatedAt: string;
+};
+
+export type SteamReviewsResponse = {
+  reviewsSummaryFrom30Days: ReviewsSummary;
+  reviewsSummaryOverall: ReviewsSummary;
+};
+
+type ReviewsSummary = {
+  usersCount: number;
+  textSummary: string;
+  positivePercentage: number;
 };

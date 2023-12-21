@@ -4,7 +4,9 @@ import {
   BestsellerResponse,
   GameDetailsResponse,
   GamesResponse,
+  PlayersCountResponse,
   SignUpResponse,
+  SteamReviewsResponse,
   UserInputs,
   YoutubeResponse,
 } from '#/types/types';
@@ -25,7 +27,9 @@ export const getGames = async (page = 1, pageSize = 8): Promise<GamesResponse> =
 
   return response.data;
 };
-export const getGameById = async (id: number | undefined): Promise<GameDetailsResponse> => {
+export const getGameById = async (
+  id: number | undefined | string
+): Promise<GameDetailsResponse> => {
   const response = await gamesApi.get(`/games/${id}`);
 
   return response.data;
@@ -104,11 +108,27 @@ export const getNewestYoutubeVideos = async (
   }
   try {
     const response = await gamesApi.get(
-      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&gamesCount=8`
+      `/youtube/videos/date-range?fromDate=${from}&toDate=${to}&videoType=${videoType}&gamesCount=5`
     );
 
     return await response.data;
   } catch (error: any) {
     throw error.response?.data;
   }
+};
+
+export const getSteamReviews = async (
+  id: string | number | undefined
+): Promise<SteamReviewsResponse> => {
+  const response = await gamesApi.get(`/steam/${id}/reviews`);
+
+  return response.data;
+};
+
+export const getSteamPlayersCount = async (
+  id: string | number | undefined
+): Promise<PlayersCountResponse> => {
+  const response = await gamesApi.get(`/steam/${id}/players-count`);
+
+  return response.data;
 };
