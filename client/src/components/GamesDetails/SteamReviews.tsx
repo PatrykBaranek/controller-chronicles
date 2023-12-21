@@ -1,9 +1,9 @@
 import { getSteamPlayersCount, getSteamReviews } from '#/api/gamesApi';
+import { Skeleton } from '@mui/material';
+import dayjs from 'dayjs';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { StyledGameplayWrapper } from './Gameplay';
-import dayjs from 'dayjs';
-import { Skeleton } from '@mui/material';
 
 const reviewsTextMap = {
   'Przytłaczająco pozytywne': 'Overwhelmingly Positive',
@@ -36,12 +36,12 @@ const SteamReviews = () => {
   });
 
   const reviews30Days = {
-    count: new Intl.NumberFormat().format(reviews?.reviewsSummaryFrom30Days.usersCount || 0),
+    count: new Intl.NumberFormat().format(reviews?.reviewsSummaryFrom30Days?.usersCount || 0),
     text: reviews?.reviewsSummaryFrom30Days?.textSummary,
     percentage: reviews?.reviewsSummaryFrom30Days?.positivePercentage,
   };
   const reviewsOverall = {
-    count: new Intl.NumberFormat().format(reviews?.reviewsSummaryOverall.usersCount || 0),
+    count: new Intl.NumberFormat().format(reviews?.reviewsSummaryOverall?.usersCount || 0),
     text: reviews?.reviewsSummaryOverall?.textSummary,
     percentage: reviews?.reviewsSummaryOverall?.positivePercentage,
   };
@@ -66,7 +66,7 @@ const SteamReviews = () => {
           />
         ) : (
           <>
-            <span>{reviews30Days.count || '-'}</span>
+            <span>{reviews30Days.count}</span>
             <span>{reviewsTextMap[reviews30Days.text as keyof typeof reviewsTextMap] || '-'}</span>
             <span>{reviews30Days.percentage || 0}% / 100%</span>
           </>
@@ -87,7 +87,7 @@ const SteamReviews = () => {
           />
         ) : (
           <>
-            <span>{reviewsOverall.count || '-'}</span>
+            <span>{reviewsOverall.count}</span>
             <span>{reviewsTextMap[reviewsOverall.text as keyof typeof reviewsTextMap] || '-'}</span>
             <span>{reviews30Days.percentage || 0}% / 100%</span>
           </>
