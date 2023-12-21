@@ -6,7 +6,7 @@ import RedditInfo from '#/components/GamesDetails/RedditInfo';
 import SteamReviews from '#/components/GamesDetails/SteamReviews';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const StyledDetailsPage = styled.div`
   width: 100%;
@@ -22,7 +22,7 @@ const StyledContainer = styled.div`
 
   padding-inline: 1.5rem;
   @media screen and (min-width: 900px) {
-    margin-top: 2rem;
+    margin-block: 2rem;
   }
   @media screen and (min-width: 1050px) {
     gap: 3rem;
@@ -82,36 +82,67 @@ const StyledGameDescription = styled.div`
     font-weight: ${({ theme }) => theme.fontWeights.light};
   }
 `;
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const Spinner = styled.div`
+  animation: ${rotate360} 1s linear infinite;
+  transform: translateZ(0) translateX(-50%) translateY(-50%);
+  border-top: 2px solid grey;
+  border-right: 2px solid grey;
+  border-bottom: 2px solid grey;
+  border-left: 4px solid #3c705599;
+  background: transparent;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+`;
 
 const GameDetails = () => {
   const { id } = useParams();
-  const { data, isError, isLoading, isFetched } = useQuery(['/games/:id', id], () =>
-    getGameById(id)
-  );
+  const { data, isError, isLoading } = useQuery(['/games/:id', id], () => getGameById(id));
   const gameInfo = data?.rawgGame;
-  const videos = [...(data?.video_reviews || []), ...(data?.game_trailers || [])];
+  const reviews = data?.video_reviews;
+  const trailers = data?.game_trailers;
+
   const isGameOnSteam = gameInfo?.stores.filter((store) => {
     return store.store.slug === 'steam';
   });
 
   return (
     <StyledDetailsPage>
-      <StyledTopSection>
-        <StyledHeroImage src={gameInfo?.background_image} alt={gameInfo?.name} />
-        <StyledInfoWrapper>
-          <MainInfo gameInfo={gameInfo} />
-        </StyledInfoWrapper>
-      </StyledTopSection>
-      <StyledContainer>
-        <StyledGameDescription>
-          <h2>Game description</h2>
-          <p>{gameInfo?.description_raw.split('\n\n')[0]}</p>
-        </StyledGameDescription>
-        <RedditInfo gameInfo={gameInfo} />
-        <Gameplay hltbData={data?.howLongToBeat} />
-        {Boolean(isGameOnSteam?.length) && <SteamReviews />}
-        <DetailsSlider videos={videos} heading='Videos' />
-      </StyledContainer>
+      {isError || isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <StyledTopSection>
+            <StyledHeroImage src={gameInfo?.background_image} alt={gameInfo?.name} />
+            <StyledInfoWrapper>
+              <MainInfo gameInfo={gameInfo} />
+            </StyledInfoWrapper>
+          </StyledTopSection>
+          <StyledContainer>
+            <StyledGameDescription>
+              <h2>Game description</h2>
+              <p>{gameInfo?.description_raw.split('\n\n')[0]}</p>
+            </StyledGameDescription>
+            {(gameInfo?.reddit_url || gameInfo?.reddit_name) && <RedditInfo gameInfo={gameInfo} />}
+            <Gameplay hltbData={data?.howLongToBeat} />
+            {Boolean(isGameOnSteam?.length) && <SteamReviews />}
+            {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
+            {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
+          </StyledContainer>
+        </>
+      )}
     </StyledDetailsPage>
   );
 };
