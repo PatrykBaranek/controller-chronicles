@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GameDetails from './pages/GameDetails';
+import { refreshToken } from './api/gamesApi';
+import PrivateRoute from './components/PrivateRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +40,7 @@ const router = createBrowserRouter([
       { path: 'signup', element: <SignUp /> },
       {
         path: '/profile',
-        element: <Profile />,
+        element: <PrivateRoute Component={Profile} />,
       },
       {
         path: '/profile/collections',
@@ -54,7 +56,12 @@ const router = createBrowserRouter([
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider authType={'cookie'} authName={'_auth'} cookieDomain={window.location.hostname}>
+    <AuthProvider
+      authType={'cookie'}
+      authName={'_auth'}
+      cookieDomain={window.location.hostname}
+      refresh={refreshToken}
+    >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <RouterProvider router={router} />
       </LocalizationProvider>
