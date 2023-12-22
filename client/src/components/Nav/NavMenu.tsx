@@ -6,7 +6,6 @@ import loginIco from '#/assets/loginIcon.svg';
 import loggedIco from '#/assets/loggedIco.svg';
 import NavbarLink from '../UI/NavbarLink';
 import { useIsAuthenticated } from 'react-auth-kit';
-import avatar from '#/assets/avatar.svg';
 
 const StyledNavMenu = styled.ul`
   width: 100%;
@@ -36,7 +35,7 @@ const NavMenu = () => {
         <NavbarLink icon={loginIco} text={'Login'} />
       ) : (
         <>
-          <NavbarLink icon={avatar} text={'Profile'} />
+          <NavbarLink icon={loginIco} text={'Profile'} />
           <NavbarLink icon={loggedIco} text={'Logout'} isLogoutButton={true} />
         </>
       )}

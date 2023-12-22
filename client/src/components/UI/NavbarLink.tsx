@@ -109,9 +109,6 @@ const StyledWrapper = styled.div`
         contrast(92%);
       opacity: 0.6;
     }
-    img[alt='Profile icon'] {
-      filter: none;
-    }
   }
   a.active {
     color: white;
@@ -151,14 +148,12 @@ const StyledWrapper = styled.div`
       transform: translate(-48%, -56%);
     }
     img[alt='Login icon'],
-    img[alt='Log out icon'] {
+    img[alt='Log out icon'],
+    img[alt='Profile icon'] {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -56%);
-    }
-    img[alt='Profile icon'] {
-      filter: none;
     }
   }
 `;
