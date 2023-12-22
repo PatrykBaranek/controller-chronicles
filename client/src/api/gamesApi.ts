@@ -8,10 +8,12 @@ import {
   SignUpResponse,
   SteamReviewsResponse,
   UserInputs,
+  UserProfile,
   YoutubeResponse,
 } from '#/types/types';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { createRefresh } from 'react-auth-kit';
 
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000/api',
@@ -93,6 +95,48 @@ export const logInUser = async ({ email, password }: UserInputs): Promise<AuthRe
     throw error.response?.data;
   }
 };
+
+export const getUserProfile = async (authToken: string): Promise<UserProfile> => {
+  try {
+    const response = gamesApi.get('/users/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const refreshToken = createRefresh({
+  interval: 13,
+  // @ts-ignore
+  refreshApiCallback: async ({ refreshToken }) => {
+    try {
+      const response = await gamesApi.get('/auth/refresh', {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      });
+      return {
+        isSuccess: true,
+        newAuthToken: response.data.access_token,
+        newAuthTokenExpireIn: response.data.access_token_expires_in,
+        newRefreshTokenExpiresIn: response.data.refresh_token_expires_in,
+        newRefreshToken: response.data.refresh_token,
+        newAuthUserState: {},
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        isSuccess: false,
+      };
+    }
+  },
+});
 
 export const getNewestYoutubeVideos = async (
   videoType: 'review' | 'trailer'
