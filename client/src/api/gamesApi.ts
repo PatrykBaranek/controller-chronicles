@@ -2,6 +2,7 @@ import { dateFormat } from '#/components/FilterDrawer/FilterDrawer.utils';
 import {
   AuthResponse,
   BestsellerResponse,
+  CollectionResponse,
   GameDetailsResponse,
   GamesResponse,
   PlayersCountResponse,
@@ -99,6 +100,21 @@ export const logInUser = async ({ email, password }: UserInputs): Promise<AuthRe
 export const getUserProfile = async (authToken: string): Promise<UserProfile> => {
   try {
     const response = gamesApi.get('/users/profile', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const getUserColletions = async (authToken: string): Promise<CollectionResponse[]> => {
+  try {
+    const response = gamesApi.get('/collections', {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
