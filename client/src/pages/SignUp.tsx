@@ -1,7 +1,15 @@
+import { signUpUser } from '#/api/gamesApi';
+import crossedEye from '#/assets/crossedEye.svg';
+import eye from '#/assets/eye.svg';
 import Form from '#/components/Form/Form';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { AuthError, UserInputs } from '#/types/types';
+import { validateEmail, validatePassword } from '#/utils/formValidation';
+import { Alert } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useIsAuthenticated } from 'react-auth-kit';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   StyledAuth,
   StyledAuthWrapper,
@@ -11,14 +19,6 @@ import {
   StyledPasswordContainer,
   StyledTextContainer,
 } from './Login';
-import eye from '#/assets/eye.svg';
-import crossedEye from '#/assets/crossedEye.svg';
-import { validateEmail, validatePassword } from '#/utils/formValidation';
-import { useMutation } from 'react-query';
-import { signUpUser } from '#/api/gamesApi';
-import { Alert } from '@mui/material';
-import { AuthError, UserInputs } from '#/types/types';
-import { useIsAuthenticated } from 'react-auth-kit';
 
 const SignUp = () => {
   const isAuthenticated = useIsAuthenticated();
