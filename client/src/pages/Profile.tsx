@@ -1,6 +1,7 @@
-import styled from 'styled-components';
-import { default as ProfileComponent } from '#/components/Profile/Profile';
 import Collections from '#/components/Collections/Collections';
+import ProfileComponent from '#/components/Profile/Profile';
+import styled from 'styled-components';
+
 const StyledContainer = styled.div`
   width: 100%;
   display: flex;
