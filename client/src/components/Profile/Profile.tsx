@@ -1,8 +1,9 @@
 import { StyledButton } from '#/pages/Login';
 import styled from 'styled-components';
 import avatar from '#/assets/avatar.svg';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import { useAuthHeader } from 'react-auth-kit';
+import { useQuery } from 'react-query';
+import { getUserProfile } from '#/api/gamesApi';
 
 type ButtonProps = {
   isDelete: boolean;
@@ -67,10 +68,8 @@ const StyledProfileInfo = styled.div`
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2.5rem;
-  img {
-    width: clamp(130px, 10vw, 160px);
-  }
 `;
+
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -84,12 +83,28 @@ const StyledFormButton = styled(StyledButton)<ButtonProps>`
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   color: ${({ theme, isDelete }) => isDelete && theme.colors.red};
 `;
+
+export const StyledAvatar = styled.span`
+  width: clamp(130px, 10vw, 160px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 100vh;
+  background: ${({ theme }) => theme.colors.secondaryGradient};
+  font-size: 3rem;
+`;
+
 const Profile = () => {
+  const auth = useAuthHeader();
+  const authToken = auth().split(' ')[1];
+  const { data } = useQuery(['user'], () => getUserProfile(authToken));
+  const userName = data?.email.split('@')[0];
+
   return (
     <StyledContainer>
       <StyledProfileInfo>
-        <img src={avatar} alt='' />
-        <h3>@nickname</h3>
+        <StyledAvatar>{userName![0].toUpperCase()}</StyledAvatar>
+        <h3>{userName}</h3>
       </StyledProfileInfo>
       <StyledForm>
         <StyledFormButton isDelete={false}>Change your password</StyledFormButton>
