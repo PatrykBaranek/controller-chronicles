@@ -1,9 +1,9 @@
-import { StyledButton } from '#/pages/Login';
-import styled from 'styled-components';
-import avatar from '#/assets/avatar.svg';
-import { useAuthHeader } from 'react-auth-kit';
-import { useQuery } from 'react-query';
 import { getUserProfile } from '#/api/gamesApi';
+import { StyledButton } from '#/pages/Login';
+import getAuthToken from '#/utils/getAuthToken';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import styled from 'styled-components';
 
 type ButtonProps = {
   isDelete: boolean;
@@ -95,15 +95,16 @@ export const StyledAvatar = styled.span`
 `;
 
 const Profile = () => {
-  const auth = useAuthHeader();
-  const authToken = auth().split(' ')[1];
-  const { data } = useQuery(['user'], () => getUserProfile(authToken));
-  const userName = data?.email.split('@')[0];
+  const [userName, setUserName] = useState('');
+  const authToken = getAuthToken();
+  const { data } = useQuery(['user'], () => getUserProfile(authToken), {
+    onSuccess: (data) => setUserName(data.email.split('@')[0]),
+  });
 
   return (
     <StyledContainer>
       <StyledProfileInfo>
-        <StyledAvatar>{userName![0].toUpperCase()}</StyledAvatar>
+        <StyledAvatar>{userName[0]?.toUpperCase()}</StyledAvatar>
         <h3>{userName}</h3>
       </StyledProfileInfo>
       <StyledForm>
