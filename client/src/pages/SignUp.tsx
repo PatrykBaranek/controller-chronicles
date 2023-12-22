@@ -1,7 +1,7 @@
 import Form from '#/components/Form/Form';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import {
   StyledAuth,
   StyledAuthWrapper,
@@ -18,8 +18,11 @@ import { useMutation } from 'react-query';
 import { signUpUser } from '#/api/gamesApi';
 import { Alert } from '@mui/material';
 import { AuthError, UserInputs } from '#/types/types';
+import { useIsAuthenticated } from 'react-auth-kit';
 
 const SignUp = () => {
+  const isAuthenticated = useIsAuthenticated();
+  const navigate = useNavigate();
   const signUp = useMutation({
     mutationFn: (data: UserInputs) => signUpUser(data),
   });
@@ -32,6 +35,10 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserInputs>();
+
+  useEffect(() => {
+    isAuthenticated() && navigate('/');
+  }, []);
 
   const onSubmit: SubmitHandler<UserInputs> = async (data) => {
     signUp.mutate(data, {
