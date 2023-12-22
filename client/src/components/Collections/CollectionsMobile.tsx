@@ -1,6 +1,5 @@
-import { GameDetailsResponse, Games } from '#/types/types';
+import { GameDetailsResponse } from '#/types/types';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import React from 'react';
 import styled from 'styled-components';
 import CollectionCard from './CollectionCard';
 
@@ -9,7 +8,7 @@ const StyledSplideSlide = styled(SplideSlide)`
     padding-block: 1rem;
   }
 `;
-const CollectionsMobile = ({ games }: { games: any[] }) => {
+const CollectionsMobile = ({ games }: { games: GameDetailsResponse[] }) => {
   const isMoreThanOneGame = games.length > 1;
   const isMoreThanTwoGames = games.length > 2;
   return (
@@ -40,7 +39,7 @@ const CollectionsMobile = ({ games }: { games: any[] }) => {
     >
       {games.map((game, idx) => (
         <StyledSplideSlide key={game._id}>
-          <CollectionCard img={game.rawgGame.background_image} />
+          <CollectionCard img={game.rawgGame.background_image} id={game._id} />
         </StyledSplideSlide>
       ))}
     </Splide>
