@@ -1,11 +1,15 @@
-import styled from 'styled-components';
-import collections from './Collections.mock';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import CollectionsMobile from './CollectionsMobile';
-import CollectionsDesktop from './CollectionsDesktop';
-import CollectionsButton from './CollectionsButton';
+import { getUserColletions } from '#/api/gamesApi';
 import leaveIcon from '#/assets/leaveIcon.svg';
+import useWindowWidth from '#/hooks/useWindowWidth';
+import getAuthToken from '#/utils/getAuthToken';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import CollectionsButton from './CollectionsButton';
+import CollectionsDesktop from './CollectionsDesktop';
+import CollectionsMobile from './CollectionsMobile';
+import { useState } from 'react';
+import { CollectionResponse } from '#/types/types';
 
 const StyledCollectionsContainer = styled.div`
   width: 100%;
@@ -25,6 +29,7 @@ const StyledCollectionsContainer = styled.div`
     width: 80%;
     justify-content: unset;
     margin-top: 2rem;
+    min-height: 80vh;
   }
 `;
 
@@ -105,14 +110,22 @@ const StyledCollectionTitle = styled(Link)`
 `;
 
 const Collections = () => {
+  const [collections, setCollections] = useState<CollectionResponse[]>();
   const windowWidth = useWindowWidth();
   const isDesktop = windowWidth && windowWidth >= 1200;
-  const preparedCollections = collections.slice(0, 3);
+  const authToken = getAuthToken();
+  const { data } = useQuery(['collections'], () => getUserColletions(authToken), {
+    onSuccess: (data) => {
+      data.sort((a, b) => b.priority - a.priority);
+      setCollections(data);
+    },
+  });
+
   return (
     <StyledCollectionsContainer>
       <h1>Your Collections</h1>
       <StyledCollectionWrapper>
-        {preparedCollections.map(({ _id, name, games }, idx) => (
+        {collections?.slice(0, 3).map(({ _id, name, games }, idx) => (
           <div key={_id + idx}>
             <StyledCollectionTitle to={`collections/${_id}`}>
               <h3>{name}</h3>
@@ -127,9 +140,11 @@ const Collections = () => {
             </StyledCardContainer>
           </div>
         ))}
-        <StyledButtonContainer>
-          <CollectionsButton text='See more collections' />
-        </StyledButtonContainer>
+        {collections && collections.length > 3 && (
+          <StyledButtonContainer>
+            <CollectionsButton text='See more collections' />
+          </StyledButtonContainer>
+        )}
       </StyledCollectionWrapper>
     </StyledCollectionsContainer>
   );
