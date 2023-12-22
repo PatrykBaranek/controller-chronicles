@@ -1,16 +1,16 @@
+import { logInUser } from '#/api/gamesApi';
+import crossedEye from '#/assets/crossedEye.svg';
+import eye from '#/assets/eye.svg';
 import Form from '#/components/Form/Form';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { AuthError, UserInputs } from '#/types/types';
+import { validateEmail } from '#/utils/formValidation';
+import { Alert } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import eye from '#/assets/eye.svg';
-import crossedEye from '#/assets/crossedEye.svg';
-import { useEffect, useState } from 'react';
-import { validateEmail } from '#/utils/formValidation';
-import { AuthError, UserInputs } from '#/types/types';
-import { useMutation } from 'react-query';
-import { logInUser } from '#/api/gamesApi';
-import { Alert } from '@mui/material';
-import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 
 export const StyledAuth = styled.div`
   width: 100%;
@@ -167,8 +167,11 @@ const Login = () => {
         if (
           signIn({
             token: data.access_token,
-            expiresIn: 1 * 24 * 60,
+            expiresIn: data.access_token_expires_in,
             tokenType: 'string',
+            authState: {},
+            refreshToken: data.refresh_token,
+            refreshTokenExpireIn: data.refresh_token_expires_in,
           })
         ) {
           navigate('/');
