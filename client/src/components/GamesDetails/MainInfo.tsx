@@ -3,6 +3,7 @@ import starIcon from '#/assets/starIcon.svg';
 import { RawgGameDetails } from '#/types/types';
 import iconFilter from '#/utils/iconFilter';
 import { Tooltip } from '@mui/material';
+import { useIsAuthenticated } from 'react-auth-kit';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 type StarProps = {
@@ -140,7 +141,9 @@ const StyledButtonsWrapper = styled.div`
 
 const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
-  const isLogged = false;
+  const auth = useIsAuthenticated();
+  const isLogged = auth();
+
   return (
     <StyledTitleWrapper>
       <h1 className='title'>{gameInfo?.name}</h1>
