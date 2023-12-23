@@ -11,10 +11,6 @@ export class CollectionsService {
     private readonly gamesService: GamesService,
   ) {}
 
-  async createDefaultCollections(userId: string) {
-    await this.collectionsRepository.createDefaultCollections(userId);
-  }
-
   async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
     return await this.collectionsRepository.createCollection(userId, createNewCollectionDto);
   }
