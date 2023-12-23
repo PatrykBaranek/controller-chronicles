@@ -9,17 +9,12 @@ import { Game } from 'src/games/models/game.schema';
 import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
 
 const MAX_COLLECTIONS = 5;
-const DEFAULT_COLLECTIONS = ['My Collection', 'Followed Games'];
 
 @Injectable()
 export class CollectionsRepository {
   constructor(
     @InjectModel(Collection.name) private collectionModel: Model<CollectionDocument>
   ) {}
-
-  async createDefaultCollections(userId: string) {
-    await Promise.all(DEFAULT_COLLECTIONS.map((name) => this.createCollection(userId, { name, priority: 0 })));
-  }
 
   async addGame(game: Game, userId: string, collectionId: string) {
     const collection = await this.collectionModel.findById({ _id: collectionId, userId });
@@ -58,15 +53,10 @@ export class CollectionsRepository {
   }
 
   async deleteCollection(userId: string, collectionId: string) {
-
     const collectionToDelete = await this.collectionModel.findOne({ _id: collectionId, userId: userId });
 
     if (!collectionToDelete) {
       throw new NotFoundException('Collection not found');
-    }
-
-    if (DEFAULT_COLLECTIONS.includes(collectionToDelete.name)) {
-      throw new ForbiddenException('You cannot delete default created collection');
     }
 
     return collectionToDelete.deleteOne();
