@@ -6,6 +6,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 import { Request } from 'express';
+import { GetUserDto } from '../dto/get-user.dto';
 
 @ApiTags('api/users')
 @Controller('users')
@@ -25,8 +26,12 @@ export class UsersController {
 
   @Get('profile')
   @UseGuards(AccessTokenGuard)
-  getProfile(@Req() req: Request) {
-    return this.usersService.findById(req.user['sub']);
+  async getProfile(@Req() req: Request): Promise<GetUserDto> {
+    const userDocument = await this.usersService.findById(req.user['sub']);
+
+    return {
+      email: userDocument.email
+    };
   }
 
   @Get(':id')

@@ -6,9 +6,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly usersRepository: UsersRepository,
-  ) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
     const newUser = await this.usersRepository.create(createUserDto);
