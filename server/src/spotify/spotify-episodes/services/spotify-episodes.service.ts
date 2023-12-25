@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { FindEpisodeByGameQueryParamsDto } from '../../dto/find-episode-by-game.dto';
 import { SpotifyAuthService } from '../../spotify-auth/services/spotify-auth.service';
 import { GamesService } from 'src/games/services/games.service';
 
@@ -10,19 +9,12 @@ export class SpotifyEpisodesService {
     private readonly gamesService: GamesService,
   ) {}
 
-  async getEpisodesByGameTitle(
-    gameId: number,
-    findEpisodeByGameQueryParamsDto: FindEpisodeByGameQueryParamsDto,
-  ) {
+  async getEpisodesByGameTitle(gameId: number) {
     const game = await this.gamesService.getGameById(gameId);
 
-    const response = await this.spotifyAuthService.api.searchEpisodes(
-      game.rawgGame.name,
-    );
+    const response = await this.spotifyAuthService.api.searchEpisodes(game.rawgGame.name);
 
-    return response.body.episodes.items.filter((show) =>
-      show.languages.includes(findEpisodeByGameQueryParamsDto.language),
-    );
+    return response.body.episodes.items;
   }
 
   async getEpisodeById(id: string) {

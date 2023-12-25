@@ -25,6 +25,20 @@ export class User {
   })
   @Prop()
   refresh_token: string;
+
+  @ApiProperty({
+    description: 'Spotify access token',
+    type: String,
+  })
+  @Prop()
+  spotify_access_token?: string;
+
+  @ApiProperty({
+    description: 'Spotify refresh token',
+    type: String,
+  })
+  @Prop()
+  spotify_refresh_token?: string;
 }
 
 export type UserDocument = User & Document;

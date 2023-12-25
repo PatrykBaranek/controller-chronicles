@@ -1,8 +1,6 @@
 import { Exclude } from 'class-transformer';
 
-export class GetAllGamingPodcastsDto
-  implements SpotifyApi.ShowObjectSimplified
-{
+export class SpotifyItemObjectDto implements SpotifyApi.ShowObjectSimplified {
   id: string;
   copyrights: SpotifyApi.CopyrightObject[];
   description: string;
@@ -15,8 +13,9 @@ export class GetAllGamingPodcastsDto
   publisher: string;
   type: 'show';
   total_episodes?: number;
-  href: string;
   external_urls: SpotifyApi.ExternalUrlObject;
+
+  @Exclude()
   uri: string;
 
   @Exclude()
@@ -24,4 +23,7 @@ export class GetAllGamingPodcastsDto
 
   @Exclude()
   available_markets: string[];
+
+  @Exclude()
+  href: string;
 }

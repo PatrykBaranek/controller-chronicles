@@ -1,33 +1,39 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { SpotifyAuthService } from '../spotify-auth/services/spotify-auth.service';
-import { Reflector } from '@nestjs/core';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Injectable()
 export class SpotifyAuthGuard implements CanActivate {
+
+  private readonly logger = new Logger(SpotifyAuthGuard.name);
+
   constructor(
     private readonly spotifyAuthService: SpotifyAuthService,
-    private readonly reflector: Reflector,
   ) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
 
-    if (isPublic) {
-      return true;
-    }
+    let access_token = request.cookies['spotify_access_token'];
+    const refresh_token = request.cookies['spotify_refresh_token'];
 
-    const isAuthenticated = this.spotifyAuthService.isAuthenticated();
-    if (!isAuthenticated) {
-      const res = context.switchToHttp().getResponse<Response>();
-      const authUrl = this.spotifyAuthService.getAuthorizeURL();
-      res.redirect(authUrl);
+    if (access_token == null && refresh_token == null) {
+      this.logger.warn('No access token and refresh token found');
       return false;
     }
 
-    return isAuthenticated;
+    if (access_token == null && refresh_token != null) {
+      this.logger.log('Refreshing access token');
+      const newTokens = await this.spotifyAuthService.refreshTokens(refresh_token);
+
+      response.cookie('spotify_access_token', newTokens.access_token, { httpOnly: true, secure: true, expires: new Date(Date.now() + newTokens.expires_in * 1000) });
+      response.cookie('spotify_refresh_token', newTokens.refresh_token, { httpOnly: true, secure: true });
+
+      access_token = newTokens.access_token;
+    }
+
+    this.spotifyAuthService.api.setAccessToken(access_token);
+    return true;
   }
 }

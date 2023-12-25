@@ -3,13 +3,7 @@ import { PaginationDto } from './dto/pagination.dto';
 import { NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-export function paginateResponse<T>(
-  response: AxiosResponse,
-  page: number = 1,
-  page_size: number = 5,
-  returnType: new () => T,
-  options: { showTotalPages?: boolean },
-): PaginationDto<T> {
+export function paginateResponse<T>(response: AxiosResponse, page: number = 1, page_size: number = 5, returnType: new () => T, options: { showTotalPages?: boolean } ): PaginationDto<T> {
   const totalPages = Math.ceil(response.data.count / page_size);
 
   if (page > totalPages) {
