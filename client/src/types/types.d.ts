@@ -15,6 +15,16 @@ export type SignUpResponse = {
   refreshToken: string;
 };
 
+export type CollectionResponse = {
+  createdAt: string;
+  games: GameDetailsResponse[];
+  name: string;
+  priority: number;
+  userId: string;
+  __v: number;
+  _id: string;
+};
+
 export type AuthResponse = {
   access_token: string;
   access_token_expires_in: number;
