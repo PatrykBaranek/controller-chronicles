@@ -127,6 +127,38 @@ export const getUserColletions = async (authToken: string): Promise<CollectionRe
   }
 };
 
+type CollectionReqProps = {
+  collectionName: string;
+  priority?: number;
+  authToken: string;
+};
+
+export const addCollection = async ({
+  collectionName,
+  priority = 0,
+  authToken,
+}: CollectionReqProps) => {
+  try {
+    const response = gamesApi.post(
+      'collections',
+      {
+        name: collectionName,
+        priority,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 export const refreshToken = createRefresh({
   interval: 13,
   // @ts-ignore
