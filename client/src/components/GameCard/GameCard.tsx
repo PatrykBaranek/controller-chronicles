@@ -4,7 +4,11 @@ import Card from '../UI/Card';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getGameById } from '#/api/gamesApi';
-import { Skeleton } from '@mui/material';
+import heartIcon from '#/assets/heartIcon.svg';
+import { Skeleton, Tooltip } from '@mui/material';
+import { useState } from 'react';
+import AddToCollectionForm from '../Collections/AddToCollectionForm';
+import { useIsAuthenticated } from 'react-auth-kit';
 
 const StyledImage = styled.div`
   width: 100%;
@@ -58,50 +62,92 @@ const StyledDescription = styled.div`
   }
 `;
 
+const StyledAddToCollection = styled.button`
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  width: 40px;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 100vw;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: grid;
+  place-items: center;
+  @media screen and (min-width: 900px) {
+    background: rgba(255, 255, 255, 0.05);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+`;
+
 const GameCard = ({ id, image, title, rating }: Gamecard) => {
   const { data, isError, isLoading } = useQuery(['gameCard', id], () => getGameById(id));
   const description = data && data.rawgGame.description_raw;
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isAuth = useIsAuthenticated();
 
   return (
-    <Card>
-      <Link to={`${id}`}>
-        <StyledImage>
-          <img src={image} alt={`${title} image`} />
-        </StyledImage>
+    <>
+      <Card>
+        <Link to={`${id}`}>
+          <StyledImage>
+            <img src={image} alt={`${title} image`} />
+          </StyledImage>
 
-        <StyledContent>
-          <StyledTopSection>
-            <h1>{title}</h1>
-            <p>
-              Rating <span>{rating ? rating : 0}/10</span>
-            </p>
-          </StyledTopSection>
-          <StyledDescription>
-            {!isError ? (
-              isLoading ? (
-                <Skeleton
-                  sx={{
-                    backgroundImage:
-                      'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                    borderRadius: '1rem ',
-                  }}
-                  animation='wave'
-                  variant='rounded'
-                  height={'100px'}
-                  width={'100%'}
-                >
+          <StyledContent>
+            <StyledTopSection>
+              <h1>{title}</h1>
+              <p>
+                Rating <span>{rating ? rating : 0}/10</span>
+              </p>
+            </StyledTopSection>
+            <StyledDescription>
+              {!isError ? (
+                isLoading ? (
+                  <Skeleton
+                    sx={{
+                      backgroundImage:
+                        'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
+                      borderRadius: '1rem ',
+                    }}
+                    animation='wave'
+                    variant='rounded'
+                    height={'100px'}
+                    width={'100%'}
+                  >
+                    <p>{description && description.slice(0, 250) + ' ...'}</p>
+                  </Skeleton>
+                ) : (
                   <p>{description && description.slice(0, 250) + ' ...'}</p>
-                </Skeleton>
+                )
               ) : (
-                <p>{description && description.slice(0, 250) + ' ...'}</p>
-              )
-            ) : (
-              <p>Something went wrong!</p>
+                <p>Something went wrong!</p>
+              )}
+            </StyledDescription>
+            {isAuth() && (
+              <StyledAddToCollection
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setIsDialogOpen(true);
+                }}
+              >
+                <img src={heartIcon} alt='add to collection' />
+              </StyledAddToCollection>
             )}
-          </StyledDescription>
-        </StyledContent>
-      </Link>
-    </Card>
+          </StyledContent>
+        </Link>
+      </Card>
+      {isDialogOpen && (
+        <AddToCollectionForm
+          gameId={id}
+          isOpen={isDialogOpen}
+          handleClose={() => setIsDialogOpen((prev) => !prev)}
+        />
+      )}
+    </>
   );
 };
 
