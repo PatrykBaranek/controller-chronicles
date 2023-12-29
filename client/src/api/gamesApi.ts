@@ -127,6 +127,32 @@ export const getUserCollections = async (authToken: string): Promise<CollectionR
   }
 };
 
+export const addGameToCollection = async (
+  authToken: string,
+  gameId: number,
+  collectionId: string
+) => {
+  try {
+    const response = gamesApi.post(
+      '/collections/add-game',
+      {
+        gameId,
+        collectionId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 type CollectionReqProps = {
   collectionName: string;
   priority?: number;
