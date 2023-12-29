@@ -1,4 +1,4 @@
-import { getUserColletions } from '#/api/gamesApi';
+import { getUserCollections } from '#/api/gamesApi';
 import { StyledButton } from '#/pages/Login';
 import { CollectionResponse } from '#/types/types';
 import getAuthToken from '#/utils/getAuthToken';
@@ -62,7 +62,7 @@ const Collections = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const authToken = getAuthToken();
 
-  const { refetch } = useQuery(['collections'], () => getUserColletions(authToken), {
+  const { refetch } = useQuery(['collections'], () => getUserCollections(authToken), {
     onSuccess: (data) => {
       data.sort((a, b) => b.priority - a.priority);
       setCollections(data);

@@ -112,7 +112,7 @@ export const getUserProfile = async (authToken: string): Promise<UserProfile> =>
   }
 };
 
-export const getUserColletions = async (authToken: string): Promise<CollectionResponse[]> => {
+export const getUserCollections = async (authToken: string): Promise<CollectionResponse[]> => {
   try {
     const response = gamesApi.get('/collections', {
       headers: {
