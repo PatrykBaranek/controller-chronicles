@@ -92,7 +92,10 @@ const CollectionList = ({ collections }: { collections: CollectionResponse[] }) 
             {!isDesktop ? (
               <CollectionsMobile games={games} />
             ) : (
-              <CollectionsDesktop games={games} length={games.length} />
+              <CollectionsDesktop
+                games={games.slice(0, 6)}
+                length={games.length > 6 ? 6 : games.length}
+              />
             )}
           </StyledCardContainer>
         </div>
