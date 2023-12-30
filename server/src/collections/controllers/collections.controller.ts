@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -11,11 +11,11 @@ import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 
 @ApiTags('api/collections')
 @Controller('collections')
+@UseGuards(AccessTokenGuard)
 export class CollectionsController {
   constructor(private collectionsService: CollectionsService) {}
 
   @ApiOperation({ summary: 'Get all collections of a user' })
-  @UseGuards(AccessTokenGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   async getCollections(@Req() req: Request) {
@@ -24,7 +24,6 @@ export class CollectionsController {
 
   @ApiOperation({ summary: 'Create a new collection' })
   @ApiBody({ type: CreateNewCollectionDto })
-  @UseGuards(AccessTokenGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createCollection(@Req() req: Request, @Body() createNewCollectionDto: CreateNewCollectionDto) {
@@ -32,7 +31,6 @@ export class CollectionsController {
   }
 
   @ApiOperation({ summary: 'Delete a collection' })
-  @UseGuards(AccessTokenGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteCollection(@Req() req: Request, @Param('id') collectionId: string) {
@@ -41,10 +39,16 @@ export class CollectionsController {
 
   @ApiOperation({ summary: 'Add a game to a collection' })
   @ApiBody({ type: AddGameToCollectionDto })
-  @UseGuards(AccessTokenGuard)
   @Post('add-game')
   @HttpCode(HttpStatus.CREATED)
-  async addGame(@Req() req: Request, @Body() addGameToCollectionDto: AddGameToCollectionDto) {
-    return this.collectionsService.addGame(req.user['sub'], addGameToCollectionDto);
+  async addGame(@Body() addGameToCollectionDto: AddGameToCollectionDto) {
+    return this.collectionsService.addGameToCollection(addGameToCollectionDto);
+  }
+
+  @ApiOperation({ summary: 'Delete a game from a collection' })
+  @Delete('/:collectionId/game/:gameId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteGame(@Param('collectionId') collectionId: string, @Param('gameId', ParseIntPipe) gameId: number) {
+    return this.collectionsService.deleteGameFromCollection(collectionId, gameId);
   }
 }
