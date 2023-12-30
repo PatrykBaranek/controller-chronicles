@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GameDetails from './pages/GameDetails';
 import { refreshToken } from './api/gamesApi';
 import PrivateRoute from './components/PrivateRoute';
+import Collections from './pages/Collections';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,15 +41,20 @@ const router = createBrowserRouter([
       { path: 'signup', element: <SignUp /> },
       {
         path: '/profile',
-        element: <PrivateRoute Component={Profile} />,
-      },
-      {
-        path: '/profile/collections',
-        element: <h1>collections</h1>,
-      },
-      {
-        path: '/profile/collections/:id',
-        element: <h1>collection</h1>,
+        children: [
+          {
+            index: true,
+            element: <PrivateRoute Component={Profile} />,
+          },
+          {
+            path: 'collections',
+            element: <PrivateRoute Component={Collections} />,
+          },
+          {
+            path: 'collections/:id',
+            element: <h1>collection</h1>,
+          },
+        ],
       },
     ],
   },
