@@ -4,6 +4,7 @@ import gamepadIco from '#/assets/gamepadIco.svg';
 import podcastIco from '#/assets/podcastsIco.svg';
 import loginIco from '#/assets/loginIcon.svg';
 import loggedIco from '#/assets/loggedIco.svg';
+import collectionIco from '#/assets/collectionIco.svg';
 import NavbarLink from '../UI/NavbarLink';
 import { useIsAuthenticated } from 'react-auth-kit';
 
@@ -36,6 +37,7 @@ const NavMenu = () => {
       ) : (
         <>
           <NavbarLink icon={loginIco} text={'Profile'} />
+          <NavbarLink icon={collectionIco} text={'Collections'} />
           <NavbarLink icon={loggedIco} text={'Logout'} isLogoutButton={true} />
         </>
       )}
