@@ -161,12 +161,16 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
   const { pathname } = useLocation();
   const { toggleMenuOpen } = useStore();
   const logout = useSignOut();
+
   const isLinkActive = () => {
     if (text.toLowerCase() === 'home') {
       return pathname === '/';
-    } else {
-      return pathname === `/${text.toLocaleLowerCase()}`;
     }
+    if (text.toLowerCase() === 'collections') {
+      return pathname === `/profile/${text.toLowerCase()}`;
+    }
+
+    return pathname === `/${text.toLocaleLowerCase()}`;
   };
 
   const onLinkClick = () => {
@@ -180,6 +184,10 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
     if (text.toLowerCase() === 'home' || text.toLowerCase() === 'logout') {
       return '';
     }
+    if (text.toLowerCase() === 'collections') {
+      return `profile/${text.toLowerCase()}`;
+    }
+
     return text.toLowerCase();
   };
 
@@ -188,7 +196,7 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
       <StyledWrapper>
         <NavLink
           onClick={onLinkClick}
-          className={({ isActive }) => (isActive && !isLogoutButton ? 'active' : '')}
+          className={() => (isLinkActive() && !isLogoutButton ? 'active' : '')}
           to={`/${correctLocation()}`}
         >
           <span>
