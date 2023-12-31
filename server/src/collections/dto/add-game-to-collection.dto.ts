@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsMongoId, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class AddGameToCollectionDto {
   @ApiProperty({
@@ -16,6 +16,6 @@ export class AddGameToCollectionDto {
     type: String,
   })
   @IsNotEmpty()
-  @IsString()
+  @IsMongoId()
   collectionId: string;
 }

@@ -19,10 +19,16 @@ export class CollectionsService {
     return await this.collectionsRepository.deleteCollection(userId, collectionId);
   }
 
-  async addGame(userId: string, addGameToCollectionDto: AddGameToCollectionDto) {
-    const game = await this.gamesService.getGameById(addGameToCollectionDto.gameId);
+  async addGameToCollection(gameToCollectionDto: AddGameToCollectionDto) {
+    const game = await this.gamesService.getGameById(gameToCollectionDto.gameId);
 
-    return await this.collectionsRepository.addGame(game, userId, addGameToCollectionDto.collectionId);
+    return await this.collectionsRepository.addGameToCollection(game, gameToCollectionDto.collectionId);
+  }
+
+  async deleteGameFromCollection(collectionId: string, gameId: number) {
+    const game = await this.gamesService.getGameById(gameId);
+
+    return await this.collectionsRepository.deleteGameFromCollection(game, collectionId);
   }
 
   async getCollections(userId: string) {

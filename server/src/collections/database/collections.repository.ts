@@ -1,6 +1,6 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collection, Model } from 'mongoose';
+import { Collection, Model, Types } from 'mongoose';
 
 import { CollectionDocument } from '../models/collection.model';
 
@@ -16,8 +16,8 @@ export class CollectionsRepository {
     @InjectModel(Collection.name) private collectionModel: Model<CollectionDocument>
   ) {}
 
-  async addGame(game: Game, userId: string, collectionId: string) {
-    const collection = await this.collectionModel.findById({ _id: collectionId, userId });
+  async addGameToCollection(game: Game, collectionId: string) {
+    const collection = await this.findCollectionById(collectionId);
 
     if (!collection) {
       throw new NotFoundException('Collection not found');
@@ -30,6 +30,25 @@ export class CollectionsRepository {
     collection.games.push(game);
 
     return collection.save();
+  }
+
+  async deleteGameFromCollection(game: Game, collectionId: string) {
+    const collection = await this.findCollectionById(collectionId);
+
+    if (!collection) {
+      throw new NotFoundException('Collection not found');
+    }
+
+    const gameIndex = collection.games.findIndex(g => g._id.toString() === game._id.toString());
+    if (gameIndex === -1) {
+      throw new BadRequestException('Game does not exist in this collection');
+    }
+
+    collection.games.splice(gameIndex, 1);
+
+    await collection.save();
+
+    return collection;
   }
 
   async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
@@ -70,5 +89,9 @@ export class CollectionsRepository {
 
   private findAllCollectionsByUserId(userId: string): Promise<CollectionDocument[]> {
     return this.collectionModel.find({ userId });
+  }
+
+  private findCollectionById(collectionId: string) {
+    return this.collectionModel.findById(collectionId);
   }
 }
