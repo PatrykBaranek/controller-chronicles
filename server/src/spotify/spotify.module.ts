@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ScheduleModule } from '@nestjs/schedule';
 import { SpotifyAuthController } from './spotify-auth/controllers/spotify-auth.controller';
 import { SpotifyPodcastsController } from './spotify-podcasts/controllers/spotify-podcasts.controller';
 import { SpotifyEpisodesController } from './spotify-episodes/controllers/spotify-episodes.controller';
@@ -11,7 +10,7 @@ import { SpotifySoundtracksController } from './spotify-soundtracks/controllers/
 import { GamesModule } from 'src/games/games.module';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), GamesModule],
+  imports: [GamesModule],
   providers: [
     SpotifyAuthService,
     SpotifyPodcastsService,
@@ -25,4 +24,4 @@ import { GamesModule } from 'src/games/games.module';
     SpotifySoundtracksController,
   ],
 })
-export class SpotifyModule {}
+export class SpotifyModule { }

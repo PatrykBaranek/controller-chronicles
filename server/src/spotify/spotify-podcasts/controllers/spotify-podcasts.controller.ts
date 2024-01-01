@@ -1,21 +1,8 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { SpotifyPodcastsService } from '../services/spotify-podcasts.service';
+import { Controller, Delete, Get, HttpCode, Param, Post, Query, UseGuards, HttpStatus } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { DefaultQueryParamsDto } from 'src/spotify/dto/default-query-params.dto';
 import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { SpotifyPodcastsService } from '../services/spotify-podcasts.service';
 
 @ApiTags('api/spotify/podcasts')
 @ApiBearerAuth()
@@ -27,68 +14,46 @@ export class SpotifyPodcastsController {
   ) {}
 
   @ApiOperation({ summary: 'Get all game podcasts' })
-  @ApiQuery({
-    name: 'lang',
-    description: 'Language code',
-    required: false,
-    enum: ['pl', 'en'],
-  })
   @ApiResponse({ status: 200, description: 'Return all game podcasts' })
   @Get()
-  async getAllGamePodcasts(@Query('lang') language: string) {
-    return this.spotifyPodcastsService.getAllGamePodcasts(language);
+  async getAllGamePodcasts(@Query() { limit, offset }: DefaultQueryParamsDto) {
+    return this.spotifyPodcastsService.getAllGamePodcasts(limit, offset);
   }
 
   @ApiOperation({ summary: 'Get podcast by ID' })
-  @ApiResponse({ status: 200, description: 'Return podcast by ID' })
+  @ApiResponse({ status: 200, description: 'Return podcast details by ID' })
   @Get(':id')
   async getPodcast(@Param('id') id: string) {
     return this.spotifyPodcastsService.getPodcastById(id);
   }
 
-  @ApiOperation({ summary: 'Get new release episodes for a podcast' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return new release episodes for a podcast',
-  })
-  @Get(':id/new-release')
-  async getPodcastNewRelease(@Param('id') id: string) {
-    return this.spotifyPodcastsService.getNewEpisodesForPodcast(id);
-  }
-
-  @ApiOperation({ summary: 'Get podcasts from user library' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return podcasts from user library',
-  })
-  @Get('/users-list')
-  async getPodcastsFromUserLibrary() {
-    return this.spotifyPodcastsService.getPodcastsFromUserLibrary();
+  @ApiOperation({ summary: 'Get user podcasts' })
+  @ApiResponse({ status: 200, description: 'Return user podcasts' })
+  @Get('/user/list')
+  async getUsersPodcasts(@Query() { limit, offset }: DefaultQueryParamsDto) {
+    return this.spotifyPodcastsService.getUserPodcasts(limit, offset);
   }
 
   @ApiOperation({ summary: 'Add podcast to user library' })
-  @ApiResponse({ status: 200, description: 'Podcast added to user library' })
+  @ApiResponse({ status: HttpStatus.CREATED, description: 'Podcast added to user library' })
+  @HttpCode(HttpStatus.CREATED)
   @Post('/add/:id')
   async addPodcastToMyList(@Param('id') id: string) {
     await this.spotifyPodcastsService.addPodcastToUserLibrary(id);
 
     return {
-      statusCode: 200,
       message: 'Podcast added to your library',
     };
   }
 
   @ApiOperation({ summary: 'Remove podcast from user library' })
-  @ApiResponse({
-    status: 200,
-    description: 'Podcast removed from user library',
-  })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Podcast removed from user library' })
+  @HttpCode(HttpStatus.OK)
   @Delete('/remove/:id')
   async removePodcastFromMyList(@Param('id') id: string) {
     await this.spotifyPodcastsService.removePodcastFromUserLibrary(id);
 
     return {
-      statusCode: 200,
       message: 'Podcast removed from your library',
     };
   }

@@ -12,9 +12,7 @@ export class SpotifyAuthService {
     return this.spotifyApi;
   }
 
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     this.initializeSpotifyApi();
   }
 
@@ -26,17 +24,40 @@ export class SpotifyAuthService {
     this.spotifyApi = new SpotifyWebApi({
       clientId: this.configService.get<string>('SPOTIFY_CLIENT_ID'),
       clientSecret: this.configService.get<string>('SPOTIFY_CLIENT_SECRET'),
-      redirectUri: 'http://localhost:3000/api/spotify/auth/callback',
+      redirectUri: this.configService.get<string>('SPOTIFY_REDIRECT_URI'),
     });
   }
 
   getAuthorizeURL(): string {
-    return this.spotifyApi.createAuthorizeURL(scopes, '');
+    this.initializeSpotifyApi();
+    return this.spotifyApi.createAuthorizeURL(scopes, this.configService.get<string>('SPOTIFY_CLIENT_STATE'));
   }
 
-  async handleAuthorizationCallback(code: string): Promise<void> {
+  async getTokens(code: string) {
     const data = await this.spotifyApi.authorizationCodeGrant(code);
     this.spotifyApi.setAccessToken(data.body['access_token']);
     this.spotifyApi.setRefreshToken(data.body['refresh_token']);
+
+    return {
+      access_token: this.spotifyApi.getAccessToken(),
+      refresh_token: this.spotifyApi.getRefreshToken(),
+      expires_in: data.body['expires_in'],
+    };
+  }
+
+  async refreshTokens(refresh_token: string) {
+    this.spotifyApi.setRefreshToken(refresh_token);
+    const data = await this.spotifyApi.refreshAccessToken();
+
+    return {
+      access_token: data.body['access_token'],
+      refresh_token: this.spotifyApi.getRefreshToken(),
+      expires_in: data.body['expires_in'],
+    };
+  }
+
+  async getMe() {
+    const data = await this.spotifyApi.getMe();
+    return data.body;
   }
 }
