@@ -23,12 +23,15 @@ import {
 const SignUp = () => {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
+
   const signUp = useMutation({
     mutationFn: (data: UserInputs) => signUpUser(data),
   });
+
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [error, setError] = useState<AuthError>();
+
   const {
     register,
     reset,
