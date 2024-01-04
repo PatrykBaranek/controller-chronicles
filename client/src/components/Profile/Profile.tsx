@@ -1,7 +1,7 @@
 import { getUserProfile } from '#/api/gamesApi';
 import { StyledButton } from '#/pages/Login';
 import getAuthToken from '#/utils/getAuthToken';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 
