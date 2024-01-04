@@ -127,6 +127,22 @@ export const getUserCollections = async (authToken: string): Promise<CollectionR
   }
 };
 
+export const deleteCollection = async (id: string, authToken: string) => {
+  try {
+    const response = gamesApi.delete(`/collections/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 export const addGameToCollection = async (
   authToken: string,
   gameId: number,
