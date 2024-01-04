@@ -84,6 +84,7 @@ const Collections = () => {
     data: collections,
     isLoading,
     isError,
+    refetch,
   } = useQuery(['availableCollections'], () => getUserCollections(authToken));
 
   const removeCollection = useMutation({
@@ -93,7 +94,7 @@ const Collections = () => {
   const handleDeleteCollection = (id: string) => {
     removeCollection.mutate(id, {
       onSuccess: () => {
-        console.log('deleted');
+        refetch();
       },
     });
   };
