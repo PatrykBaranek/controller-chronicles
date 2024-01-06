@@ -1,30 +1,33 @@
-import { Gamecard } from '#/types/types';
-import styled from 'styled-components';
-import Card from '../UI/Card';
-import { Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
 import { getGameById } from '#/api/gamesApi';
 import heartIcon from '#/assets/heartIcon.svg';
-import { Skeleton, Tooltip } from '@mui/material';
+import { Gamecard } from '#/types/types';
+import { Skeleton } from '@mui/material';
 import { useState } from 'react';
-import AddToCollectionForm from '../Collections/AddToCollectionForm';
 import { useIsAuthenticated } from 'react-auth-kit';
+import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import AddToCollectionForm from '../Collections/AddToCollectionForm';
+import Card from '../UI/Card';
 
 const StyledImage = styled.div`
   width: 100%;
-  height: 50%;
+  height: 100%;
   img {
     border-radius: 1rem 1rem 0 0;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 3/2;
   }
 `;
+
 const StyledContent = styled.div`
   width: 100%;
-  height: 50%;
+  height: 100%;
   padding-inline: 1rem;
   padding-top: 1.2rem;
+  display: grid;
 `;
+
 const StyledTopSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -53,6 +56,7 @@ const StyledTopSection = styled.div`
     }
   }
 `;
+
 const StyledDescription = styled.div`
   color: ${({ theme }) => theme.colors.primary};
   margin-block: 0.3rem;
@@ -91,7 +95,7 @@ const GameCard = ({ id, image, title, rating }: Gamecard) => {
   return (
     <>
       <Card>
-        <Link to={`${id}`}>
+        <Link style={{ paddingBottom: '2rem' }} to={`${id}`}>
           <StyledImage>
             <img src={image} alt={`${title} image`} />
           </StyledImage>

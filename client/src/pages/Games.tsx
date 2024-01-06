@@ -89,7 +89,7 @@ const StyledWrapper = styled.div`
   @media screen and (min-width: 1300px) {
     padding-inline: 2rem;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 23rem);
+    grid-template-rows: repeat(2, 1fr);
   }
 `;
 const StyledSkeleton = styled(Skeleton)`
