@@ -1,24 +1,23 @@
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { Module, ValidationPipe } from '@nestjs/common';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from '../auth/auth.module';
-
 import { CollectionsModule } from '../collections/collections.module';
-
-import { SpotifyModule } from '../spotify/spotify.module';
-
+import { EmailModule } from 'src/email/email.module';
 import { GamesModule } from '../games/games.module';
-
-import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
 import { GamesUpdateModule } from '../games-update/games-update.module';
+import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
+import { SpotifyModule } from '../spotify/spotify.module';
+import { SteamModule } from 'src/steam/steam.module';
+import { YoutubeModule } from 'src/youtube/youtube.module';
+
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './filters/global-exception.filter';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
-import { YoutubeModule } from 'src/youtube/youtube.module';
-import { SteamModule } from 'src/steam/steam.module';
 
 @Module({
   imports: [
@@ -37,6 +36,7 @@ import { SteamModule } from 'src/steam/steam.module';
       }),
       inject: [ConfigService],
     }),
+    EventEmitterModule.forRoot(),
     SpotifyModule,
     ReviewsSitesModule,
     AuthModule,
@@ -44,7 +44,8 @@ import { SteamModule } from 'src/steam/steam.module';
     GamesModule,
     SteamModule,
     YoutubeModule,
-    GamesUpdateModule
+    GamesUpdateModule,
+    EmailModule
   ],
   providers: [
     {

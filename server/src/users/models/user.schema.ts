@@ -25,6 +25,13 @@ export class User {
   })
   @Prop()
   refresh_token: string;
+
+  @ApiProperty({
+    description: 'Reset token',
+    type: String,
+  })
+  @Prop()
+  reset_token?: string;
 }
 
 export type UserDocument = User & Document;

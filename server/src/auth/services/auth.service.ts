@@ -1,10 +1,11 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { UsersService } from '../../users/services/users.service';
 import { HashService } from './hash.service';
 import { LoginUserDto } from '../dto/login-user.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly hashService: HashService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async signUp(createUserDto: CreateUserDto) {
@@ -22,6 +24,8 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('User already exists');
     }
+
+    this.eventEmitter.emit('user.welcome', { email });
 
     const hashedPassword = await this.hashService.hashData(password);
     const newUser = await this.usersService.create({ ...createUserDto, password: hashedPassword });
@@ -38,7 +42,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
-      throw new BadRequestException('User does not exist');
+      throw new NotFoundException('User does not exist');
     }
 
     const passwordMatches = await this.hashService.compare(password, user.password);
@@ -51,6 +55,33 @@ export class AuthService {
     await this.updateRefreshToken(user._id, tokens.refresh_token);
 
     return tokens;
+  }
+
+  public async requestPasswordReset(email: string) {
+    const user = await this.usersService.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    const resetToken = await this.jwtService.signAsync({ email }, { secret: this.configService.get<string>('JWT_RESET_SECRET'), expiresIn: '15m' });
+    const link = `${this.configService.get<string>('FRONTEND_URL')}/reset-password?token=${resetToken}`;
+
+    this.eventEmitter.emit('user.reset-password', { email, link });
+
+    await this.usersService.update(user._id, { reset_token: resetToken });
+  }
+
+  public async resetPassword(token: string, password: string) {
+    const { email } = await this.jwtService.verifyAsync(token, { secret: this.configService.get<string>('JWT_RESET_SECRET') });
+    const user = await this.usersService.findByEmail(email);
+
+    if (!user || !user.reset_token) {
+      throw new BadRequestException('Invalid token');
+    }
+
+    const hashedPassword = await this.hashService.hashData(password);
+    await this.usersService.update(user._id, { password: hashedPassword, reset_token: null });
   }
 
   public async logout(userId: string) {
