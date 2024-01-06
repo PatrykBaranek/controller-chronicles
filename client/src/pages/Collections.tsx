@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledButton } from './Login';
+import ConfirmationModal from '#/components/UI/ConfirmationModal';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -106,6 +107,8 @@ const StyledCollectionButton = styled(StyledButton)<StyledProps>`
 const Collections = () => {
   const authToken = getAuthToken();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [pickedId, setPickedId] = useState('');
   const navigate = useNavigate();
 
   const { data: collections, refetch } = useQuery(['availableCollections'], () =>
@@ -144,7 +147,13 @@ const Collections = () => {
               <h3>{collection.name}</h3>
               <img src={leaveIcon} alt='Leave icon' />
             </Link>
-            <button onClick={() => handleDeleteCollection(collection._id)} className='delete'>
+            <button
+              onClick={() => {
+                setPickedId(collection._id);
+                setIsConfirmationModalOpen(true);
+              }}
+              className='delete'
+            >
               <img src={trashIcon} alt='bin icon' />
             </button>
           </StyledCollectionTitle>
@@ -196,6 +205,14 @@ const Collections = () => {
         </StyledCollection>
       ))}
       <CollectionsForm handleClose={toggleDialog} isOpen={isDialogOpen} refetch={refetch} />
+      <ConfirmationModal
+        buttonText='Delete'
+        heading='Deleting collection'
+        contentText='Are you sure you want to delete a collection?'
+        confirmCallback={() => handleDeleteCollection(pickedId)}
+        isOpen={isConfirmationModalOpen}
+        handleClose={() => setIsConfirmationModalOpen((prev) => !prev)}
+      />
     </StyledWrapper>
   );
 };
