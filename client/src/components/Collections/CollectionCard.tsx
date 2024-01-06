@@ -10,7 +10,7 @@ const StyledCollectionCard = styled.div<Props>`
   overflow: hidden;
   img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 3/2;
   }
   @media screen and (min-width: 1200px) {
     display: flex;
