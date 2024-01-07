@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -29,7 +29,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Log in' })
   @ApiBody({ description: 'User credentials', type: LoginUserDto })
   @ApiResponse({ status: 200, description: 'Logged in successfully' })
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto) {

@@ -19,7 +19,6 @@ export class GamesController {
   @ApiOperation({ summary: 'Get games' })
   @ApiResponse({ status: 200, description: 'Returns a list of games', type: [PaginationDto<RawgGameResponseDto>] })
   @Get()
-  @UsePipes(new ValidationPipe({ transform: true }))
   async getGames(@Query() queryParams: GetGameQueryParamsDto) {
     return this.gamesService.getGames(queryParams);
   }
