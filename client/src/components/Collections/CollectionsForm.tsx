@@ -1,4 +1,5 @@
 import { addCollection } from '#/api/gamesApi';
+import successIco from '#/assets/successIco.svg';
 import { StyledButton } from '#/pages/Login';
 import getAuthToken from '#/utils/getAuthToken';
 import Dialog from '@mui/material/Dialog';
@@ -8,7 +9,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
+import { toast } from 'sonner';
 import styled from 'styled-components';
+import errorIco from '#/assets/errorIco.svg';
 
 type Props = {
   handleClose: () => void;
@@ -92,10 +95,29 @@ const CollectionsForm = ({ handleClose, isOpen, refetch }: Props) => {
         authToken,
       }),
     onSuccess: () => refetch(),
+    onError: (error: any) => {
+      toast('Error', {
+        className: 'default',
+        description: error?.message,
+        duration: 5000,
+        icon: <img src={errorIco} />,
+        position: 'top-right',
+      });
+    },
   });
 
   const onSubmit: SubmitHandler<InputValue> = (data) => {
     addToCollection.mutate(data);
+    toast('Collection created!', {
+      className: 'default',
+      description: `Collection ${data.collectionName} added`,
+      duration: 5000,
+      icon: <img src={successIco} />,
+      position: 'top-right',
+      style: {
+        gap: '1rem',
+      },
+    });
     handleClose();
   };
 

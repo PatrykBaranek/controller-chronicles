@@ -1,4 +1,6 @@
 import { addGameToCollection, getUserCollections } from '#/api/gamesApi';
+import errorIco from '#/assets/errorIco.svg';
+import successIco from '#/assets/successIco.svg';
 import { StyledButton } from '#/pages/Login';
 import { GameDetailsResponse } from '#/types/types';
 import getAuthToken from '#/utils/getAuthToken';
@@ -11,6 +13,7 @@ import { useState } from 'react';
 import { useIsAuthenticated } from 'react-auth-kit';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 import Autocomplete from '../FilterDrawer/components/Autocomplete';
 import CollectionsForm from './CollectionsForm';
@@ -134,6 +137,15 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
         setColletions(filteredCollections);
       },
       enabled: isAuth() && isOpen,
+      onError: (error: any) => {
+        toast('Error', {
+          className: 'default',
+          description: error?.message,
+          duration: 5000,
+          icon: <img src={errorIco} />,
+          position: 'top-right',
+        });
+      },
     }
   );
   const addToCollection = useMutation({
@@ -148,6 +160,16 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
 
   const onSubmit: SubmitHandler<InputValue> = (data) => {
     addToCollection.mutate(data.Collections.id);
+    toast('Game added to collection!', {
+      className: 'default',
+      description: `Game added to ${data.Collections.name} collection`,
+      duration: 5000,
+      icon: <img src={successIco} />,
+      position: 'top-right',
+      style: {
+        gap: '1rem',
+      },
+    });
     handleClose();
   };
 

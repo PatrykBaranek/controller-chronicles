@@ -1,6 +1,7 @@
 import useStore from '#/store/store';
 import { useSignOut } from 'react-auth-kit';
 import { NavLink, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 
 type NavbarLink = {
@@ -176,6 +177,15 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
   const onLinkClick = () => {
     toggleMenuOpen();
     if (isLogoutButton) {
+      toast('Logged out!', {
+        className: 'default',
+        duration: 5000,
+        position: 'top-center',
+        style: {
+          gap: '1rem',
+        },
+      });
+
       logout();
     }
   };

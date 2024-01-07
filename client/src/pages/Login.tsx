@@ -1,15 +1,17 @@
 import { logInUser } from '#/api/gamesApi';
 import crossedEye from '#/assets/crossedEye.svg';
+import errorIco from '#/assets/errorIco.svg';
 import eye from '#/assets/eye.svg';
+import loggedInIco from '#/assets/loggedIco.svg';
 import Form from '#/components/Form/Form';
 import { AuthError, UserInputs } from '#/types/types';
 import { validateEmail } from '#/utils/formValidation';
-import { Alert } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 
 export const StyledAuth = styled.div`
@@ -175,25 +177,34 @@ const Login = () => {
           })
         ) {
           navigate('/');
+          toast('Logged In', {
+            className: 'default',
+            description: 'You have successfully logged in',
+            duration: 5000,
+            icon: <img className='login' src={loggedInIco} />,
+            position: 'top-center',
+            style: {
+              gap: '1rem',
+            },
+          });
         }
       },
       onError: (error: any) => {
+        toast('Error', {
+          className: 'default',
+          description: error?.message,
+          duration: 5000,
+          icon: <img src={errorIco} />,
+          position: 'top-right',
+        });
         setError(error);
       },
     });
   };
+
   return (
     <StyledAuth>
       <StyledAuthWrapper>
-        {error && (
-          <Alert
-            variant='outlined'
-            severity='error'
-            sx={{ color: '#ebebf5bf', marginBottom: '1rem' }}
-          >
-            {error.message}
-          </Alert>
-        )}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <StyledEmailContainer>
             <StyledInput

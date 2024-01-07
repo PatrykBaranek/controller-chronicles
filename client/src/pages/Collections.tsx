@@ -12,6 +12,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledButton } from './Login';
 import ConfirmationModal from '#/components/UI/ConfirmationModal';
+import { toast } from 'sonner';
+import errorIco from '#/assets/errorIco.svg';
+import successIco from '#/assets/successIco.svg';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -119,10 +122,31 @@ const Collections = () => {
     mutationFn: (id: string) => deleteCollection(id, authToken),
   });
 
+  const foundCollection = (id: string) => collections?.find((collection) => collection?._id === id);
+
   const handleDeleteCollection = (id: string) => {
     removeCollection.mutate(id, {
       onSuccess: () => {
+        toast('Collection successfully deleted!', {
+          className: 'default',
+          description: `Collection ${foundCollection(id)?.name} deleted`,
+          duration: 5000,
+          icon: <img src={successIco} />,
+          position: 'top-right',
+          style: {
+            gap: '1rem',
+          },
+        });
         refetch();
+      },
+      onError: (error: any) => {
+        toast('Error', {
+          className: 'default',
+          description: error?.message,
+          duration: 5000,
+          icon: <img src={errorIco} />,
+          position: 'top-right',
+        });
       },
     });
   };

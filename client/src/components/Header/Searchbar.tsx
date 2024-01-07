@@ -1,10 +1,9 @@
-import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
+import errorIco from '#/assets/errorIco.svg';
 import searchIco from '#/assets/searchIco.svg';
-import useStore from '#/store/store';
-import { Alert } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import useWindowWidth from '#/hooks/useWindowWidth';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 
 type Props = {
@@ -88,6 +87,7 @@ const Searchbar = () => {
   const query = searchParams.get('query');
   const [inputValue, setInputValue] = useState(query || '');
   const [error, setError] = useState<string>();
+  const windowWidth = useWindowWidth();
 
   const resetInput = () => {
     setInputValue('');
@@ -104,42 +104,34 @@ const Searchbar = () => {
   const searchGames = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputValue.length < 3) {
+      toast('Error', {
+        className: 'default',
+        description: 'Input should be greater than 3 words',
+        duration: 5000,
+        icon: <img src={errorIco} />,
+        position: windowWidth! < 1300 ? 'bottom-center' : 'top-right',
+      });
       setError('Input should be greater than 3 words');
+
       return;
     }
     setSearchParams({ query: inputValue });
   };
 
   return (
-    <>
-      {error && (
-        <Alert
-          variant='filled'
-          severity='error'
-          sx={{
-            color: '#ebebf5bf',
-            position: 'absolute',
-            top: '5%',
-            left: '12%',
-          }}
-        >
-          {error}
-        </Alert>
-      )}
-      <StyledSearchbar isEmpty={inputValue.length < 1} error={error} onSubmit={searchGames}>
-        <span onClick={resetInput}></span>
-        <input
-          type='text'
-          onChange={(e) => handleSearchbarChange(e)}
-          value={inputValue}
-          aria-label='searchbar'
-        />
+    <StyledSearchbar isEmpty={inputValue.length < 1} error={error} onSubmit={searchGames}>
+      <span onClick={resetInput}></span>
+      <input
+        type='text'
+        onChange={(e) => handleSearchbarChange(e)}
+        value={inputValue}
+        aria-label='searchbar'
+      />
 
-        <button>
-          <img src={searchIco} alt='Searchbar' />
-        </button>
-      </StyledSearchbar>
-    </>
+      <button>
+        <img src={searchIco} alt='Searchbar' />
+      </button>
+    </StyledSearchbar>
   );
 };
 
