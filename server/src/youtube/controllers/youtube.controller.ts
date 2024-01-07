@@ -14,20 +14,17 @@ export class YoutubeController {
 
   @ApiOperation({ summary: 'Get game video review or by game ID' })
   @Get()
-  @UsePipes(new ValidationPipe({ transform: true }))
   async getGameVideoReviewByGameId(@Query() getGameVideoReviewDto: GetGameVideoReviewDto) {
     return this.youtubeService.getGameVideosByGameId(getGameVideoReviewDto);
   }
 
   @Get('videos/date-range')
-  @UsePipes(new ValidationPipe({ transform: true }))
   async getTrailerOrReviewByDateRange(@Query() getVideosByDateRangeDto: GetVideosByDateRangeDto) {
     return this.youtubeService.getVideosByDateRange(getVideosByDateRangeDto);
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UsePipes(new ValidationPipe({ transform: true }))
   async deleteVideo(@Query() deleteVideoDto: DeleteVideoDto) {
     return this.youtubeService.deleteVideo(deleteVideoDto);
   }

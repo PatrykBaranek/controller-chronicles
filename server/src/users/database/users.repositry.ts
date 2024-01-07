@@ -25,7 +25,7 @@ export class UsersRepository {
   }
 
   async findByEmail(email: string): Promise<UserDocument | undefined> {
-    return this.userModel.findOne({ email: email }).exec();
+    return this.userModel.findOne({ email }).exec();
   }
 
   async update(id: string, updateUserDto: Partial<UpdateUserDto>): Promise<UserDocument> {
