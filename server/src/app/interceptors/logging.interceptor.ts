@@ -1,4 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Observable, tap } from 'rxjs';
 
 
@@ -6,7 +7,12 @@ import { Observable, tap } from 'rxjs';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
+  constructor(private readonly configService: ConfigService) {}
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+
+    const isProduction = this.configService.get<boolean>('production');
+
     const now = Date.now();
     const request = context.switchToHttp().getRequest();
     const method = request.method;
@@ -14,6 +20,11 @@ export class LoggingInterceptor implements NestInterceptor {
     const user = request.user;
 
     const userStatus = user ? 'Authenticated User' : 'Unauthenticated User';
+
+    if (isProduction) {
+      return next
+        .handle();
+    }
 
     this.logger.log(`Request: ${method} ${url} - ${userStatus}`);
 
