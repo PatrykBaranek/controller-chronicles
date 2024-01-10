@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
@@ -14,7 +14,7 @@ export class SpotifyAuthController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Get('login')
+  @Post('login')
   async authorize() {
     const url = this.spotifyAuthService.getAuthorizeURL();
     return { url };
