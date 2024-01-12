@@ -1,18 +1,18 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './Layout';
-import Games from './pages/Games';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { AuthProvider } from 'react-auth-kit';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import Profile from './pages/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import GameDetails from './pages/GameDetails';
+import { AuthProvider } from 'react-auth-kit';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { refreshToken } from './api/gamesApi';
 import PrivateRoute from './components/PrivateRoute';
+import Layout from './Layout';
 import Collections from './pages/Collections';
+import GameDetails from './pages/GameDetails';
+import Games from './pages/Games';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import SignUp from './pages/SignUp';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,10 +49,6 @@ const router = createBrowserRouter([
           {
             path: 'collections',
             element: <PrivateRoute Component={Collections} />,
-          },
-          {
-            path: 'collections/:id',
-            element: <h1>collection</h1>,
           },
         ],
       },
