@@ -1,21 +1,21 @@
 import { deleteCollection, getUserCollections } from '#/api/gamesApi';
-import leaveIcon from '#/assets/leaveIcon.svg';
+import errorIco from '#/assets/errorIco.svg';
+import gearIco from '#/assets/gearIco.svg';
+import successIco from '#/assets/successIco.svg';
 import trashIcon from '#/assets/trashIco.svg';
 import CollectionsForm from '#/components/Collections/CollectionsForm';
 import Card from '#/components/UI/Card';
+import ConfirmationModal from '#/components/UI/ConfirmationModal';
+import Spinner from '#/components/UI/Spinner';
 import getAuthToken from '#/utils/getAuthToken';
-import { Skeleton } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 import { StyledButton } from './Login';
-import ConfirmationModal from '#/components/UI/ConfirmationModal';
-import { toast } from 'sonner';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
-import Spinner from '#/components/UI/Spinner';
+import CollectionEditModal from '#/components/UI/CollectionEditModal';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -74,7 +74,8 @@ const StyledCollectionTitle = styled.div`
       color: ${({ theme }) => theme.colors.secondary};
     }
   }
-  .delete {
+  .delete,
+  .edit {
     background: transparent;
     border: none;
     cursor: pointer;
@@ -112,6 +113,7 @@ const Collections = () => {
   const authToken = getAuthToken();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pickedId, setPickedId] = useState('');
   const navigate = useNavigate();
 
@@ -140,6 +142,7 @@ const Collections = () => {
             gap: '1rem',
           },
         });
+        setPickedId('');
         refetch();
       },
       onError: (error: any) => {
@@ -174,10 +177,18 @@ const Collections = () => {
           {collections?.map((collection) => (
             <StyledCollection key={collection._id}>
               <StyledCollectionTitle>
-                <Link className='heading' to={`${collection._id}`}>
+                <div className='heading'>
                   <h3>{collection.name}</h3>
-                  <img src={leaveIcon} alt='Leave icon' />
-                </Link>
+                  <button
+                    className='edit'
+                    onClick={() => {
+                      setPickedId(collection._id);
+                      setIsEditModalOpen(true);
+                    }}
+                  >
+                    <img src={gearIco} alt='gear icon' />
+                  </button>
+                </div>
                 <button
                   onClick={() => {
                     setPickedId(collection._id);
@@ -238,8 +249,18 @@ const Collections = () => {
           ))}
         </>
       )}
+
       {isDialogOpen && (
         <CollectionsForm handleClose={toggleDialog} isOpen={isDialogOpen} refetch={refetch} />
+      )}
+
+      {isEditModalOpen && (
+        <CollectionEditModal
+          games={foundCollection(pickedId)?.games!}
+          collectionId={pickedId}
+          isOpen={isEditModalOpen}
+          handleClose={() => setIsEditModalOpen((prev) => !prev)}
+        />
       )}
 
       {isConfirmationModalOpen && (

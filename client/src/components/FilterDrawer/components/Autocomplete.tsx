@@ -10,6 +10,8 @@ type Props = {
   options: Option[];
   label: string;
   control: Control<any>;
+  multiple?: boolean;
+  filterSelectedOptions?: boolean;
 };
 
 const StyledAutocompleteWrapper = styled(Controller)`
@@ -70,7 +72,7 @@ const StyledAutocomplete = styled(AutocompleteComponent)`
     display: none;
   }
 `;
-const Autocomplete = ({ options, label, control }: Props) => {
+const Autocomplete = ({ options, label, control, multiple, filterSelectedOptions }: Props) => {
   return (
     <StyledAutocompleteWrapper
       control={control}
@@ -78,6 +80,8 @@ const Autocomplete = ({ options, label, control }: Props) => {
       defaultValue={null}
       render={({ field: { ref, onChange, ...field } }) => (
         <StyledAutocomplete
+          multiple={multiple}
+          filterSelectedOptions={filterSelectedOptions}
           options={options}
           disablePortal={true}
           getOptionLabel={(option: any) => option.name}
