@@ -192,7 +192,7 @@ const Collections = () => {
                 key={`${collection.name}:${collection._id}`}
                 options={{
                   arrows: false,
-                  pagination: false,
+                  pagination: true,
                   autoplay: false,
                   interval: 4000,
                   rewind: true,
@@ -203,6 +203,7 @@ const Collections = () => {
                   mediaQuery: 'min',
                   breakpoints: {
                     900: {
+                      pagination: false,
                       fixedWidth: '30%',
                       padding: '1rem',
                     },
