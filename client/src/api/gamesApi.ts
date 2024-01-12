@@ -143,6 +143,26 @@ export const deleteCollection = async (id: string, authToken: string) => {
   }
 };
 
+export const deleteGameFromCollection = async (
+  collectionId: string,
+  gameId: string | number,
+  authToken: string
+) => {
+  try {
+    const response = gamesApi.delete(`/collections/${collectionId}/game/${gameId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 export const addGameToCollection = async (
   authToken: string,
   gameId: number,
