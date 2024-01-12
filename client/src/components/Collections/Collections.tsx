@@ -7,9 +7,11 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import CollectionList from './CollectionList';
 import CollectionsForm from './CollectionsForm';
+import Spinner from '../UI/Spinner';
 
 type StyledProps = {
   hasCollections?: boolean;
+  isLoading?: boolean;
 };
 
 const StyledCollectionsContainer = styled.div<StyledProps>`
@@ -34,12 +36,14 @@ const StyledCollectionsContainer = styled.div<StyledProps>`
   }
 `;
 
-const StyledCollectionWrapper = styled.div`
+const StyledCollectionWrapper = styled.div<StyledProps>`
   width: 100%;
   display: flex;
   flex-direction: column;
   margin-top: 2rem;
   gap: 1.6rem;
+  position: ${({ isLoading }) => (isLoading ? 'relative' : '')};
+  height: ${({ isLoading }) => (isLoading ? '20rem' : '')};
 `;
 
 const StyledNoCollection = styled.div`
@@ -62,12 +66,16 @@ const Collections = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const authToken = getAuthToken();
 
-  const { refetch } = useQuery(['collections'], () => getUserCollections(authToken), {
-    onSuccess: (data) => {
-      data.sort((a, b) => b.priority - a.priority);
-      setCollections(data);
-    },
-  });
+  const { refetch, isLoading, isFetched } = useQuery(
+    ['collections'],
+    () => getUserCollections(authToken),
+    {
+      onSuccess: (data) => {
+        data.sort((a, b) => b.priority - a.priority);
+        setCollections(data);
+      },
+    }
+  );
 
   const toggleDialog = () => {
     setIsDialogOpen((prev) => !prev);
@@ -76,16 +84,22 @@ const Collections = () => {
   return (
     <StyledCollectionsContainer hasCollections={!!collections?.length}>
       <h1>Your Collections</h1>
-      <StyledCollectionWrapper>
-        {!!collections?.length ? (
-          <CollectionList collections={collections} />
+      <StyledCollectionWrapper isLoading={isLoading}>
+        {isLoading || !isFetched ? (
+          <Spinner />
         ) : (
-          <StyledNoCollection>
-            <h2>Oops! There is no collections yet!</h2>
-            <StyledCollectionButton onClick={toggleDialog}>
-              Add new collection
-            </StyledCollectionButton>
-          </StyledNoCollection>
+          <>
+            {!!collections?.length ? (
+              <CollectionList collections={collections} />
+            ) : (
+              <StyledNoCollection>
+                <h2>Oops! There is no collections yet!</h2>
+                <StyledCollectionButton onClick={toggleDialog}>
+                  Add new collection
+                </StyledCollectionButton>
+              </StyledNoCollection>
+            )}
+          </>
         )}
       </StyledCollectionWrapper>
       <CollectionsForm handleClose={toggleDialog} isOpen={isDialogOpen} refetch={refetch} />

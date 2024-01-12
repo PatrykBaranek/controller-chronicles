@@ -15,6 +15,7 @@ import ConfirmationModal from '#/components/UI/ConfirmationModal';
 import { toast } from 'sonner';
 import errorIco from '#/assets/errorIco.svg';
 import successIco from '#/assets/successIco.svg';
+import Spinner from '#/components/UI/Spinner';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -114,9 +115,11 @@ const Collections = () => {
   const [pickedId, setPickedId] = useState('');
   const navigate = useNavigate();
 
-  const { data: collections, refetch } = useQuery(['availableCollections'], () =>
-    getUserCollections(authToken)
-  );
+  const {
+    data: collections,
+    refetch,
+    isLoading,
+  } = useQuery(['availableCollections'], () => getUserCollections(authToken));
 
   const removeCollection = useMutation({
     mutationFn: (id: string) => deleteCollection(id, authToken),
@@ -157,86 +160,97 @@ const Collections = () => {
 
   return (
     <StyledWrapper>
-      <StyledCollectionButton
-        hasGames={!!collections?.length}
-        hasCollections={!!collections?.length}
-        onClick={toggleDialog}
-      >
-        Add new collection
-      </StyledCollectionButton>
-      {collections?.map((collection) => (
-        <StyledCollection key={collection._id}>
-          <StyledCollectionTitle>
-            <Link className='heading' to={`${collection._id}`}>
-              <h3>{collection.name}</h3>
-              <img src={leaveIcon} alt='Leave icon' />
-            </Link>
-            <button
-              onClick={() => {
-                setPickedId(collection._id);
-                setIsConfirmationModalOpen(true);
-              }}
-              className='delete'
-            >
-              <img src={trashIcon} alt='bin icon' />
-            </button>
-          </StyledCollectionTitle>
-          <Splide
-            key={`${collection.name}:${collection._id}`}
-            options={{
-              arrows: false,
-              pagination: false,
-              autoplay: false,
-              interval: 4000,
-              rewind: true,
-              gap: '1rem',
-              easing: 'ease',
-              perPage: 1,
-              fixedWidth: '100%',
-              mediaQuery: 'min',
-              breakpoints: {
-                900: {
-                  fixedWidth: '30%',
-                  padding: '1rem',
-                },
-                1500: {
-                  fixedWidth: '30%',
-                  perPage: 3,
-                },
-              },
-              start: 0,
-            }}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <StyledCollectionButton
+            hasGames={!!collections?.length}
+            hasCollections={!!collections?.length}
+            onClick={toggleDialog}
           >
-            {!!collection.games.length ? (
-              collection.games.map((game) => (
-                <StyledSplideSlide key={`${collection.name}:${game._id}`}>
-                  <Card>
-                    <StyledCollectionItem to={`/games/${game._id}`}>
-                      <img
-                        src={game.rawgGame.background_image}
-                        alt={`${game.rawgGame.name} image`}
-                      />
-                    </StyledCollectionItem>
-                  </Card>
-                </StyledSplideSlide>
-              ))
-            ) : (
-              <StyledCollectionButton hasGames={false} onClick={() => navigate('/games')}>
-                Add game to collection
-              </StyledCollectionButton>
-            )}
-          </Splide>
-        </StyledCollection>
-      ))}
-      <CollectionsForm handleClose={toggleDialog} isOpen={isDialogOpen} refetch={refetch} />
-      <ConfirmationModal
-        buttonText='Delete'
-        heading='Deleting collection'
-        contentText='Are you sure you want to delete a collection?'
-        confirmCallback={() => handleDeleteCollection(pickedId)}
-        isOpen={isConfirmationModalOpen}
-        handleClose={() => setIsConfirmationModalOpen((prev) => !prev)}
-      />
+            Add new collection
+          </StyledCollectionButton>
+          {collections?.map((collection) => (
+            <StyledCollection key={collection._id}>
+              <StyledCollectionTitle>
+                <Link className='heading' to={`${collection._id}`}>
+                  <h3>{collection.name}</h3>
+                  <img src={leaveIcon} alt='Leave icon' />
+                </Link>
+                <button
+                  onClick={() => {
+                    setPickedId(collection._id);
+                    setIsConfirmationModalOpen(true);
+                  }}
+                  className='delete'
+                >
+                  <img src={trashIcon} alt='bin icon' />
+                </button>
+              </StyledCollectionTitle>
+              <Splide
+                key={`${collection.name}:${collection._id}`}
+                options={{
+                  arrows: false,
+                  pagination: false,
+                  autoplay: false,
+                  interval: 4000,
+                  rewind: true,
+                  gap: '1.2rem',
+                  easing: 'ease',
+                  perPage: 1,
+                  fixedWidth: '100%',
+                  mediaQuery: 'min',
+                  breakpoints: {
+                    900: {
+                      fixedWidth: '30%',
+                      padding: '1rem',
+                    },
+                    1500: {
+                      fixedWidth: '30%',
+                      perPage: 3,
+                    },
+                  },
+                  start: 0,
+                }}
+              >
+                {!!collection.games.length ? (
+                  collection.games.map((game) => (
+                    <StyledSplideSlide key={`${collection.name}:${game._id}`}>
+                      <Card>
+                        <StyledCollectionItem to={`/games/${game._id}`}>
+                          <img
+                            src={game.rawgGame.background_image}
+                            alt={`${game.rawgGame.name} image`}
+                          />
+                        </StyledCollectionItem>
+                      </Card>
+                    </StyledSplideSlide>
+                  ))
+                ) : (
+                  <StyledCollectionButton hasGames={false} onClick={() => navigate('/games')}>
+                    Add game to collection
+                  </StyledCollectionButton>
+                )}
+              </Splide>
+            </StyledCollection>
+          ))}
+        </>
+      )}
+      {isDialogOpen && (
+        <CollectionsForm handleClose={toggleDialog} isOpen={isDialogOpen} refetch={refetch} />
+      )}
+
+      {isConfirmationModalOpen && (
+        <ConfirmationModal
+          buttonText='Delete'
+          heading='Deleting collection'
+          contentText='Are you sure you want to delete a collection?'
+          confirmCallback={() => handleDeleteCollection(pickedId)}
+          isOpen={isConfirmationModalOpen}
+          handleClose={() => setIsConfirmationModalOpen((prev) => !prev)}
+        />
+      )}
     </StyledWrapper>
   );
 };
