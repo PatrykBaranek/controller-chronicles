@@ -33,6 +33,11 @@ export class GamesService {
       rawgGame: game,
     }));
 
+    await Promise.all(response.results.map(async game => {
+      const description_raw = (await this.rawgApiGamesService.getGameById(game.id)).description_raw;
+      game.description_raw = description_raw;
+    }))
+
     if (gamesToSave.length > 0) {
       this.logger.log(`Saving ${gamesToSave.length} new games in the database`);
       await this.gamesRepository.saveGames(gamesToSave.map(game => game.rawgGame));
@@ -44,7 +49,7 @@ export class GamesService {
   async getGameById(id: number) {
     const gameInDb = await this.gamesRepository.findGame(id);
 
-    if (gameInDb?.rawgGame.description_raw && differenceInDays(new Date(), new Date(gameInDb?.updatedAt)) < 7) {
+    if (differenceInDays(new Date(), new Date(gameInDb?.updatedAt)) < 7) {
       this.logger.log(`Game with id ${id} found in db and don't need to be updated`);
       return gameInDb;
     }
