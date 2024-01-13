@@ -18,9 +18,13 @@ import { YoutubeModule } from 'src/youtube/youtube.module';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './filters/global-exception.filter';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
+    DevtoolsModule.register({
+      http: process.env.NODE_NEV !== 'production',
+    }),
     CacheModule.register({
       isGlobal: true,
       ttl: 100,
