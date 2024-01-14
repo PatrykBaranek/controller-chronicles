@@ -260,6 +260,7 @@ const Collections = () => {
           collectionId={pickedId}
           isOpen={isEditModalOpen}
           handleClose={() => setIsEditModalOpen((prev) => !prev)}
+          refetch={refetch}
         />
       )}
 

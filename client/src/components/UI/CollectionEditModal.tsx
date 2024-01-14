@@ -20,6 +20,7 @@ type Props = {
   isOpen: boolean;
   games: GameDetailsResponse[];
   collectionId: string;
+  refetch: () => void;
 };
 
 type InputValue = {
@@ -91,7 +92,7 @@ const StyledAddButton = styled(StyledButton)`
   margin-bottom: 1rem;
 `;
 
-const CollectionEditModal = ({ handleClose, isOpen, games, collectionId }: Props) => {
+const CollectionEditModal = ({ handleClose, isOpen, games, collectionId, refetch }: Props) => {
   const authToken = getAuthToken();
   const [deleteQueue, setDeleteQueue] = useState<Array<string | number>>([]);
 
@@ -99,8 +100,7 @@ const CollectionEditModal = ({ handleClose, isOpen, games, collectionId }: Props
     mutationFn: (id: string | number) => deleteGameFromCollection(collectionId, id, authToken),
 
     onSuccess: () => {
-      setDeleteQueue((prevItem) => prevItem.slice(1));
-      if (deleteQueue.length === 0) {
+      if (deleteQueue.length === 1) {
         toast('Games successfully removed from collection!', {
           className: 'default',
           duration: 5000,
@@ -110,9 +110,10 @@ const CollectionEditModal = ({ handleClose, isOpen, games, collectionId }: Props
             gap: '1rem',
           },
         });
-
+        refetch();
         handleClose();
       }
+      setDeleteQueue((prevItem) => prevItem.slice(1));
     },
   });
 
