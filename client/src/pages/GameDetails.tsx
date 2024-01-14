@@ -1,12 +1,13 @@
-import { getGameById } from '#/api/gamesApi';
+import { getGameById, getYoutubeVideosByGameId } from '#/api/gamesApi';
 import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
 import Gameplay from '#/components/GamesDetails/Gameplay';
 import MainInfo from '#/components/GamesDetails/MainInfo';
 import RedditInfo from '#/components/GamesDetails/RedditInfo';
 import SteamReviews from '#/components/GamesDetails/SteamReviews';
-import { useQuery } from 'react-query';
+import Spinner from '#/components/UI/Spinner';
+import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 const StyledDetailsPage = styled.div`
   width: 100%;
@@ -82,37 +83,30 @@ const StyledGameDescription = styled.div`
     font-weight: ${({ theme }) => theme.fontWeights.light};
   }
 `;
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const Spinner = styled.div`
-  animation: ${rotate360} 1s linear infinite;
-  transform: translateZ(0) translateX(-50%) translateY(-50%);
-  border-top: 2px solid grey;
-  border-right: 2px solid grey;
-  border-bottom: 2px solid grey;
-  border-left: 4px solid #3c705599;
-  background: transparent;
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-`;
 
 const GameDetails = () => {
   const { id } = useParams();
-  const { data, isError, isLoading } = useQuery(['/games/:id', id], () => getGameById(id));
+
+  const results = useQueries([
+    {
+      queryKey: ['/games/:id', id],
+      queryFn: () => getGameById(id),
+    },
+    {
+      queryKey: ['/games/:id/reviews', id],
+      queryFn: () => getYoutubeVideosByGameId('review', id!),
+    },
+    {
+      queryKey: ['/games/:id/trailers', id],
+      queryFn: () => getYoutubeVideosByGameId('trailer', id!),
+    },
+  ]);
+
+  const [{ data: data }, { data: reviews }, { data: trailers }] = results;
+
+  const isLoading = results?.some((data) => data.isLoading);
+  const isError = results?.some((data) => data.isError);
   const gameInfo = data?.rawgGame;
-  const reviews = data?.video_reviews;
-  const trailers = data?.game_trailers;
 
   const isGameOnSteam = gameInfo?.stores.filter((store) => {
     return store.store.slug === 'steam';
@@ -120,7 +114,7 @@ const GameDetails = () => {
 
   return (
     <StyledDetailsPage>
-      {isError || isLoading ? (
+      {isLoading || isError ? (
         <Spinner />
       ) : (
         <>

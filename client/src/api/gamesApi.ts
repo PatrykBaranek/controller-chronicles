@@ -271,6 +271,19 @@ export const getNewestYoutubeVideos = async (
   }
 };
 
+export const getYoutubeVideosByGameId = async (
+  videoType: 'review' | 'trailer',
+  gameId: string
+): Promise<YoutubeResponse> => {
+  try {
+    const response = await gamesApi.get(`/youtube?gameId=${gameId}&videoType=${videoType}`);
+
+    return await response.data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 export const getSteamReviews = async (
   id: string | number | undefined
 ): Promise<SteamReviewsResponse> => {
