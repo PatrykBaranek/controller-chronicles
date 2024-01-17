@@ -104,7 +104,7 @@ Create .env.local file, copy and paste line above. Add your local ip address e.g
 - **utils:**
   - Holds utility functions or helper modules that can be used across the application. These could include functions for data manipulation, date formatting, or other common tasks.
 
-## Dependencies Documentation
+## Dependencies
 
 - [@mui/material](https://mui.com/material-ui/) - React component library
 - [@splidejs/react-splide](https://splidejs.com/integration/react-splide/) - Carousel and slider library
