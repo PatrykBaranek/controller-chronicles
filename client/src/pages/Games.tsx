@@ -178,7 +178,7 @@ const Games = () => {
             size={isDesktop ? 'medium' : 'small'}
             count={games?.totalPages}
             variant='outlined'
-            page={page}
+            page={Number(page)}
             onChange={handlePageChange}
           />
         )}
