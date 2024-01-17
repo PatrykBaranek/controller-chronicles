@@ -1,11 +1,10 @@
 import useWindowWidth from '#/hooks/useWindowWidth';
-import leaveIcon from '#/assets/leaveIcon.svg';
+import { CollectionResponse } from '#/types/types';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import CollectionsButton from './CollectionsButton';
 import CollectionsDesktop from './CollectionsDesktop';
 import CollectionsMobile from './CollectionsMobile';
-import styled from 'styled-components';
-import { CollectionResponse } from '#/types/types';
-import CollectionsButton from './CollectionsButton';
 
 const StyledCardContainer = styled.div`
   width: 100%;
@@ -24,16 +23,14 @@ const StyledCardContainer = styled.div`
     }
   }
 `;
-const StyledCollectionTitle = styled(Link)`
+const StyledCollectionTitle = styled.h3`
   display: flex;
   height: 1.1rem;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  h3 {
-    font-size: 1.1rem;
-    font-weight: ${({ theme }) => theme.fontWeights.semiBold};
-    color: ${({ theme }) => theme.colors.secondary};
-  }
+  font-size: 1.1rem;
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+  color: ${({ theme }) => theme.colors.secondary};
 `;
 const StyledButtonContainer = styled.div`
   display: flex;
@@ -84,10 +81,7 @@ const CollectionList = ({ collections }: { collections: CollectionResponse[] }) 
     <>
       {collections?.slice(0, 3).map(({ _id, name, games }, idx) => (
         <div key={_id + idx}>
-          <StyledCollectionTitle to={`collections/${_id}`}>
-            <h3>{name}</h3>
-            <img src={leaveIcon} alt='Leave icon' />
-          </StyledCollectionTitle>
+          <StyledCollectionTitle>{name}</StyledCollectionTitle>
           <StyledCardContainer>
             {!isDesktop ? (
               <CollectionsMobile games={games} />
