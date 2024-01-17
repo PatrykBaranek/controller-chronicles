@@ -1,16 +1,18 @@
-import Form from '#/components/Form/Form';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import eye from '#/assets/eye.svg';
-import crossedEye from '#/assets/crossedEye.svg';
-import { useEffect, useState } from 'react';
-import { validateEmail } from '#/utils/formValidation';
-import { AuthError, UserInputs } from '#/types/types';
-import { useMutation } from 'react-query';
 import { logInUser } from '#/api/gamesApi';
-import { Alert } from '@mui/material';
+import crossedEye from '#/assets/crossedEye.svg';
+import errorIco from '#/assets/errorIco.svg';
+import eye from '#/assets/eye.svg';
+import loggedInIco from '#/assets/loggedIco.svg';
+import Form from '#/components/Form/Form';
+import { AuthError, UserInputs } from '#/types/types';
+import { validateEmail } from '#/utils/formValidation';
+import { useEffect, useState } from 'react';
 import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import styled from 'styled-components';
 
 export const StyledAuth = styled.div`
   width: 100%;
@@ -167,30 +169,42 @@ const Login = () => {
         if (
           signIn({
             token: data.access_token,
-            expiresIn: 1 * 24 * 60,
+            expiresIn: data.access_token_expires_in,
             tokenType: 'string',
+            authState: {},
+            refreshToken: data.refresh_token,
+            refreshTokenExpireIn: data.refresh_token_expires_in,
           })
         ) {
           navigate('/');
+          toast('Logged In', {
+            className: 'default',
+            description: 'You have successfully logged in',
+            duration: 5000,
+            icon: <img className='login' src={loggedInIco} />,
+            position: 'top-center',
+            style: {
+              gap: '1rem',
+            },
+          });
         }
       },
       onError: (error: any) => {
+        toast('Error', {
+          className: 'default',
+          description: error?.message,
+          duration: 5000,
+          icon: <img src={errorIco} />,
+          position: 'top-right',
+        });
         setError(error);
       },
     });
   };
+
   return (
     <StyledAuth>
       <StyledAuthWrapper>
-        {error && (
-          <Alert
-            variant='outlined'
-            severity='error'
-            sx={{ color: '#ebebf5bf', marginBottom: '1rem' }}
-          >
-            {error.message}
-          </Alert>
-        )}
         <Form onSubmit={handleSubmit(onSubmit)}>
           <StyledEmailContainer>
             <StyledInput

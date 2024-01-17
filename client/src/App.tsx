@@ -1,15 +1,18 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './Layout';
-import Games from './pages/Games';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { AuthProvider } from 'react-auth-kit';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import Profile from './pages/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AuthProvider } from 'react-auth-kit';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { refreshToken } from './api/gamesApi';
+import PrivateRoute from './components/PrivateRoute';
+import Layout from './Layout';
+import Collections from './pages/Collections';
 import GameDetails from './pages/GameDetails';
+import Games from './pages/Games';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import SignUp from './pages/SignUp';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,15 +41,16 @@ const router = createBrowserRouter([
       { path: 'signup', element: <SignUp /> },
       {
         path: '/profile',
-        element: <Profile />,
-      },
-      {
-        path: '/profile/collections',
-        element: <h1>collections</h1>,
-      },
-      {
-        path: '/profile/collections/:id',
-        element: <h1>collection</h1>,
+        children: [
+          {
+            index: true,
+            element: <PrivateRoute Component={Profile} />,
+          },
+          {
+            path: 'collections',
+            element: <PrivateRoute Component={Collections} />,
+          },
+        ],
       },
     ],
   },
@@ -54,7 +58,12 @@ const router = createBrowserRouter([
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider authType={'cookie'} authName={'_auth'} cookieDomain={window.location.hostname}>
+    <AuthProvider
+      authType={'cookie'}
+      authName={'_auth'}
+      cookieDomain={window.location.hostname}
+      refresh={refreshToken}
+    >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <RouterProvider router={router} />
       </LocalizationProvider>

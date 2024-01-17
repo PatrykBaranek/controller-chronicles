@@ -3,21 +3,36 @@ export type Gamecard = {
   image: any;
   title: string;
   rating: number;
+  description?: string;
 };
 
 export type Children = ReactNode;
+
 export type UserInputs = { email: string; password: string };
+
 export type SignUpResponse = {
   email: string;
   password: string;
-  _id: string;
-  __v: number;
+  refreshToken: string;
 };
+
+export type CollectionResponse = {
+  createdAt: string;
+  games: GameDetailsResponse[];
+  name: string;
+  priority: number;
+  userId: string;
+  __v: number;
+  _id: string;
+};
+
 export type AuthResponse = {
   access_token: string;
-  message: string;
-  statusCode: number;
+  access_token_expires_in: number;
+  refresh_token: string;
+  refresh_token_expires_in: number;
 };
+
 export type AuthError = {
   error: string;
   message: string;
@@ -29,6 +44,14 @@ export type Bestseller = {
   link: string;
   name: string;
   price: string;
+};
+
+export type UserProfile = {
+  email: string;
+  password: string;
+  refresh_token: string;
+  __v: number;
+  _id: string;
 };
 
 export type BestsellerResponse = {
@@ -64,6 +87,7 @@ export type Games = {
   stores: Store[];
   tags: Genre[];
   short_screenshots: ShortScreenshot[];
+  description_raw?: string;
 };
 
 export type GameDetailsResponse = {

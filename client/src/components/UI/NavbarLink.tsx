@@ -1,6 +1,7 @@
 import useStore from '#/store/store';
 import { useSignOut } from 'react-auth-kit';
 import { NavLink, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
 
 type NavbarLink = {
@@ -109,9 +110,6 @@ const StyledWrapper = styled.div`
         contrast(92%);
       opacity: 0.6;
     }
-    img[alt='Profile icon'] {
-      filter: none;
-    }
   }
   a.active {
     color: white;
@@ -151,14 +149,12 @@ const StyledWrapper = styled.div`
       transform: translate(-48%, -56%);
     }
     img[alt='Login icon'],
-    img[alt='Log out icon'] {
+    img[alt='Log out icon'],
+    img[alt='Profile icon'] {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -56%);
-    }
-    img[alt='Profile icon'] {
-      filter: none;
     }
   }
 `;
@@ -166,17 +162,30 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
   const { pathname } = useLocation();
   const { toggleMenuOpen } = useStore();
   const logout = useSignOut();
+
   const isLinkActive = () => {
     if (text.toLowerCase() === 'home') {
       return pathname === '/';
-    } else {
-      return pathname === `/${text.toLocaleLowerCase()}`;
     }
+    if (text.toLowerCase() === 'collections') {
+      return pathname === `/profile/${text.toLowerCase()}`;
+    }
+
+    return pathname === `/${text.toLocaleLowerCase()}`;
   };
 
   const onLinkClick = () => {
     toggleMenuOpen();
     if (isLogoutButton) {
+      toast('Logged out!', {
+        className: 'default',
+        duration: 5000,
+        position: 'top-center',
+        style: {
+          gap: '1rem',
+        },
+      });
+
       logout();
     }
   };
@@ -185,6 +194,10 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
     if (text.toLowerCase() === 'home' || text.toLowerCase() === 'logout') {
       return '';
     }
+    if (text.toLowerCase() === 'collections') {
+      return `profile/${text.toLowerCase()}`;
+    }
+
     return text.toLowerCase();
   };
 
@@ -193,7 +206,7 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
       <StyledWrapper>
         <NavLink
           onClick={onLinkClick}
-          className={({ isActive }) => (isActive && !isLogoutButton ? 'active' : '')}
+          className={() => (isLinkActive() && !isLogoutButton ? 'active' : '')}
           to={`/${correctLocation()}`}
         >
           <span>

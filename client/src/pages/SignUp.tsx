@@ -1,7 +1,17 @@
+import { signUpUser } from '#/api/gamesApi';
+import crossedEye from '#/assets/crossedEye.svg';
+import errorIco from '#/assets/errorIco.svg';
+import eye from '#/assets/eye.svg';
+import successIco from '#/assets/successIco.svg';
 import Form from '#/components/Form/Form';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { AuthError, UserInputs } from '#/types/types';
+import { validateEmail, validatePassword } from '#/utils/formValidation';
+import { useEffect, useState } from 'react';
+import { useIsAuthenticated } from 'react-auth-kit';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   StyledAuth,
   StyledAuthWrapper,
@@ -11,21 +21,18 @@ import {
   StyledPasswordContainer,
   StyledTextContainer,
 } from './Login';
-import eye from '#/assets/eye.svg';
-import crossedEye from '#/assets/crossedEye.svg';
-import { validateEmail, validatePassword } from '#/utils/formValidation';
-import { useMutation } from 'react-query';
-import { signUpUser } from '#/api/gamesApi';
-import { Alert } from '@mui/material';
-import { AuthError, UserInputs } from '#/types/types';
 
 const SignUp = () => {
+  const isAuthenticated = useIsAuthenticated();
+  const navigate = useNavigate();
+
   const signUp = useMutation({
     mutationFn: (data: UserInputs) => signUpUser(data),
   });
+
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [error, setError] = useState<AuthError>();
+
   const {
     register,
     reset,
@@ -33,13 +40,36 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<UserInputs>();
 
+  useEffect(() => {
+    isAuthenticated() && navigate('/');
+  }, []);
+
   const onSubmit: SubmitHandler<UserInputs> = async (data) => {
     signUp.mutate(data, {
       onSuccess: () => {
-        setIsUserRegistered(true);
+        toast('Logged In', {
+          className: 'default',
+          description: 'Hi, your account has been created successfully. You can log in now.',
+          duration: 7000,
+          icon: <img src={successIco} />,
+          position: 'top-right',
+          style: {
+            gap: '1rem',
+          },
+        });
+
+        navigate('/login');
         reset();
       },
       onError: (error: any) => {
+        toast('Error', {
+          className: 'default',
+          description: error?.message,
+          duration: 5000,
+          icon: <img src={errorIco} />,
+          position: 'top-right',
+        });
+
         setError(error);
       },
     });
@@ -48,25 +78,6 @@ const SignUp = () => {
   return (
     <StyledAuth>
       <StyledAuthWrapper>
-        {isUserRegistered && (
-          <Alert
-            variant='outlined'
-            severity='success'
-            sx={{ color: '#ebebf5bf', marginBottom: '1rem' }}
-          >
-            Hi, your account has been created successfully. You can log in now.
-          </Alert>
-        )}
-        {error && (
-          <Alert
-            variant='outlined'
-            severity='error'
-            sx={{ color: '#ebebf5bf', marginBottom: '1rem' }}
-          >
-            {error.message}
-          </Alert>
-        )}
-
         <Form onSubmit={handleSubmit(onSubmit)}>
           <StyledEmailContainer>
             <StyledInput

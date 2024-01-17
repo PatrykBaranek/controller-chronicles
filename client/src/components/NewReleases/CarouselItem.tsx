@@ -127,7 +127,8 @@ const CarouselItem = ({ isActive, image, id }: CarouseItemProps) => {
   const description = data?.rawgGame.description_raw;
   const stores = data?.rawgGame.stores;
   const releaseDate = dayjs(data?.rawgGame.released).format('DD.MM.YYYY');
-  const isDateValid = dayjs(releaseDate).isValid();
+  const isDateValid = releaseDate !== 'Invalid Date';
+
   return (
     <StyledCarouselItem $isActive={isActive} to={`/games/${id}`}>
       <img src={image} />

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 type Props = {
@@ -9,7 +10,7 @@ const StyledCollectionCard = styled.div<Props>`
   overflow: hidden;
   img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 3/2;
   }
   @media screen and (min-width: 1200px) {
     display: flex;
@@ -52,10 +53,12 @@ const StyledCollectionCard = styled.div<Props>`
   }
 `;
 
-const CollectionCard = ({ img, length }: { img: string; length?: number }) => {
+const CollectionCard = ({ img, length, id }: { img: string; length?: number; id: string }) => {
   return (
     <StyledCollectionCard length={length}>
-      <img src={img} alt='' />
+      <Link to={`/games/${id}`}>
+        <img src={img} alt='' />
+      </Link>
     </StyledCollectionCard>
   );
 };

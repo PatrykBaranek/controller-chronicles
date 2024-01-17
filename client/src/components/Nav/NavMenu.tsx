@@ -4,9 +4,9 @@ import gamepadIco from '#/assets/gamepadIco.svg';
 import podcastIco from '#/assets/podcastsIco.svg';
 import loginIco from '#/assets/loginIcon.svg';
 import loggedIco from '#/assets/loggedIco.svg';
+import collectionIco from '#/assets/collectionIco.svg';
 import NavbarLink from '../UI/NavbarLink';
 import { useIsAuthenticated } from 'react-auth-kit';
-import avatar from '#/assets/avatar.svg';
 
 const StyledNavMenu = styled.ul`
   width: 100%;
@@ -36,7 +36,8 @@ const NavMenu = () => {
         <NavbarLink icon={loginIco} text={'Login'} />
       ) : (
         <>
-          <NavbarLink icon={avatar} text={'Profile'} />
+          <NavbarLink icon={loginIco} text={'Profile'} />
+          <NavbarLink icon={collectionIco} text={'Collections'} />
           <NavbarLink icon={loggedIco} text={'Logout'} isLogoutButton={true} />
         </>
       )}
