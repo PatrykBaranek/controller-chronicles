@@ -86,9 +86,7 @@ const StyledAddToCollection = styled.button`
   }
 `;
 
-const GameCard = ({ id, image, title, rating }: Gamecard) => {
-  const { data, isError, isLoading } = useQuery(['gameCard', id], () => getGameById(id));
-  const description = data && data.rawgGame.description_raw;
+const GameCard = ({ id, image, title, rating, description }: Gamecard) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isAuth = useIsAuthenticated();
 
@@ -108,24 +106,8 @@ const GameCard = ({ id, image, title, rating }: Gamecard) => {
               </p>
             </StyledTopSection>
             <StyledDescription>
-              {!isError ? (
-                isLoading ? (
-                  <Skeleton
-                    sx={{
-                      backgroundImage:
-                        'linear-gradient(131.88deg, #a63ee73b 14.48%, #00eaff2d 83.43%)',
-                      borderRadius: '1rem ',
-                    }}
-                    animation='wave'
-                    variant='rounded'
-                    height={'100px'}
-                    width={'100%'}
-                  >
-                    <p>{description && description.slice(0, 250) + ' ...'}</p>
-                  </Skeleton>
-                ) : (
-                  <p>{description && description.slice(0, 250) + ' ...'}</p>
-                )
+              {description ? (
+                <p>{description && description.slice(0, 250) + ' ...'}</p>
               ) : (
                 <p>Something went wrong!</p>
               )}

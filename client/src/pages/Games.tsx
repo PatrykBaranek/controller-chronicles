@@ -113,6 +113,7 @@ const Games = () => {
   const isSearchbarUsed = Boolean(searchParams.get('query'));
   const { games: storedGames, storeGames } = useStore();
   const [page, setPage] = useState(1);
+
   const {
     data: games,
     isLoading,
@@ -121,6 +122,7 @@ const Games = () => {
     keepPreviousData: true,
     enabled: !Boolean(query),
   });
+
   const { data } = useQuery(['search', query], () => getGamesBySearchQuery(query || undefined), {
     enabled: Boolean(query),
   });
@@ -138,6 +140,7 @@ const Games = () => {
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+
   return (
     <StyledContainer>
       <StyledWrapper>
@@ -164,6 +167,7 @@ const Games = () => {
                 title={game.name}
                 image={game.background_image}
                 rating={game.metacritic / 10}
+                description={game?.description_raw}
               />
             ))}
       </StyledWrapper>

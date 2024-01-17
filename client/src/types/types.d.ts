@@ -3,6 +3,7 @@ export type Gamecard = {
   image: any;
   title: string;
   rating: number;
+  description?: string;
 };
 
 export type Children = ReactNode;
@@ -86,6 +87,7 @@ export type Games = {
   stores: Store[];
   tags: Genre[];
   short_screenshots: ShortScreenshot[];
+  description_raw?: string;
 };
 
 export type GameDetailsResponse = {
