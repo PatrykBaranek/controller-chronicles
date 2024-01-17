@@ -174,7 +174,7 @@ const MainInfo = ({
   return (
     <StyledTitleWrapper>
       <h1 className='title'>{gameInfo?.name}</h1>
-      <p className='publisher'>{gameInfo?.publishers.map((item) => item.name)}</p>
+      <p className='publisher'>{gameInfo?.publishers?.map((item) => item.name)}</p>
       <StyledStarWrapper>
         <p className='rating'>{rating}</p>
         {Array.from({ length: 5 }).map((_, idx) => (
@@ -198,8 +198,8 @@ const MainInfo = ({
       <StyledStoresWrapper>
         <h4>Available in</h4>
         <StyledIconsWrapper>
-          {gameInfo?.stores.map((store) => (
-            <img key={store.id} src={iconFilter(store.store.slug)} alt={store.store.name} />
+          {gameInfo?.stores.map((store, idx) => (
+            <img key={store.id || idx} src={iconFilter(store.store.slug)} alt={store.store.name} />
           ))}
         </StyledIconsWrapper>
       </StyledStoresWrapper>
