@@ -5,9 +5,12 @@ export const StyledGameplayWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
+
   @media screen and (min-width: 500px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: min-content;
   }
+
   h2 {
     grid-column: span 4 / span 4;
     margin-bottom: 0.5rem;
