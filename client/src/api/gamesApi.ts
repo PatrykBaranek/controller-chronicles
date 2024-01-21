@@ -299,3 +299,50 @@ export const getSteamPlayersCount = async (
 
   return response.data;
 };
+
+export const connectToSpotify = async (): Promise<{ url: string }> => {
+  const response = await gamesApi.post('/spotify/auth/login', {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getAllPodcasts = async (): Promise<any> => {
+  const response = await gamesApi.get(`/spotify/podcasts?limit=20&offset=0`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+export const getPodcastById = async (id: string): Promise<any> => {
+  const response = await gamesApi.get(`spotify/podcasts/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getUserPodcasts = async (): Promise<any> => {
+  const response = await gamesApi.get('spotify/podcasts/user/list?limit=20&offset=0', {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const addPodcastToCollection = async (id: string): Promise<any> => {
+  const response = await gamesApi.post(`spotify/podcasts/add/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const removePodcastFromCollection = async (id: string): Promise<any> => {
+  const response = await gamesApi.delete(`spotify/podcasts/remove/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
