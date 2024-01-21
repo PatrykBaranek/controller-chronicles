@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import SignUp from './pages/SignUp';
+import Podcasts from './pages/Podcasts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
         path: 'games/:id',
         element: <GameDetails />,
       },
-      { path: 'podcasts', element: <h1>podcasts</h1> },
+      { path: 'podcasts', element: <Podcasts /> },
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <SignUp /> },
       {
