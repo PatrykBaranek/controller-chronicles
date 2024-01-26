@@ -1,10 +1,7 @@
-import { getGameById } from '#/api/gamesApi';
 import heartIcon from '#/assets/heartIcon.svg';
 import { Gamecard } from '#/types/types';
-import { Skeleton } from '@mui/material';
 import { useState } from 'react';
 import { useIsAuthenticated } from 'react-auth-kit';
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import AddToCollectionForm from '../Collections/AddToCollectionForm';
@@ -86,7 +83,15 @@ const StyledAddToCollection = styled.button`
   }
 `;
 
-const GameCard = ({ id, image, title, rating, description }: Gamecard) => {
+const GameCard = ({
+  id,
+  image,
+  title,
+  rating,
+  description,
+  isPodcastCard,
+  totalEpisodes,
+}: Gamecard) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isAuth = useIsAuthenticated();
 
@@ -101,9 +106,15 @@ const GameCard = ({ id, image, title, rating, description }: Gamecard) => {
           <StyledContent>
             <StyledTopSection>
               <h1>{title}</h1>
-              <p>
-                Rating <span>{rating ? rating : 0}/10</span>
-              </p>
+              {isPodcastCard ? (
+                <p>
+                  Episodes <span>{totalEpisodes || 0}</span>
+                </p>
+              ) : (
+                <p>
+                  Rating <span>{rating ? rating : 0}/10</span>
+                </p>
+              )}
             </StyledTopSection>
             <StyledDescription>
               {description ? (
@@ -128,7 +139,7 @@ const GameCard = ({ id, image, title, rating, description }: Gamecard) => {
       </Card>
       {isDialogOpen && (
         <AddToCollectionForm
-          gameId={id}
+          gameId={Number(id)}
           isOpen={isDialogOpen}
           handleClose={() => setIsDialogOpen((prev) => !prev)}
         />
