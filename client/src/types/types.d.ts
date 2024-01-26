@@ -1,9 +1,11 @@
 export type Gamecard = {
-  id: number;
+  id: number | string;
   image: any;
   title: string;
-  rating: number;
+  rating?: number;
   description?: string;
+  isPodcastCard?: boolean;
+  totalEpisodes?: number;
 };
 
 export type Children = ReactNode;
@@ -14,6 +16,71 @@ export type SignUpResponse = {
   email: string;
   password: string;
   refreshToken: string;
+};
+
+export type PodcastResponse = {
+  items: Podcast[];
+  limit: number;
+  next: string;
+  offset: number;
+  previous: string | null;
+  total: number;
+};
+
+export type Podcast = {
+  copyrights: [];
+  description: string;
+  explicit: boolean;
+  external_urls: Record<string, string>;
+  id: string;
+  images: {
+    height: number;
+    url: string;
+    width: number;
+  }[];
+  is_externally_hosted: boolean;
+  languages: string[];
+  media_type: string;
+  name: string;
+  publisher: string;
+  total_episodes: number;
+  type: string;
+  episodes: EpisodesResponse;
+};
+
+export type EpisodesResponse = {
+  items: Episode[];
+  limit: number;
+  next: string;
+  offset: number;
+  previous: string | null;
+  total: number;
+  href: string;
+};
+
+export type Episode = {
+  description: string;
+  audio_preview_url: string;
+  duration_ms: number;
+  explicit: string;
+  external_urls: Record<string, string>;
+  href: string;
+  html_description: string;
+  id: string;
+  images: {
+    height: number;
+    url: string;
+    width: number;
+  }[];
+  is_externally_hosted: boolean;
+  languages: string[];
+  name: string;
+  type: string;
+  language: string;
+  is_playable: boolean;
+  release_date: string;
+  release_date_precision: string;
+  uri: string;
 };
 
 export type CollectionResponse = {
