@@ -1,10 +1,13 @@
-import { getGameById, getYoutubeVideosByGameId } from '#/api/gamesApi';
+import { getEpisodesByGameId, getGameById, getYoutubeVideosByGameId } from '#/api/gamesApi';
 import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
 import Gameplay from '#/components/GamesDetails/Gameplay';
 import MainInfo from '#/components/GamesDetails/MainInfo';
 import RedditInfo from '#/components/GamesDetails/RedditInfo';
 import SteamReviews from '#/components/GamesDetails/SteamReviews';
+import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
 import Spinner from '#/components/UI/Spinner';
+import { Episode } from '#/types/types';
+import { useState } from 'react';
 import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -84,8 +87,14 @@ const StyledGameDescription = styled.div`
   }
 `;
 
+const StyledEpisodesWrapper = styled.div`
+  position: relative;
+  grid-column: 1 / -1;
+`;
+
 const GameDetails = () => {
   const { id } = useParams();
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   const results = useQueries([
     {
@@ -100,6 +109,11 @@ const GameDetails = () => {
       queryKey: ['/games/:id/trailers', id],
       queryFn: () => getYoutubeVideosByGameId('trailer', id!),
     },
+    {
+      queryKey: ['/podcast/episodes/game:id', id],
+      queryFn: () => getEpisodesByGameId(id!),
+      onSuccess: (data: Episode[]) => setEpisodes(data),
+    },
   ]);
 
   const [{ data: data }, { data: reviews }, { data: trailers }] = results;
@@ -111,7 +125,7 @@ const GameDetails = () => {
   const isGameOnSteam = gameInfo?.stores.filter((store) => {
     return store.store.slug === 'steam';
   });
-
+  console.log(episodes);
   return (
     <StyledDetailsPage>
       {isLoading || isError ? (
@@ -134,6 +148,11 @@ const GameDetails = () => {
             {Boolean(isGameOnSteam?.length) && <SteamReviews />}
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
+            {episodes && (
+              <StyledEpisodesWrapper>
+                <PodcastEpisodes heading='Spotify Episodes' episodes={episodes.slice(0, 8)} />
+              </StyledEpisodesWrapper>
+            )}
           </StyledContainer>
         </>
       )}

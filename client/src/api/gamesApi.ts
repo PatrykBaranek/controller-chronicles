@@ -3,6 +3,7 @@ import {
   AuthResponse,
   BestsellerResponse,
   CollectionResponse,
+  Episode,
   GameDetailsResponse,
   GamesResponse,
   PlayersCountResponse,
@@ -319,6 +320,14 @@ export const getAllPodcasts = async (page = 0): Promise<PodcastResponse> => {
 
 export const getPodcastById = async (id: string): Promise<Podcast> => {
   const response = await gamesApi.get(`spotify/podcasts/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getEpisodesByGameId = async (id: string): Promise<Episode[]> => {
+  const response = await gamesApi.get(`spotify/episodes/game/${id}`, {
     withCredentials: true,
   });
 
