@@ -117,7 +117,6 @@ const PodcastDetails = () => {
       setEpisodes(data.episodes.items?.slice(0, 8));
     },
     onError: (e) => {
-      console.log('api', e);
       setAuth(false);
     },
   });
@@ -168,7 +167,7 @@ const PodcastDetails = () => {
                 onLoad={() => setIframeIndex((prev) => prev + 1)}
               />
             ))}
-            {iframeIndex > formatedEpisodes.length && (
+            {iframeIndex === formatedEpisodes.length && (
               <Link className='link' target='_blank' to={podcast?.external_urls?.spotify || ''}>
                 See more episodes
               </Link>
