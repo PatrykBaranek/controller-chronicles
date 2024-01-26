@@ -6,6 +6,8 @@ import {
   GameDetailsResponse,
   GamesResponse,
   PlayersCountResponse,
+  Podcast,
+  PodcastResponse,
   SignUpResponse,
   SteamReviewsResponse,
   UserInputs,
@@ -308,14 +310,14 @@ export const connectToSpotify = async (): Promise<{ url: string }> => {
   return response.data;
 };
 
-export const getAllPodcasts = async (): Promise<any> => {
-  const response = await gamesApi.get(`/spotify/podcasts?limit=20&offset=0`, {
+export const getAllPodcasts = async (page = 0): Promise<PodcastResponse> => {
+  const response = await gamesApi.get(`/spotify/podcasts?limit=20&offset=${page}`, {
     withCredentials: true,
   });
   return response.data;
 };
 
-export const getPodcastById = async (id: string): Promise<any> => {
+export const getPodcastById = async (id: string): Promise<Podcast> => {
   const response = await gamesApi.get(`spotify/podcasts/${id}`, {
     withCredentials: true,
   });
@@ -323,7 +325,7 @@ export const getPodcastById = async (id: string): Promise<any> => {
   return response.data;
 };
 
-export const getUserPodcasts = async (): Promise<any> => {
+export const getUserPodcasts = async (): Promise<Podcast[]> => {
   const response = await gamesApi.get('spotify/podcasts/user/list?limit=20&offset=0', {
     withCredentials: true,
   });
