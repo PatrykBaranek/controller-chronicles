@@ -2,18 +2,19 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AuthProvider } from 'react-auth-kit';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Layout from './Layout';
 import { refreshToken } from './api/gamesApi';
 import PrivateRoute from './components/PrivateRoute';
-import Layout from './Layout';
 import Collections from './pages/Collections';
 import GameDetails from './pages/GameDetails';
 import Games from './pages/Games';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import PodcastDetails from './pages/PodcastDetails';
+import Podcasts from './pages/Podcasts';
 import Profile from './pages/Profile';
 import SignUp from './pages/SignUp';
-import Podcasts from './pages/Podcasts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
         element: <GameDetails />,
       },
       { path: 'podcasts', element: <Podcasts /> },
+      { path: 'podcasts/:id', element: <PodcastDetails /> },
       { path: 'login', element: <Login /> },
       { path: 'signup', element: <SignUp /> },
       {
