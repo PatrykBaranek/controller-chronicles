@@ -1,13 +1,9 @@
-import { addCollection } from '#/api/gamesApi';
 import { StyledButton } from '#/pages/Login';
-import getAuthToken from '#/utils/getAuthToken';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { UseMutationResult, useMutation } from 'react-query';
 import styled from 'styled-components';
 
 type Props = {
