@@ -3,8 +3,14 @@ import { useMemo, useState } from 'react';
 import Spinner from '../UI/Spinner';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import infoIcon from '#/assets/infoIcon.svg';
+import EpisodeDetailsModal from './EpisodeDetailsModal';
 
 type Props = { episodes: Episode[]; url?: string; heading: string };
+
+type StyledProps = {
+  areIframesLoaded: boolean;
+};
 
 const StyledContainer = styled.div`
   display: grid;
@@ -18,10 +24,11 @@ const StyledContainer = styled.div`
     margin-block: 2rem;
   }
   @media screen and (min-width: 1050px) {
-    gap: 3rem;
+    gap: 2rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   @media screen and (min-width: 1380px) {
+    gap: 3rem;
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
@@ -46,8 +53,27 @@ const StyledContainer = styled.div`
   }
 `;
 
+const StyledIframeWrapper = styled.div<StyledProps>`
+  position: relative;
+  button {
+    display: ${({ areIframesLoaded }) => (areIframesLoaded ? 'none' : 'block')};
+    position: absolute;
+    top: 2%;
+    left: 3%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    img {
+      width: 2rem;
+      aspect-ratio: 1;
+    }
+  }
+`;
+
 const PodcastEpisodes = ({ episodes, url, heading }: Props) => {
   const [iframeIndex, setIframeIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [episodeId, setEpisodeId] = useState('');
 
   const formatedEpisodes = useMemo(() => {
     return episodes.map((episode) => {
@@ -66,28 +92,48 @@ const PodcastEpisodes = ({ episodes, url, heading }: Props) => {
     });
   }, [episodes]);
 
+  const handleOpenModal = (id: string) => {
+    setIsModalOpen(true);
+    setEpisodeId(id);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEpisodeId('');
+  };
+
   return (
     <StyledContainer>
       <h1>{heading}</h1>
       {iframeIndex < formatedEpisodes.length && <Spinner />}
       {formatedEpisodes?.map((episode) => (
-        <iframe
-          key={episode.id}
-          src={episode?.external_urls.spotify}
-          width='100%'
-          height='352'
-          allow='clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-          style={{
-            border: 'none',
-            display: iframeIndex < formatedEpisodes.length ? 'none' : 'block',
-          }}
-          onLoad={() => setIframeIndex((prev) => prev + 1)}
-        />
+        <StyledIframeWrapper
+          areIframesLoaded={iframeIndex < formatedEpisodes.length}
+          key={episode?.id}
+        >
+          <button onClick={() => handleOpenModal(episode?.id)}>
+            <img src={infoIcon} alt='informations icon' />
+          </button>
+          <iframe
+            src={episode?.external_urls.spotify}
+            width='100%'
+            height='352'
+            allow='clipboard-write; encrypted-media; fullscreen; picture-in-picture'
+            style={{
+              border: 'none',
+              display: iframeIndex < formatedEpisodes.length ? 'none' : 'block',
+            }}
+            onLoad={() => setIframeIndex((prev) => prev + 1)}
+          />
+        </StyledIframeWrapper>
       ))}
       {iframeIndex === formatedEpisodes.length && url && (
         <Link className='link' target='_blank' to={url}>
           See more episodes
         </Link>
+      )}
+      {isModalOpen && (
+        <EpisodeDetailsModal id={episodeId} isOpen={isModalOpen} handleClose={handleCloseModal} />
       )}
     </StyledContainer>
   );
