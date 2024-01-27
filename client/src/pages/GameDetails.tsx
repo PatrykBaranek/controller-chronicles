@@ -125,7 +125,7 @@ const GameDetails = () => {
   const isGameOnSteam = gameInfo?.stores.filter((store) => {
     return store.store.slug === 'steam';
   });
-  console.log(episodes);
+
   return (
     <StyledDetailsPage>
       {isLoading || isError ? (
