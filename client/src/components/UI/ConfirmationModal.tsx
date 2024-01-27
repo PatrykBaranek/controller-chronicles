@@ -15,7 +15,7 @@ type Props = {
   confirmCallback: () => void;
 };
 
-const StyledDialog = styled(Dialog)`
+export const StyledDialog = styled(Dialog)`
   .MuiDialog-paper {
     background: ${({ theme }) => theme.colors.mainGradient};
     border-radius: 10px;
@@ -46,7 +46,7 @@ const StyledDialog = styled(Dialog)`
   }
 `;
 
-const StyledAddButton = styled(StyledButton)`
+export const StyledAddButton = styled(StyledButton)`
   width: unset;
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   font-size: 1rem;
