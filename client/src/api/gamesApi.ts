@@ -334,6 +334,14 @@ export const getEpisodesByGameId = async (id: string): Promise<Episode[]> => {
   return response.data;
 };
 
+export const getEpisodeById = async (id: string): Promise<Episode> => {
+  const response = await gamesApi.get(`spotify/episodes/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
 export const getUserPodcasts = async (): Promise<Podcast[]> => {
   const response = await gamesApi.get('spotify/podcasts/user/list?limit=20&offset=0', {
     withCredentials: true,
