@@ -95,7 +95,7 @@ const PodcastDetails = () => {
           </StyledTopSection>
           <PodcastEpisodes
             heading='Episodes'
-            episodes={episodes}
+            data={episodes}
             url={podcast?.external_urls.spotify}
           />
         </>

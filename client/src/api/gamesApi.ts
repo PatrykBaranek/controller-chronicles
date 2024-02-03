@@ -10,6 +10,7 @@ import {
   Podcast,
   PodcastResponse,
   SignUpResponse,
+  Soundtrack,
   SteamReviewsResponse,
   UserInputs,
   UserProfile,
@@ -328,6 +329,14 @@ export const getPodcastById = async (id: string): Promise<Podcast> => {
 
 export const getEpisodesByGameId = async (id: string): Promise<Episode[]> => {
   const response = await gamesApi.get(`spotify/episodes/game/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getSoundtrackByGameId = async (id: string): Promise<Soundtrack[]> => {
+  const response = await gamesApi.get(`spotify/soundtracks/${id}`, {
     withCredentials: true,
   });
 

@@ -84,6 +84,28 @@ export type Episode = {
   show: Show;
 };
 
+export type Soundtrack = {
+  album_type: string;
+  artists: {
+    external_urls: Record<string, string>;
+    href: string;
+    id: string;
+    name: string;
+  };
+  external_urls: Record<string, string>;
+  available_markets: string[];
+  href: string;
+  id: string;
+  name: string;
+  release_date: string;
+  type: string;
+  images: {
+    height: number;
+    url: string;
+    width: number;
+  }[];
+};
+
 export type Show = {
   available_markets: string[];
   copyrights: [];

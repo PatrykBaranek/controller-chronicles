@@ -1,12 +1,12 @@
-import { Episode } from '#/types/types';
+import infoIcon from '#/assets/infoIcon.svg';
+import { Episode, Soundtrack } from '#/types/types';
 import { useMemo, useState } from 'react';
-import Spinner from '../UI/Spinner';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import infoIcon from '#/assets/infoIcon.svg';
+import Spinner from '../UI/Spinner';
 import EpisodeDetailsModal from './EpisodeDetailsModal';
 
-type Props = { episodes: Episode[]; url?: string; heading: string };
+type Props = { data: Episode[] | Soundtrack[]; url?: string; heading: string };
 
 type StyledProps = {
   areIframesLoaded: boolean;
@@ -70,18 +70,33 @@ const StyledIframeWrapper = styled.div<StyledProps>`
   }
 `;
 
-const PodcastEpisodes = ({ episodes, url, heading }: Props) => {
+const PodcastEpisodes = ({ data, url, heading }: Props) => {
   const [iframeIndex, setIframeIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [episodeId, setEpisodeId] = useState('');
 
-  const formatedEpisodes = useMemo(() => {
-    return episodes.map((episode) => {
-      const link = episode?.external_urls?.spotify;
-      const newLink =
+  const formatSpotifyLink = (link: string) => {
+    const isSpotifyEpisode = link.includes('/episode/');
+
+    if (isSpotifyEpisode) {
+      return (
         link.substring(0, link.indexOf('/episode/')) +
         '/embed' +
-        link.substring(link.indexOf('/episode/'));
+        link.substring(link.indexOf('/episode/'))
+      );
+    }
+
+    return (
+      link.substring(0, link.indexOf('/album/')) +
+      '/embed' +
+      link.substring(link.indexOf('/album/'))
+    );
+  };
+
+  const formatedEpisodes = useMemo(() => {
+    return data.map((episode) => {
+      const link = episode?.external_urls?.spotify;
+      const newLink = formatSpotifyLink(link);
 
       return {
         ...episode,
@@ -90,7 +105,7 @@ const PodcastEpisodes = ({ episodes, url, heading }: Props) => {
         },
       };
     });
-  }, [episodes]);
+  }, [data]);
 
   const handleOpenModal = (id: string) => {
     setIsModalOpen(true);
@@ -111,9 +126,11 @@ const PodcastEpisodes = ({ episodes, url, heading }: Props) => {
           areIframesLoaded={iframeIndex < formatedEpisodes.length}
           key={episode?.id}
         >
-          <button onClick={() => handleOpenModal(episode?.id)}>
-            <img src={infoIcon} alt='informations icon' />
-          </button>
+          {episode?.type === 'episode' && (
+            <button onClick={() => handleOpenModal(episode?.id)}>
+              <img src={infoIcon} alt='informations icon' />
+            </button>
+          )}
           <iframe
             src={episode?.external_urls.spotify}
             width='100%'

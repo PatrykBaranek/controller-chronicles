@@ -1,4 +1,9 @@
-import { getEpisodesByGameId, getGameById, getYoutubeVideosByGameId } from '#/api/gamesApi';
+import {
+  getEpisodesByGameId,
+  getGameById,
+  getSoundtrackByGameId,
+  getYoutubeVideosByGameId,
+} from '#/api/gamesApi';
 import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
 import Gameplay from '#/components/GamesDetails/Gameplay';
 import MainInfo from '#/components/GamesDetails/MainInfo';
@@ -6,7 +11,7 @@ import RedditInfo from '#/components/GamesDetails/RedditInfo';
 import SteamReviews from '#/components/GamesDetails/SteamReviews';
 import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
 import Spinner from '#/components/UI/Spinner';
-import { Episode } from '#/types/types';
+import { Episode, Soundtrack } from '#/types/types';
 import { useState } from 'react';
 import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -95,6 +100,7 @@ const StyledEpisodesWrapper = styled.div`
 const GameDetails = () => {
   const { id } = useParams();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
 
   const results = useQueries([
     {
@@ -113,6 +119,11 @@ const GameDetails = () => {
       queryKey: ['/podcast/episodes/game:id', id],
       queryFn: () => getEpisodesByGameId(id!),
       onSuccess: (data: Episode[]) => setEpisodes(data),
+    },
+    {
+      queryKey: ['/podcast/soundtracks/:id', id],
+      queryFn: () => getSoundtrackByGameId(id!),
+      onSuccess: (data: Soundtrack[]) => setSoundtracks(data),
     },
   ]);
 
@@ -150,7 +161,12 @@ const GameDetails = () => {
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
             {episodes && (
               <StyledEpisodesWrapper>
-                <PodcastEpisodes heading='Spotify Episodes' episodes={episodes.slice(0, 8)} />
+                <PodcastEpisodes heading='Spotify Episodes' data={episodes.slice(0, 8)} />
+              </StyledEpisodesWrapper>
+            )}
+            {soundtracks.length !== 0 && (
+              <StyledEpisodesWrapper>
+                <PodcastEpisodes heading='Spotify soundtracks' data={soundtracks.slice(0, 8)} />
               </StyledEpisodesWrapper>
             )}
           </StyledContainer>

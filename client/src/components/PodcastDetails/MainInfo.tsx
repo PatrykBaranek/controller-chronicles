@@ -1,9 +1,15 @@
+import { addPodcastToCollection } from '#/api/gamesApi';
+import errorIco from '#/assets/errorIco.svg';
 import heartIcon from '#/assets/heartIcon.svg';
+import successIco from '#/assets/successIco.svg';
 import { Podcast } from '#/types/types';
 import { Tooltip } from '@mui/material';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { useState } from 'react';
+import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import styled from 'styled-components';
+import ConfirmationModal from '../UI/ConfirmationModal';
 
 const StyledTitleWrapper = styled.div`
   display: flex;
@@ -120,42 +126,75 @@ const StyledDescription = styled.div`
 `;
 
 const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
-  const auth = useIsAuthenticated();
-  const isLogged = auth();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const addToCollection = useMutation({
+    mutationFn: () => addPodcastToCollection(podcast?.id!),
+    onSuccess: () => {
+      toast('Success', {
+        className: 'default',
+        description: `${podcast?.name} successfully added to collection`,
+        duration: 5000,
+        icon: <img src={successIco} />,
+        position: 'top-right',
+      });
+    },
+    onError: (error: any) => {
+      toast('Error', {
+        className: 'default',
+        description: error?.message,
+        duration: 5000,
+        icon: <img src={errorIco} />,
+        position: 'top-right',
+      });
+    },
+  });
 
   return (
-    <StyledTitleWrapper>
-      <h1 className='title'>{podcast?.name}</h1>
-      <div className='tagWrapper'>
-        <StyledTag className='podcastType'>{podcast?.media_type}</StyledTag>
-        <StyledTag className='podcastType'>{podcast?.type}</StyledTag>
-      </div>
-      <p className='publisher'>{podcast?.publisher}</p>
+    <>
+      <StyledTitleWrapper>
+        <h1 className='title'>{podcast?.name}</h1>
+        <div className='tagWrapper'>
+          <StyledTag className='podcastType'>{podcast?.media_type}</StyledTag>
+          <StyledTag className='podcastType'>{podcast?.type}</StyledTag>
+        </div>
+        <p className='publisher'>{podcast?.publisher}</p>
 
-      <StyledLanguagesWrapper>
-        <p>Languages</p>
-        {podcast?.languages.slice(0, 4).map((language) => (
-          <StyledTag key={language}>{language}</StyledTag>
-        ))}
-      </StyledLanguagesWrapper>
-      <StyledDescription>
-        <h2>Description</h2>
-        <p>{podcast?.description}</p>
-      </StyledDescription>
+        <StyledLanguagesWrapper>
+          <p>Languages</p>
+          {podcast?.languages.slice(0, 4).map((language) => (
+            <StyledTag key={language}>{language}</StyledTag>
+          ))}
+        </StyledLanguagesWrapper>
+        <StyledDescription>
+          <h2>Description</h2>
+          <p>{podcast?.description}</p>
+        </StyledDescription>
 
-      <StyledButtonsWrapper>
-        <Link className='link' target='_blank' to={podcast?.external_urls?.spotify || ''}>
-          Check on Spotify
-        </Link>
-        <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>
-          <span>
-            <button disabled={!isLogged} className='addToCollection'>
-              <img src={heartIcon} alt='add to collection' />
-            </button>
-          </span>
-        </Tooltip>
-      </StyledButtonsWrapper>
-    </StyledTitleWrapper>
+        <StyledButtonsWrapper>
+          <Link className='link' target='_blank' to={podcast?.external_urls?.spotify || ''}>
+            Check on Spotify
+          </Link>
+          <Tooltip title='Add to collection' arrow>
+            <span>
+              <button className='addToCollection' onClick={() => setIsDialogOpen(true)}>
+                <img src={heartIcon} alt='add to collection' />
+              </button>
+            </span>
+          </Tooltip>
+        </StyledButtonsWrapper>
+      </StyledTitleWrapper>
+      {isDialogOpen && (
+        <ConfirmationModal
+          heading={`Add ${podcast?.name} to collection?`}
+          isOpen={isDialogOpen}
+          handleClose={() => setIsDialogOpen((prev) => !prev)}
+          confirmCallback={() => addToCollection.mutate()}
+          buttonText='Add'
+          contentText=''
+        />
+      )}
+    </>
   );
 };
 
