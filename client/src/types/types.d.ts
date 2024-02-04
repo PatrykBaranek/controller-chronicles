@@ -106,6 +106,12 @@ export type Soundtrack = {
   }[];
 };
 
+export type UserPodcasts = Omit<PodcastResponse, 'items'> & {
+  items: {
+    show: Show;
+  }[];
+};
+
 export type Show = {
   available_markets: string[];
   copyrights: [];

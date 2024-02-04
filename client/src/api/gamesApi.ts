@@ -13,6 +13,7 @@ import {
   Soundtrack,
   SteamReviewsResponse,
   UserInputs,
+  UserPodcasts,
   UserProfile,
   YoutubeResponse,
 } from '#/types/types';
@@ -352,7 +353,7 @@ export const getEpisodeById = async (id: string): Promise<Episode> => {
   return response.data;
 };
 
-export const getUserPodcasts = async (): Promise<Podcast[]> => {
+export const getUserPodcasts = async (): Promise<UserPodcasts> => {
   const response = await gamesApi.get('spotify/podcasts/user/list?limit=20&offset=0', {
     withCredentials: true,
   });

@@ -1,11 +1,11 @@
-import { addPodcastToCollection } from '#/api/gamesApi';
+import { addPodcastToCollection, getUserPodcasts } from '#/api/gamesApi';
 import errorIco from '#/assets/errorIco.svg';
 import heartIcon from '#/assets/heartIcon.svg';
 import successIco from '#/assets/successIco.svg';
-import { Podcast } from '#/types/types';
+import { Podcast, UserPodcasts } from '#/types/types';
 import { Tooltip } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import styled from 'styled-components';
@@ -127,6 +127,7 @@ const StyledDescription = styled.div`
 
 const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isPodcastInCollection, setIsPodcastInCollection] = useState(false);
 
   const addToCollection = useMutation({
     mutationFn: () => addPodcastToCollection(podcast?.id!),
@@ -148,6 +149,11 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
         position: 'top-right',
       });
     },
+  });
+
+  const { data } = useQuery(['spotify/podcasts/list'], () => getUserPodcasts(), {
+    onSuccess: (data: UserPodcasts) =>
+      setIsPodcastInCollection(data.items.some(({ show }) => show.id === podcast?.id)),
   });
 
   return (
@@ -175,9 +181,16 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
           <Link className='link' target='_blank' to={podcast?.external_urls?.spotify || ''}>
             Check on Spotify
           </Link>
-          <Tooltip title='Add to collection' arrow>
+          <Tooltip
+            title={isPodcastInCollection ? 'Podcast already in collection' : 'Add to collection'}
+            arrow
+          >
             <span>
-              <button className='addToCollection' onClick={() => setIsDialogOpen(true)}>
+              <button
+                disabled={isPodcastInCollection}
+                className='addToCollection'
+                onClick={() => setIsDialogOpen(true)}
+              >
                 <img src={heartIcon} alt='add to collection' />
               </button>
             </span>
