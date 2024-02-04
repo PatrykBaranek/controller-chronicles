@@ -15,6 +15,7 @@ import PodcastDetails from './pages/PodcastDetails';
 import Podcasts from './pages/Podcasts';
 import Profile from './pages/Profile';
 import SignUp from './pages/SignUp';
+import ResetPassword from './pages/ResetPassword';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+      { path: 'reset-password', element: <ResetPassword /> },
     ],
   },
 ]);

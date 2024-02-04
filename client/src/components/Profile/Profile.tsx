@@ -1,9 +1,15 @@
-import { getUserProfile } from '#/api/gamesApi';
+import { deleteUserAccount, getUserProfile, requestPasswordChange } from '#/api/gamesApi';
 import { StyledButton } from '#/pages/Login';
 import getAuthToken from '#/utils/getAuthToken';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
+import ConfirmationModal from '../UI/ConfirmationModal';
+import { toast } from 'sonner';
+import errorIco from '#/assets/errorIco.svg';
+import successIco from '#/assets/successIco.svg';
+import { useNavigate } from 'react-router-dom';
+import { useSignOut } from 'react-auth-kit';
 
 type ButtonProps = {
   isDelete: boolean;
@@ -96,9 +102,59 @@ export const StyledAvatar = styled.span`
 
 const Profile = () => {
   const [userName, setUserName] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const authToken = getAuthToken();
+  const navigate = useNavigate();
+  const signOut = useSignOut();
+
   const { data } = useQuery(['user'], () => getUserProfile(authToken), {
     onSuccess: (data) => setUserName(data.email.split('@')[0]),
+  });
+
+  const changePassword = useMutation({
+    mutationFn: () => requestPasswordChange(data?.email!),
+    onSuccess: () => {
+      toast('Success', {
+        className: 'default',
+        description: `Link has been sent to your email`,
+        duration: 5000,
+        icon: <img src={successIco} />,
+        position: 'top-right',
+      });
+    },
+    onError: (error: any) => {
+      toast('Error', {
+        className: 'default',
+        description: error?.response?.data?.message,
+        duration: 5000,
+        icon: <img src={errorIco} />,
+        position: 'top-right',
+      });
+    },
+  });
+
+  const removeUser = useMutation({
+    mutationFn: () => deleteUserAccount(authToken, ''),
+    onSuccess: () => {
+      signOut();
+      navigate('/');
+      toast('Success', {
+        className: 'default',
+        description: `Account successfully added to collection`,
+        duration: 5000,
+        icon: <img src={successIco} />,
+        position: 'top-right',
+      });
+    },
+    onError: (error: any) => {
+      toast('Error', {
+        className: 'default',
+        description: error?.response?.data?.message,
+        duration: 5000,
+        icon: <img src={errorIco} />,
+        position: 'top-right',
+      });
+    },
   });
 
   return (
@@ -108,9 +164,29 @@ const Profile = () => {
         <h3>{userName}</h3>
       </StyledProfileInfo>
       <StyledForm>
-        <StyledFormButton isDelete={false}>Change your password</StyledFormButton>
-        <StyledFormButton isDelete>Delete account</StyledFormButton>
+        <StyledFormButton
+          isDelete={false}
+          onClick={(e) => {
+            e.preventDefault();
+            changePassword.mutate();
+          }}
+        >
+          Change your password
+        </StyledFormButton>
+        <StyledFormButton onClick={() => setIsDialogOpen(true)} isDelete>
+          Delete account
+        </StyledFormButton>
       </StyledForm>
+      {isDialogOpen && (
+        <ConfirmationModal
+          isOpen={isDialogOpen}
+          handleClose={() => setIsDialogOpen((prev) => !prev)}
+          buttonText='Delete account'
+          confirmCallback={() => removeUser.mutate()}
+          heading='Are you sure you want to delete your account?'
+          contentText='This change will be irreversible'
+        />
+      )}
     </StyledContainer>
   );
 };

@@ -118,6 +118,46 @@ export const getUserProfile = async (authToken: string): Promise<UserProfile> =>
   }
 };
 
+export const deleteUserAccount = async (authToken: string, id: string): Promise<any> => {
+  try {
+    const response = gamesApi.delete(`/users/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const requestPasswordChange = async (email: string): Promise<any> => {
+  try {
+    const response = gamesApi.post(`/auth/request-reset-password?email=${email}`);
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const resetPassword = async (
+  token: string,
+  password: string,
+  repeatPassword: string
+): Promise<any> => {
+  try {
+    const response = gamesApi.post(`/auth/reset-password?token=${token}`, {
+      password,
+      repeat_password: repeatPassword,
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
 export const getUserCollections = async (authToken: string): Promise<CollectionResponse[]> => {
   try {
     const response = gamesApi.get('/collections', {
