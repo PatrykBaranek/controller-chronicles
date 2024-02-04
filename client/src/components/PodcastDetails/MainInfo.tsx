@@ -4,7 +4,7 @@ import heartIcon from '#/assets/heartIcon.svg';
 import successIco from '#/assets/successIco.svg';
 import { Podcast } from '#/types/types';
 import { Tooltip } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -142,7 +142,7 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
     onError: (error: any) => {
       toast('Error', {
         className: 'default',
-        description: error?.message,
+        description: error?.response?.data?.message,
         duration: 5000,
         icon: <img src={errorIco} />,
         position: 'top-right',

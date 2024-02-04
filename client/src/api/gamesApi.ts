@@ -22,6 +22,7 @@ import { createRefresh } from 'react-auth-kit';
 
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000/api',
+  withCredentials: true,
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
