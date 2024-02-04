@@ -36,6 +36,7 @@ const StyledTopSection = styled.div`
     font-size: clamp(0.8rem, 2vw, 1rem);
     @media screen and (min-width: 900px) {
       font-size: clamp(0.7rem, 1vw, 1rem);
+      padding-block: 0.2rem;
     }
   }
   p {
@@ -123,7 +124,7 @@ const GameCard = ({
                 <p>Something went wrong!</p>
               )}
             </StyledDescription>
-            {isAuth() && (
+            {isAuth() && !isPodcastCard && (
               <StyledAddToCollection
                 onClick={(e) => {
                   e.stopPropagation();
