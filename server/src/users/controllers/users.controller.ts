@@ -30,6 +30,7 @@ export class UsersController {
     const userDocument = await this.usersService.findById(req.user['sub']);
 
     return {
+      id:    userDocument._id,
       email: userDocument.email
     };
   }
