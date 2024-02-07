@@ -139,6 +139,7 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
         icon: <img src={successIco} />,
         position: 'top-right',
       });
+      refetch();
     },
     onError: (error: any) => {
       toast('Error', {
@@ -151,7 +152,7 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
     },
   });
 
-  const { data } = useQuery(['spotify/podcasts/list'], () => getUserPodcasts(), {
+  const { data, refetch } = useQuery(['spotify/podcasts/list'], () => getUserPodcasts(), {
     onSuccess: (data: UserPodcasts) =>
       setIsPodcastInCollection(data.items.some(({ show }) => show.id === podcast?.id)),
   });
