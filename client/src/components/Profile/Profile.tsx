@@ -134,13 +134,13 @@ const Profile = () => {
   });
 
   const removeUser = useMutation({
-    mutationFn: () => deleteUserAccount(authToken, ''),
+    mutationFn: () => deleteUserAccount(authToken, data?.id!),
     onSuccess: () => {
       signOut();
       navigate('/');
       toast('Success', {
         className: 'default',
-        description: `Account successfully added to collection`,
+        description: `Account successfully removed`,
         duration: 5000,
         icon: <img src={successIco} />,
         position: 'top-right',
@@ -173,14 +173,20 @@ const Profile = () => {
         >
           Change your password
         </StyledFormButton>
-        <StyledFormButton onClick={() => setIsDialogOpen(true)} isDelete>
+        <StyledFormButton
+          onClick={(e) => {
+            e.preventDefault();
+            setIsDialogOpen(true);
+          }}
+          isDelete
+        >
           Delete account
         </StyledFormButton>
       </StyledForm>
       {isDialogOpen && (
         <ConfirmationModal
           isOpen={isDialogOpen}
-          handleClose={() => setIsDialogOpen((prev) => !prev)}
+          handleClose={() => setIsDialogOpen(false)}
           buttonText='Delete account'
           confirmCallback={() => removeUser.mutate()}
           heading='Are you sure you want to delete your account?'

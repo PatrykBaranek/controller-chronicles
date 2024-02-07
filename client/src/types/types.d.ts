@@ -168,10 +168,7 @@ export type Bestseller = {
 
 export type UserProfile = {
   email: string;
-  password: string;
-  refresh_token: string;
-  __v: number;
-  _id: string;
+  id: string;
 };
 
 export type BestsellerResponse = {
