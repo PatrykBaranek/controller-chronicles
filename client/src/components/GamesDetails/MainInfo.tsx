@@ -6,6 +6,8 @@ import { Tooltip } from '@mui/material';
 import { useIsAuthenticated } from 'react-auth-kit';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useState } from 'react';
+import AddToCollectionForm from '../Collections/AddToCollectionForm';
 type StarProps = {
   rating: number;
   index: number;
@@ -139,7 +141,14 @@ const StyledButtonsWrapper = styled.div`
   }
 `;
 
-const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
+const MainInfo = ({
+  gameInfo,
+  gameId,
+}: {
+  gameInfo: RawgGameDetails | undefined;
+  gameId?: string | number;
+}) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
   const auth = useIsAuthenticated();
   const isLogged = auth();
@@ -182,12 +191,27 @@ const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
         </Link>
         <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>
           <span>
-            <button disabled={!isLogged} className='addToCollection'>
+            <button
+              className='addToCollection'
+              disabled={!isLogged}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setIsDialogOpen(true);
+              }}
+            >
               <img src={heartIcon} alt='add to collection' />
             </button>
           </span>
         </Tooltip>
       </StyledButtonsWrapper>
+      {isDialogOpen && (
+        <AddToCollectionForm
+          gameId={Number(gameId)}
+          isOpen={isDialogOpen}
+          handleClose={() => setIsDialogOpen((prev) => !prev)}
+        />
+      )}
     </StyledTitleWrapper>
   );
 };

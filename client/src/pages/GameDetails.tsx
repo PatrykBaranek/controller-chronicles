@@ -184,7 +184,7 @@ const GameDetails = () => {
           <StyledTopSection>
             <StyledHeroImage src={gameInfo?.background_image} alt={gameInfo?.name} />
             <StyledInfoWrapper>
-              <MainInfo gameInfo={gameInfo} />
+              <MainInfo gameInfo={gameInfo} gameId={data?._id} />
             </StyledInfoWrapper>
           </StyledTopSection>
           <StyledContainer>
