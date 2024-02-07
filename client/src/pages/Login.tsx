@@ -241,7 +241,9 @@ const Login = () => {
             />
             <p role='alert'> {errors.password?.type === 'required' && 'Please enter a password'}</p>
             {!errors.password && (
-              <button onClick={() => setIsDialogOpen(true)}>Forgot password?</button>
+              <button type='button' onClick={() => setIsDialogOpen(true)}>
+                Forgot password?
+              </button>
             )}
           </StyledPasswordContainer>
           <StyledButton>Login</StyledButton>
