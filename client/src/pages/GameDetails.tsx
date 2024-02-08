@@ -95,13 +95,9 @@ const StyledGameDescription = styled.div`
 
 const StyledEpisodesWrapper = styled.div`
   position: relative;
-  grid-column: 1 / -1;
 `;
 
 const StyledNoSpotify = styled.div`
-  grid-column: 1 / -1;
-  margin: 1rem auto;
-
   h2 {
     margin-bottom: 1rem;
     font-size: 1.2rem;
@@ -129,11 +125,18 @@ const StyledNoSpotify = styled.div`
   }
 `;
 
+const StyledSpotifyWrapper = styled.div`
+  width: 100%;
+  position: relative;
+  grid-column: 1 / -1;
+  margin: 1rem auto;
+`;
+
 const GameDetails = () => {
   const { id } = useParams();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
-  const { isAuth } = useSpotifyStore();
+  const { isAuth, setAuth } = useSpotifyStore();
 
   const results = useQueries([
     {
@@ -155,12 +158,22 @@ const GameDetails = () => {
       queryKey: ['/podcast/episodes/game:id', id],
       queryFn: () => getEpisodesByGameId(id!),
       onSuccess: (data: Episode[]) => setEpisodes(data),
+      onError: (e: any) => {
+        if (e.response.status === 403) {
+          setAuth(false);
+        }
+      },
       enabled: isAuth,
     },
     {
       queryKey: ['/podcast/soundtracks/:id', id],
       queryFn: () => getSoundtrackByGameId(id!),
       onSuccess: (data: Soundtrack[]) => setSoundtracks(data),
+      onError: (e: any) => {
+        if (e.response.status === 403) {
+          setAuth(false);
+        }
+      },
       enabled: isAuth,
     },
   ]);
@@ -175,6 +188,8 @@ const GameDetails = () => {
     return store.store.slug === 'steam';
   });
 
+  const isSpotifyLoading = spotify.some((data) => data.isLoading);
+  console.log(isSpotifyLoading, !isAuth);
   return (
     <StyledDetailsPage>
       {isLoading || isError ? (
@@ -197,22 +212,28 @@ const GameDetails = () => {
             {Boolean(isGameOnSteam?.length) && <SteamReviews />}
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
-            {!isAuth && (
-              <StyledNoSpotify>
-                <h2>You need to be authorized to see spotify content</h2>
-                <Link to={'/podcasts'}>Authorize</Link>
-              </StyledNoSpotify>
-            )}
-            {episodes.length !== 0 && (
-              <StyledEpisodesWrapper>
-                <PodcastEpisodes heading='Spotify Episodes' data={episodes.slice(0, 8)} />
-              </StyledEpisodesWrapper>
-            )}
-            {soundtracks.length !== 0 && (
-              <StyledEpisodesWrapper>
-                <PodcastEpisodes heading='Spotify soundtracks' data={soundtracks.slice(0, 8)} />
-              </StyledEpisodesWrapper>
-            )}
+            <StyledSpotifyWrapper>
+              {isSpotifyLoading ? (
+                <Spinner />
+              ) : (
+                !isAuth && (
+                  <StyledNoSpotify>
+                    <h2>You need to be authorized to see spotify content</h2>
+                    <Link to={'/podcasts'}>Authorize</Link>
+                  </StyledNoSpotify>
+                )
+              )}
+              {episodes.length !== 0 && (
+                <StyledEpisodesWrapper>
+                  <PodcastEpisodes heading='Spotify Episodes' data={episodes.slice(0, 8)} />
+                </StyledEpisodesWrapper>
+              )}
+              {soundtracks.length !== 0 && (
+                <StyledEpisodesWrapper>
+                  <PodcastEpisodes heading='Spotify soundtracks' data={soundtracks.slice(0, 8)} />
+                </StyledEpisodesWrapper>
+              )}
+            </StyledSpotifyWrapper>
           </StyledContainer>
         </>
       )}
