@@ -234,6 +234,9 @@ const Collections = () => {
         <Spinner />
       ) : (
         <>
+          <StyledCollection>
+            <h2>User collections</h2>
+          </StyledCollection>
           <StyledCollectionButton
             hasGames={!!collections?.length}
             hasCollections={!!collections?.length}
@@ -241,9 +244,7 @@ const Collections = () => {
           >
             Add new collection
           </StyledCollectionButton>
-          <StyledCollection>
-            <h2>User collections</h2>
-          </StyledCollection>
+
           {collections?.map((collection) => (
             <StyledCollection key={collection._id}>
               <StyledCollectionTitle>
