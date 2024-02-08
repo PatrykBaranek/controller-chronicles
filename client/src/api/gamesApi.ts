@@ -9,6 +9,7 @@ import {
   PlayersCountResponse,
   Podcast,
   PodcastResponse,
+  ReviewsSites,
   SignUpResponse,
   Soundtrack,
   SteamReviewsResponse,
@@ -50,6 +51,12 @@ export const getGamesBySearchQuery = async (query = ''): Promise<GamesResponse> 
 };
 export const getFilteredGames = async (query: string): Promise<GamesResponse> => {
   const response = await gamesApi.get(`/games?page=1&page_size=8&${query}`);
+
+  return response.data;
+};
+
+export const getReviewsSites = async (id: string): Promise<ReviewsSites> => {
+  const response = await gamesApi.get(`/reviews-sites/${id}`);
 
   return response.data;
 };

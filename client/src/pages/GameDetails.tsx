@@ -9,10 +9,14 @@ import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import SpotifyContent from './SpotifyContent';
+import { useState } from 'react';
+import ReviewsSitesDrawer from '#/components/GamesDetails/ReviewsSitesDrawer';
 
 const StyledDetailsPage = styled.div`
   width: 100%;
   min-height: 100vh;
+  position: relative;
+
   @media screen and (min-width: 900px) {
     padding-top: 2rem;
   }
@@ -87,6 +91,7 @@ const StyledGameDescription = styled.div`
 
 const GameDetails = () => {
   const { id } = useParams();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const results = useQueries([
     {
@@ -117,8 +122,6 @@ const GameDetails = () => {
     return store.store.slug === 'steam';
   });
 
-  console.log(reviewSites);
-
   return (
     <StyledDetailsPage>
       {isLoading || isError ? (
@@ -128,7 +131,12 @@ const GameDetails = () => {
           <StyledTopSection>
             <StyledHeroImage src={gameInfo?.background_image} alt={gameInfo?.name} />
             <StyledInfoWrapper>
-              <MainInfo gameInfo={gameInfo} gameId={data?._id} />
+              <MainInfo
+                gameInfo={gameInfo}
+                gameId={data?._id}
+                setIsDrawerOpen={setIsDrawerOpen}
+                hasReviewSites={reviewSites?.length! > 0}
+              />
             </StyledInfoWrapper>
           </StyledTopSection>
           <StyledContainer>
@@ -142,6 +150,13 @@ const GameDetails = () => {
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
             <SpotifyContent id={data?._id} />
+            {reviewSites?.length && (
+              <ReviewsSitesDrawer
+                isOpen={isDrawerOpen}
+                setIsDrawerOpen={setIsDrawerOpen}
+                reviewSites={reviewSites}
+              />
+            )}
           </StyledContainer>
         </>
       )}

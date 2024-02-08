@@ -146,6 +146,12 @@ export type CollectionResponse = {
   _id: string;
 };
 
+export type ReviewsSites = {
+  title: string;
+  url: string;
+  source: string;
+}[];
+
 export type AuthResponse = {
   access_token: string;
   access_token_expires_in: number;

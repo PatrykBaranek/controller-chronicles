@@ -158,10 +158,12 @@ const MainInfo = ({
   gameInfo,
   gameId,
   setIsDrawerOpen,
+  hasReviewSites,
 }: {
   gameInfo: RawgGameDetails | undefined;
   gameId?: string | number;
   setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  hasReviewSites: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -222,9 +224,11 @@ const MainInfo = ({
             </span>
           </Tooltip>
         </div>
-        <button className='link' onClick={() => setIsDrawerOpen((prev) => !prev)}>
-          Check sites with reviews
-        </button>
+        {hasReviewSites && (
+          <button className='link' onClick={() => setIsDrawerOpen((prev) => !prev)}>
+            Check sites with reviews
+          </button>
+        )}
       </StyledButtonsWrapper>
       {isDialogOpen && (
         <AddToCollectionForm
