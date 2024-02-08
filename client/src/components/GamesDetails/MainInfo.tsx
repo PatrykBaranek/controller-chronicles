@@ -3,9 +3,11 @@ import starIcon from '#/assets/starIcon.svg';
 import { RawgGameDetails } from '#/types/types';
 import iconFilter from '#/utils/iconFilter';
 import { Tooltip } from '@mui/material';
+import { useState } from 'react';
 import { useIsAuthenticated } from 'react-auth-kit';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import AddToCollectionForm from '../Collections/AddToCollectionForm';
 type StarProps = {
   rating: number;
   index: number;
@@ -98,11 +100,16 @@ const StyledIconsWrapper = styled.div`
 const StyledButtonsWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  @media screen and (min-width: 900px) {
-    justify-content: start;
-    gap: 5rem;
+  flex-direction: column;
+
+  .wrap {
+    display: flex;
+    gap: 3rem;
+    @media screen and (min-width: 900px) {
+      gap: 5rem;
+    }
   }
+
   .link {
     font-size: clamp(0.8rem, 3vw, 1rem);
     color: ${({ theme }) => theme.colors.primary};
@@ -110,8 +117,16 @@ const StyledButtonsWrapper = styled.div`
     padding: 1rem 2rem;
     border-radius: 100vw;
     transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+
     &:hover {
       filter: contrast(5);
+    }
+
+    &:last-child {
+      width: fit-content;
+      margin-top: 1rem;
     }
   }
   .addToCollection {
@@ -139,7 +154,19 @@ const StyledButtonsWrapper = styled.div`
   }
 `;
 
-const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
+const MainInfo = ({
+  gameInfo,
+  gameId,
+  setIsDrawerOpen,
+  hasReviewSites,
+}: {
+  gameInfo: RawgGameDetails | undefined;
+  gameId?: string | number;
+  setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  hasReviewSites: boolean;
+}) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
   const auth = useIsAuthenticated();
   const isLogged = auth();
@@ -177,17 +204,39 @@ const MainInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
         </StyledIconsWrapper>
       </StyledStoresWrapper>
       <StyledButtonsWrapper>
-        <Link className='link' target='_blank' to={gameInfo?.website || ''}>
-          Check publisher website
-        </Link>
-        <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>
-          <span>
-            <button disabled={!isLogged} className='addToCollection'>
-              <img src={heartIcon} alt='add to collection' />
-            </button>
-          </span>
-        </Tooltip>
+        <div className='wrap'>
+          <Link className='link' target='_blank' to={gameInfo?.website || ''}>
+            Check publisher website
+          </Link>
+          <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>
+            <span>
+              <button
+                className='addToCollection'
+                disabled={!isLogged}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setIsDialogOpen(true);
+                }}
+              >
+                <img src={heartIcon} alt='add to collection' />
+              </button>
+            </span>
+          </Tooltip>
+        </div>
+        {hasReviewSites && (
+          <button className='link' onClick={() => setIsDrawerOpen((prev) => !prev)}>
+            Check sites with reviews
+          </button>
+        )}
       </StyledButtonsWrapper>
+      {isDialogOpen && (
+        <AddToCollectionForm
+          gameId={Number(gameId)}
+          isOpen={isDialogOpen}
+          handleClose={() => setIsDialogOpen((prev) => !prev)}
+        />
+      )}
     </StyledTitleWrapper>
   );
 };

@@ -3,6 +3,7 @@ import crossedEye from '#/assets/crossedEye.svg';
 import errorIco from '#/assets/errorIco.svg';
 import eye from '#/assets/eye.svg';
 import loggedInIco from '#/assets/loggedIco.svg';
+import ChangePasswordModal from '#/components/Form/ChangePasswordModal';
 import Form from '#/components/Form/Form';
 import { AuthError, UserInputs } from '#/types/types';
 import { validateEmail } from '#/utils/formValidation';
@@ -85,7 +86,7 @@ export const StyledPasswordContainer = styled.div`
     transform: translateY(-50%);
     cursor: pointer;
   }
-  a {
+  button {
     font-size: clamp(0.7rem, 1vw, 0.85rem);
     position: absolute;
     right: 0;
@@ -95,6 +96,8 @@ export const StyledPasswordContainer = styled.div`
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    border: none;
+    cursor: pointer;
   }
   p {
     font-size: 0.8rem;
@@ -144,10 +147,8 @@ export const StyledTextContainer = styled.div`
   }
 `;
 const Login = () => {
-  const logIn = useMutation({
-    mutationFn: (data: UserInputs) => logInUser(data),
-  });
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [error, setError] = useState<AuthError>();
   const signIn = useSignIn();
   const isAuthenticated = useIsAuthenticated();
@@ -161,7 +162,12 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm<UserInputs>();
+
+  const logIn = useMutation({
+    mutationFn: (data: UserInputs) => logInUser(data),
+  });
 
   const onSubmit: SubmitHandler<UserInputs> = (data) => {
     logIn.mutate(data, {
@@ -234,7 +240,11 @@ const Login = () => {
               alt='eye icon'
             />
             <p role='alert'> {errors.password?.type === 'required' && 'Please enter a password'}</p>
-            {!errors.password && <Link to={'/'}>Forgot password?</Link>}
+            {!errors.password && (
+              <button type='button' onClick={() => setIsDialogOpen(true)}>
+                Forgot password?
+              </button>
+            )}
           </StyledPasswordContainer>
           <StyledButton>Login</StyledButton>
           <StyledTextContainer>
@@ -243,6 +253,15 @@ const Login = () => {
           </StyledTextContainer>
         </Form>
       </StyledAuthWrapper>
+      {isDialogOpen && (
+        <ChangePasswordModal
+          isOpen={isDialogOpen}
+          handleClose={() => {
+            setIsDialogOpen(false);
+            clearErrors(['email', 'password']);
+          }}
+        />
+      )}
     </StyledAuth>
   );
 };

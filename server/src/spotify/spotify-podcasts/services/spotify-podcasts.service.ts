@@ -41,7 +41,8 @@ export class SpotifyPodcastsService {
   }
 
   async addPodcastToUserLibrary(id: string) {
-    if (this.isInUserLibrary(id)) {
+    const podcastInLibrary = await this.isInUserLibrary(id);
+    if (podcastInLibrary) {
       throw new BadRequestException('Podcast is already saved');
   }
 
@@ -49,7 +50,8 @@ export class SpotifyPodcastsService {
   }
 
   async removePodcastFromUserLibrary(id: string) {
-    if (!this.isInUserLibrary(id)) {
+    const podcastInLibrary = await this.isInUserLibrary(id);
+    if (!podcastInLibrary) {
       throw new BadRequestException('Podcast is not saved');
     }
 

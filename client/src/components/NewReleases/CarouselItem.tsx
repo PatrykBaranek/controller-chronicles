@@ -135,7 +135,7 @@ const CarouselItem = ({ isActive, image, id }: CarouseItemProps) => {
       <StyledOverlay></StyledOverlay>
       <StyledIcon $isActive={isActive}>
         {stores?.map((store) => (
-          <img key={store.id} src={iconFilter(store.store.slug)} />
+          <img key={store.store.slug} src={iconFilter(store.store.slug)} />
         ))}
       </StyledIcon>
       <StyledTitle $isActive={isActive}>{title}</StyledTitle>

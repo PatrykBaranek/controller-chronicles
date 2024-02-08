@@ -69,12 +69,12 @@ const Header = () => {
         <BurgerMenu />
         <StyledLogo src={logo} alt='Controller chronicles logo' />
         {isDesktopWidth(windowWidth) && isLocationSearchable(location) && <Searchbar />}
-        {isLocationSearchable(location) && (
+        {/* {isLocationSearchable(location) && (
           <>
             <StyledFilterIcon src={filterIcon} alt='Filters' onClick={toggleFiltersOpen} />
             <FilterDrawer />
           </>
-        )}
+        )} */}
       </StyledTopSection>
       {!isDesktopWidth(windowWidth) && isLocationSearchable(location) && <Searchbar />}
     </StyledHeader>

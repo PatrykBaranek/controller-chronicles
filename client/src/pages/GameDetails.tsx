@@ -1,4 +1,4 @@
-import { getGameById, getYoutubeVideosByGameId } from '#/api/gamesApi';
+import { getGameById, getReviewsSites, getYoutubeVideosByGameId } from '#/api/gamesApi';
 import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
 import Gameplay from '#/components/GamesDetails/Gameplay';
 import MainInfo from '#/components/GamesDetails/MainInfo';
@@ -8,10 +8,15 @@ import Spinner from '#/components/UI/Spinner';
 import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import SpotifyContent from './SpotifyContent';
+import { useState } from 'react';
+import ReviewsSitesDrawer from '#/components/GamesDetails/ReviewsSitesDrawer';
 
 const StyledDetailsPage = styled.div`
   width: 100%;
   min-height: 100vh;
+  position: relative;
+
   @media screen and (min-width: 900px) {
     padding-top: 2rem;
   }
@@ -86,6 +91,7 @@ const StyledGameDescription = styled.div`
 
 const GameDetails = () => {
   const { id } = useParams();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const results = useQueries([
     {
@@ -100,12 +106,16 @@ const GameDetails = () => {
       queryKey: ['/games/:id/trailers', id],
       queryFn: () => getYoutubeVideosByGameId('trailer', id!),
     },
+    {
+      queryKey: ['/reviews-sites', id],
+      queryFn: () => getReviewsSites(id!),
+    },
   ]);
 
-  const [{ data: data }, { data: reviews }, { data: trailers }] = results;
+  const [{ data: data }, { data: reviews }, { data: trailers }, { data: reviewSites }] = results;
 
   const isLoading = results?.some((data) => data.isLoading);
-  const isError = results?.some((data) => data.isError);
+  const isError = results?.some((data) => data?.isError);
   const gameInfo = data?.rawgGame;
 
   const isGameOnSteam = gameInfo?.stores.filter((store) => {
@@ -121,7 +131,12 @@ const GameDetails = () => {
           <StyledTopSection>
             <StyledHeroImage src={gameInfo?.background_image} alt={gameInfo?.name} />
             <StyledInfoWrapper>
-              <MainInfo gameInfo={gameInfo} />
+              <MainInfo
+                gameInfo={gameInfo}
+                gameId={data?._id}
+                setIsDrawerOpen={setIsDrawerOpen}
+                hasReviewSites={reviewSites?.length! > 0}
+              />
             </StyledInfoWrapper>
           </StyledTopSection>
           <StyledContainer>
@@ -134,6 +149,14 @@ const GameDetails = () => {
             {Boolean(isGameOnSteam?.length) && <SteamReviews />}
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
+            <SpotifyContent id={data?._id} />
+            {reviewSites?.length && (
+              <ReviewsSitesDrawer
+                isOpen={isDrawerOpen}
+                setIsDrawerOpen={setIsDrawerOpen}
+                reviewSites={reviewSites}
+              />
+            )}
           </StyledContainer>
         </>
       )}

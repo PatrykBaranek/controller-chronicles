@@ -3,12 +3,18 @@ import {
   AuthResponse,
   BestsellerResponse,
   CollectionResponse,
+  Episode,
   GameDetailsResponse,
   GamesResponse,
   PlayersCountResponse,
+  Podcast,
+  PodcastResponse,
+  ReviewsSites,
   SignUpResponse,
+  Soundtrack,
   SteamReviewsResponse,
   UserInputs,
+  UserPodcasts,
   UserProfile,
   YoutubeResponse,
 } from '#/types/types';
@@ -18,6 +24,7 @@ import { createRefresh } from 'react-auth-kit';
 
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000/api',
+  withCredentials: true,
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
@@ -44,6 +51,12 @@ export const getGamesBySearchQuery = async (query = ''): Promise<GamesResponse> 
 };
 export const getFilteredGames = async (query: string): Promise<GamesResponse> => {
   const response = await gamesApi.get(`/games?page=1&page_size=8&${query}`);
+
+  return response.data;
+};
+
+export const getReviewsSites = async (id: string): Promise<ReviewsSites> => {
+  const response = await gamesApi.get(`/reviews-sites/${id}`);
 
   return response.data;
 };
@@ -105,6 +118,46 @@ export const getUserProfile = async (authToken: string): Promise<UserProfile> =>
         'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const deleteUserAccount = async (authToken: string, id: string): Promise<any> => {
+  try {
+    const response = gamesApi.delete(`/users/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const requestPasswordChange = async (email: string): Promise<any> => {
+  try {
+    const response = gamesApi.post(`/auth/request-reset-password?email=${email}`);
+    return (await response).data;
+  } catch (error: any) {
+    throw error.response?.data;
+  }
+};
+
+export const resetPassword = async (
+  token: string,
+  password: string,
+  repeatPassword: string
+): Promise<any> => {
+  try {
+    const response = gamesApi.post(`/auth/reset-password?token=${token}`, {
+      password,
+      repeat_password: repeatPassword,
     });
     return (await response).data;
   } catch (error: any) {
@@ -296,6 +349,77 @@ export const getSteamPlayersCount = async (
   id: string | number | undefined
 ): Promise<PlayersCountResponse> => {
   const response = await gamesApi.get(`/steam/${id}/players-count`);
+
+  return response.data;
+};
+
+export const connectToSpotify = async (): Promise<{ url: string }> => {
+  const response = await gamesApi.post('/spotify/auth/login', {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getAllPodcasts = async (page = 0): Promise<PodcastResponse> => {
+  const response = await gamesApi.get(`/spotify/podcasts?limit=20&offset=${page}`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+export const getPodcastById = async (id: string): Promise<Podcast> => {
+  const response = await gamesApi.get(`spotify/podcasts/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getEpisodesByGameId = async (id: string): Promise<Episode[]> => {
+  const response = await gamesApi.get(`spotify/episodes/game/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getSoundtrackByGameId = async (id: string): Promise<Soundtrack[]> => {
+  const response = await gamesApi.get(`spotify/soundtracks/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getEpisodeById = async (id: string): Promise<Episode> => {
+  const response = await gamesApi.get(`spotify/episodes/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const getUserPodcasts = async (): Promise<UserPodcasts> => {
+  const response = await gamesApi.get('spotify/podcasts/user/list?limit=20&offset=0', {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const addPodcastToCollection = async (id: string): Promise<any> => {
+  const response = await gamesApi.post(`spotify/podcasts/add/${id}`, {
+    withCredentials: true,
+  });
+
+  return response.data;
+};
+
+export const removePodcastFromCollection = async (id: string): Promise<any> => {
+  const response = await gamesApi.delete(`spotify/podcasts/remove/${id}`, {
+    withCredentials: true,
+  });
 
   return response.data;
 };
