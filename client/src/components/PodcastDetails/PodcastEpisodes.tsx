@@ -17,11 +17,8 @@ const StyledContainer = styled.div`
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1rem;
   position: relative;
-  min-height: 80svh;
+  margin-top: 2rem;
 
-  @media screen and (min-width: 900px) {
-    margin-block: 2rem;
-  }
   @media screen and (min-width: 1050px) {
     gap: 2rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));

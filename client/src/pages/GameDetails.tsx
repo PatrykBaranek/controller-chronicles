@@ -150,7 +150,7 @@ const GameDetails = () => {
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
             <SpotifyContent id={data?._id} />
-            {reviewSites?.length && (
+            {reviewSites?.length !== 0 && (
               <ReviewsSitesDrawer
                 isOpen={isDrawerOpen}
                 setIsDrawerOpen={setIsDrawerOpen}
