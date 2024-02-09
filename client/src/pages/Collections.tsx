@@ -114,6 +114,10 @@ const StyledCollection = styled.div`
   @media screen and (min-width: 900px) {
     padding-inline: 0;
   }
+
+  .fallback {
+    margin-top: 2rem;
+  }
 `;
 
 const StyledCollectionButton = styled(StyledButton)<StyledProps>`
@@ -327,50 +331,54 @@ const Collections = () => {
                     <h2>Spotify Collection</h2>
                   </div>
                 </StyledCollectionTitle>
-                <Splide
-                  options={{
-                    arrows: false,
-                    pagination: true,
-                    autoplay: false,
-                    interval: 4000,
-                    rewind: true,
-                    gap: '1.2rem',
-                    easing: 'ease',
-                    perPage: 1,
-                    fixedWidth: '100%',
-                    mediaQuery: 'min',
-                    breakpoints: {
-                      900: {
-                        pagination: false,
-                        fixedWidth: '30%',
-                        padding: '1rem',
+                {podcastsCollection?.items.length !== 0 ? (
+                  <Splide
+                    options={{
+                      arrows: false,
+                      pagination: true,
+                      autoplay: false,
+                      interval: 4000,
+                      rewind: true,
+                      gap: '1.2rem',
+                      easing: 'ease',
+                      perPage: 1,
+                      fixedWidth: '100%',
+                      mediaQuery: 'min',
+                      breakpoints: {
+                        900: {
+                          pagination: false,
+                          fixedWidth: '30%',
+                          padding: '1rem',
+                        },
+                        1500: {
+                          fixedWidth: '30%',
+                          perPage: 3,
+                        },
                       },
-                      1500: {
-                        fixedWidth: '30%',
-                        perPage: 3,
-                      },
-                    },
-                    start: 0,
-                  }}
-                >
-                  {podcastsCollection?.items.map(({ show }) => (
-                    <StyledSplideSlide key={`${show.name}:${show.id}`}>
-                      <button
-                        onClick={(e) => {
-                          setPodcastId(show.id);
-                          setIsPodcastModalOpen(true);
-                        }}
-                      >
-                        X
-                      </button>
-                      <Card>
-                        <StyledCollectionItem to={`/podcasts/${show.id}`}>
-                          <img src={show?.images[0].url} alt={`${show?.name} image`} />
-                        </StyledCollectionItem>
-                      </Card>
-                    </StyledSplideSlide>
-                  ))}
-                </Splide>
+                      start: 0,
+                    }}
+                  >
+                    {podcastsCollection?.items.map(({ show }) => (
+                      <StyledSplideSlide key={`${show.name}:${show.id}`}>
+                        <button
+                          onClick={(e) => {
+                            setPodcastId(show.id);
+                            setIsPodcastModalOpen(true);
+                          }}
+                        >
+                          X
+                        </button>
+                        <Card>
+                          <StyledCollectionItem to={`/podcasts/${show.id}`}>
+                            <img src={show?.images[0].url} alt={`${show?.name} image`} />
+                          </StyledCollectionItem>
+                        </Card>
+                      </StyledSplideSlide>
+                    ))}
+                  </Splide>
+                ) : (
+                  <h3 className='fallback'>Oops! There is no podcast in your collection</h3>
+                )}
               </StyledCollection>
             </>
           )}
