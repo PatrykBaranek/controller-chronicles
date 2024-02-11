@@ -4,8 +4,8 @@
   "scripts": {
     "start:client": "npm run dev --prefix ./client",
     "start:server": "npm run start  --prefix ./server",
-    "installDev": "concurrently \"cd client && npm i\" \"cd client && npm i\" \"cd server && npm i\" \"npm run initialize\"",
-    "installDev:win": "concurrently \"cd client && npm i\" \"cd server && npm i\" \"npm run initialize:win\"",
+    "install": "concurrently \"cd client && npm i\" \"cd client && npm i\" \"cd server && npm i\" \"npm run initialize\"",
+    "install:win": "concurrently \"cd client && npm i\" \"cd server && npm i\" \"npm run initialize:win\"",
     "build": "concurrently \"cd client && npm run build\" \"cd server && npm run build\"",
     "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
     "initialize": "sh initialize.sh",

@@ -9,13 +9,13 @@ Controller Chronicles is a platform dedicated to game reviews, offering a compre
 To install the dependencies for both the client and server components, you can use the following command(for non windows users):
 
 ```bash
-npm run installDev
+npm run install
 ```
 
 For Windows users, please use:
 
 ```bash
-npm run installDev:win
+npm run install:win
 ```
 
 ## Usage
