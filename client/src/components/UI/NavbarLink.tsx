@@ -8,6 +8,7 @@ type NavbarLink = {
   text: string;
   icon: string;
   isLogoutButton?: boolean;
+  isFaq?: boolean;
 };
 
 type StyledLink = {
@@ -150,6 +151,7 @@ const StyledWrapper = styled.div`
     }
     img[alt='Login icon'],
     img[alt='Log out icon'],
+    img[alt='FAQ icon'],
     img[alt='Profile icon'] {
       position: absolute;
       top: 50%;
@@ -158,7 +160,7 @@ const StyledWrapper = styled.div`
     }
   }
 `;
-const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
+const NavbarLink = ({ text, icon, isLogoutButton, isFaq }: NavbarLink) => {
   const { pathname } = useLocation();
   const { toggleMenuOpen } = useStore();
   const logout = useSignOut();
@@ -188,10 +190,18 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
 
       logout();
     }
+
+    if (isFaq) {
+      window.open(import.meta.env.VITE_DOCUMENTATION_URL, '_blank');
+    }
   };
 
   const correctLocation = () => {
-    if (text.toLowerCase() === 'home' || text.toLowerCase() === 'logout') {
+    if (
+      text.toLowerCase() === 'home' ||
+      text.toLowerCase() === 'logout' ||
+      text.toLowerCase() === 'faq'
+    ) {
       return '';
     }
     if (text.toLowerCase() === 'collections') {

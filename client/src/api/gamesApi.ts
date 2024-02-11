@@ -23,7 +23,7 @@ import dayjs from 'dayjs';
 import { createRefresh } from 'react-auth-kit';
 
 const gamesApi = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_BASE_API_URL,
   withCredentials: true,
 });
 

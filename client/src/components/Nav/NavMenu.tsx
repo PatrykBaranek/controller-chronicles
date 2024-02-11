@@ -1,12 +1,13 @@
-import styled from 'styled-components';
-import homeIco from '#/assets/homeIco.svg';
-import gamepadIco from '#/assets/gamepadIco.svg';
-import podcastIco from '#/assets/podcastsIco.svg';
-import loginIco from '#/assets/loginIcon.svg';
-import loggedIco from '#/assets/loggedIco.svg';
 import collectionIco from '#/assets/collectionIco.svg';
-import NavbarLink from '../UI/NavbarLink';
+import faqIco from '#/assets/faqIco.svg';
+import gamepadIco from '#/assets/gamepadIco.svg';
+import homeIco from '#/assets/homeIco.svg';
+import loggedIco from '#/assets/loggedIco.svg';
+import loginIco from '#/assets/loginIcon.svg';
+import podcastIco from '#/assets/podcastsIco.svg';
 import { useIsAuthenticated } from 'react-auth-kit';
+import styled from 'styled-components';
+import NavbarLink from '../UI/NavbarLink';
 
 const StyledNavMenu = styled.ul`
   width: 100%;
@@ -41,6 +42,7 @@ const NavMenu = () => {
           <NavbarLink icon={loggedIco} text={'Logout'} isLogoutButton={true} />
         </>
       )}
+      <NavbarLink icon={faqIco} text={'FAQ'} isFaq={true} />
     </StyledNavMenu>
   );
 };

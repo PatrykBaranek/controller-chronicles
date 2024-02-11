@@ -14,8 +14,8 @@ import Login from './pages/Login';
 import PodcastDetails from './pages/PodcastDetails';
 import Podcasts from './pages/Podcasts';
 import Profile from './pages/Profile';
-import SignUp from './pages/SignUp';
 import ResetPassword from './pages/ResetPassword';
+import SignUp from './pages/SignUp';
 
 const queryClient = new QueryClient({
   defaultOptions: {
