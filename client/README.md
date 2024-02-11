@@ -20,8 +20,6 @@ $ npm run build
 VITE_BASE_API_URL="http://${your-local-ip-address}:3000/api"
 ```
 
-Create .env.local file, copy and paste line above. Add your local ip address e.g 192.168.1.X
-
 ## Project structure
 
 ```
