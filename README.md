@@ -44,8 +44,8 @@ This will concurrently build both the client and server components.
 
 - **start:client**: Starts the client development server.
 - **start:server**: Starts the server.
-- **installDev**: Installs development dependencies for both client and server.
-- **installDev:win**: Installs development dependencies for both client and server on Windows.
+- **install**: Installs development dependencies for both client and server.
+- **install:win**: Installs development dependencies for both client and server on Windows.
 - **build**: Builds both client and server.
 - **initialize**: Initializes the project environment using a shell script.
 - **initialize:win**: Initializes the project environment on Windows using a batch file.
