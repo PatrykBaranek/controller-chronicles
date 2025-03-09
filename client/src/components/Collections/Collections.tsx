@@ -1,7 +1,7 @@
-import { getUserCollections } from '#/api/gamesApi';
-import { StyledButton } from '#/pages/Login';
-import { CollectionResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { getUserCollections } from '../../api/gamesApi';
+import { StyledButton } from '../../pages/Login';
+import { CollectionResponse } from '../../types/types';
+import getAuthToken from '../../utils/getAuthToken';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';

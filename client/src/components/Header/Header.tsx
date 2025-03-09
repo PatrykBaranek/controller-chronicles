@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import BurgerMenu from '../UI/BurgerMenu';
-import logo from '#/assets/logo.svg';
+import logo from '../../assets/logo.svg';
 import Searchbar from './Searchbar';
 import useWindowWidth from '../../hooks/useWindowWidth';
 import isLocationSearchable from '../../utils/isLocationSearchable';
 import { useLocation } from 'react-router-dom';
-import filterIcon from '#/assets/filterIcon.svg';
+import filterIcon from '../../assets/filterIcon.svg';
 import isDesktopWidth from '../../utils/isDesktopWidth';
 import Nav from '../Nav/Nav';
-import useStore from '#/store/store';
+import useStore from '../../store/store';
 import FilterDrawer from '../FilterDrawer/FilterDrawer';
 
 const StyledHeader = styled.header`

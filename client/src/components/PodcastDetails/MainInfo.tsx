@@ -1,8 +1,8 @@
-import { addPodcastToCollection, getUserPodcasts } from '#/api/gamesApi';
-import errorIco from '#/assets/errorIco.svg';
-import heartIcon from '#/assets/heartIcon.svg';
-import successIco from '#/assets/successIco.svg';
-import { Podcast, UserPodcasts } from '#/types/types';
+import { addPodcastToCollection, getUserPodcasts } from '../../api/gamesApi';
+import errorIco from '../../assets/errorIco.svg';
+import heartIcon from '../../assets/heartIcon.svg';
+import successIco from '../../assets/successIco.svg';
+import { Podcast, UserPodcasts } from '../../types/types';
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';

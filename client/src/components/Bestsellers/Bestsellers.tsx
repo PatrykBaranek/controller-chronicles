@@ -1,11 +1,11 @@
-import { getBestsellers } from '#/api/gamesApi';
+import { getBestsellers } from '../../api/gamesApi';
 import { isError, useQuery } from 'react-query';
 import styled from 'styled-components';
 import BestsellersItem from './BestsellersItem';
 import { Skeleton } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
-import { Bestseller } from '#/types/types';
+import { Bestseller } from '../../types/types';
 import { useState } from 'react';
 
 const StyledBestsellers = styled.div`

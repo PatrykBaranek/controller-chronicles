@@ -1,6 +1,6 @@
-import leaveIcon from '#/assets/leaveIcon.svg';
-import redditIcon from '#/assets/redditIcon.svg';
-import { RawgGameDetails } from '#/types/types';
+import leaveIcon from '../../assets/leaveIcon.svg';
+import redditIcon from '../../assets/redditIcon.svg';
+import { RawgGameDetails } from '../../types/types';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 

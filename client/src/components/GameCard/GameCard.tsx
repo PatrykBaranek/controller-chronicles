@@ -1,5 +1,5 @@
-import heartIcon from '#/assets/heartIcon.svg';
-import { Gamecard } from '#/types/types';
+import heartIcon from '../../assets/heartIcon.svg';
+import { Gamecard } from '../../types/types';
 import { useState } from 'react';
 import { useIsAuthenticated } from 'react-auth-kit';
 import { Link } from 'react-router-dom';

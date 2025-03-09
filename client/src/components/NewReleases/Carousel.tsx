@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-import useStore from '#/store/store';
-import { Games } from '#/types/types';
+import useStore from '../../store/store';
+import { Games } from '../../types/types';
 import CarouselItem from './CarouselItem';
 import CarouselPagination from './CarouselPagination';
 import { Skeleton } from '@mui/material';

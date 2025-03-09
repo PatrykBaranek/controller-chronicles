@@ -1,8 +1,8 @@
-import { deleteGameFromCollection } from '#/api/gamesApi';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import { GameDetailsResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { deleteGameFromCollection } from '../../api/gamesApi';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
+import { GameDetailsResponse } from '../../types/types';
+import getAuthToken from '../../utils/getAuthToken';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';

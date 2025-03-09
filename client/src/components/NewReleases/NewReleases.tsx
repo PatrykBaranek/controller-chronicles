@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import Carousel from './Carousel';
 import { useQuery } from 'react-query';
-import { getNewReleasedGames } from '#/api/gamesApi';
+import { getNewReleasedGames } from '../../api/gamesApi';
 
 const StyledWrapper = styled.div`
   width: 100%;

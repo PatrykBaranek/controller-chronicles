@@ -1,4 +1,4 @@
-import { YoutubeVideo } from '#/types/types';
+import { YoutubeVideo } from '../../types/types';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import styled from 'styled-components';
 import VideoSliderItem from '../UI/VideoSliderItem';

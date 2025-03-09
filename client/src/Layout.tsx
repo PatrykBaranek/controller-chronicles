@@ -4,7 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Nav from './components/Nav/Nav';
 import useWindowWidth from './hooks/useWindowWidth';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import isDesktopWidth from './utils/isDesktopWidth';
 import NewReleases from './components/NewReleases/NewReleases';
 import { Toaster } from 'sonner';
 

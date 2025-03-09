@@ -1,10 +1,10 @@
-import useWindowWidth from '#/hooks/useWindowWidth';
-import leaveIcon from '#/assets/leaveIcon.svg';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import leaveIcon from '../../assets/leaveIcon.svg';
 import { Link } from 'react-router-dom';
 import CollectionsDesktop from './CollectionsDesktop';
 import CollectionsMobile from './CollectionsMobile';
 import styled from 'styled-components';
-import { CollectionResponse } from '#/types/types';
+import { CollectionResponse } from '../../types/types';
 import CollectionsButton from './CollectionsButton';
 
 const StyledCardContainer = styled.div`

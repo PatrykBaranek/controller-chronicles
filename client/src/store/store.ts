@@ -1,4 +1,4 @@
-import { Games } from '#/types/types';
+import { Games } from '../types/types';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 

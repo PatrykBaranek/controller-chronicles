@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Children } from './types/types';
 
@@ -26,7 +25,7 @@ const theme = {
   },
 };
 
-const Theme = ({ children }: Children) => {
+const Theme = ({ children }: { children: Children }) => {
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 

@@ -1,9 +1,9 @@
-import { getPodcastById } from '#/api/gamesApi';
-import MainInfo from '#/components/PodcastDetails/MainInfo';
-import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
-import Spinner from '#/components/UI/Spinner';
-import { useSpotifyStore } from '#/store/store';
-import { Episode } from '#/types/types';
+import { getPodcastById } from '../api/gamesApi';
+import MainInfo from '../components/PodcastDetails/MainInfo';
+import PodcastEpisodes from '../components/PodcastDetails/PodcastEpisodes';
+import Spinner from '../components/UI/Spinner';
+import { useSpotifyStore } from '../store/store';
+import { Episode } from '../types/types';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';

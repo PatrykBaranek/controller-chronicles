@@ -1,11 +1,11 @@
 import { Pagination, ThemeProvider, createTheme } from '@mui/material';
 
-import { connectToSpotify, getAllPodcasts } from '#/api/gamesApi';
-import GameCard from '#/components/GameCard/GameCard';
-import Spinner from '#/components/UI/Spinner';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import { useSpotifyStore } from '#/store/store';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import { connectToSpotify, getAllPodcasts } from '../api/gamesApi';
+import GameCard from '../components/GameCard/GameCard';
+import Spinner from '../components/UI/Spinner';
+import useWindowWidth from '../hooks/useWindowWidth';
+import { useSpotifyStore } from '../store/store';
+import isDesktopWidth from '../utils/isDesktopWidth';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';

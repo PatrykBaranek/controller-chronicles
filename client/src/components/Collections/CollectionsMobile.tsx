@@ -1,4 +1,4 @@
-import { GameDetailsResponse } from '#/types/types';
+import { GameDetailsResponse } from '../../types/types';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import styled from 'styled-components';
 import CollectionCard from './CollectionCard';
@@ -37,7 +37,7 @@ const CollectionsMobile = ({ games }: { games: GameDetailsResponse[] }) => {
         start: 0,
       }}
     >
-      {games.map((game, idx) => (
+      {games.map((game) => (
         <StyledSplideSlide key={game._id}>
           <CollectionCard img={game.rawgGame.background_image} id={game._id} />
         </StyledSplideSlide>

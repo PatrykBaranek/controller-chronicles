@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import homeIco from '#/assets/homeIco.svg';
-import gamepadIco from '#/assets/gamepadIco.svg';
-import podcastIco from '#/assets/podcastsIco.svg';
-import loginIco from '#/assets/loginIcon.svg';
-import loggedIco from '#/assets/loggedIco.svg';
-import collectionIco from '#/assets/collectionIco.svg';
+import homeIco from '../../assets/homeIco.svg';
+import gamepadIco from '../../assets/gamepadIco.svg';
+import podcastIco from '../../assets/podcastsIco.svg';
+import loginIco from '../../assets/loginIcon.svg';
+import loggedIco from '../../assets/loggedIco.svg';
+import collectionIco from '../../assets/collectionIco.svg';
 import NavbarLink from '../UI/NavbarLink';
 import { useIsAuthenticated } from 'react-auth-kit';
 

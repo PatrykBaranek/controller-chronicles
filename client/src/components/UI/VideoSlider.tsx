@@ -1,6 +1,6 @@
-import { getNewestYoutubeVideos } from '#/api/gamesApi';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import { getNewestYoutubeVideos } from '../../api/gamesApi';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import isDesktopWidth from '../../utils/isDesktopWidth';
 import { Skeleton } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';

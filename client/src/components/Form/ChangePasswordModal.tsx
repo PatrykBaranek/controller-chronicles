@@ -1,8 +1,8 @@
-import { requestPasswordChange } from '#/api/gamesApi';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import { validateEmail } from '#/utils/formValidation';
+import { requestPasswordChange } from '../../api/gamesApi';
+import errorIco from '../../assets/errorIco.svg';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
+import { validateEmail } from '../../utils/formValidation';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';

@@ -1,16 +1,16 @@
-import { getGameById, getReviewsSites, getYoutubeVideosByGameId } from '#/api/gamesApi';
-import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
-import Gameplay from '#/components/GamesDetails/Gameplay';
-import MainInfo from '#/components/GamesDetails/MainInfo';
-import RedditInfo from '#/components/GamesDetails/RedditInfo';
-import SteamReviews from '#/components/GamesDetails/SteamReviews';
-import Spinner from '#/components/UI/Spinner';
+import { getGameById, getReviewsSites, getYoutubeVideosByGameId } from '../api/gamesApi';
+import DetailsSlider from '../components/GamesDetails/DetailsSlider';
+import Gameplay from '../components/GamesDetails/Gameplay';
+import MainInfo from '../components/GamesDetails/MainInfo';
+import RedditInfo from '../components/GamesDetails/RedditInfo';
+import SteamReviews from '../components/GamesDetails/SteamReviews';
+import Spinner from '../components/UI/Spinner';
 import { useQueries } from 'react-query';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import SpotifyContent from './SpotifyContent';
 import { useState } from 'react';
-import ReviewsSitesDrawer from '#/components/GamesDetails/ReviewsSitesDrawer';
+import ReviewsSitesDrawer from '../components/GamesDetails/ReviewsSitesDrawer';
 
 const StyledDetailsPage = styled.div`
   width: 100%;

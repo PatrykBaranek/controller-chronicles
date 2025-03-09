@@ -1,5 +1,5 @@
-import Bestsellers from '#/components/Bestsellers/Bestsellers';
-import VideoSlider from '#/components/UI/VideoSlider';
+import Bestsellers from '../components/Bestsellers/Bestsellers';
+import VideoSlider from '../components/UI/VideoSlider';
 import styled from 'styled-components';
 
 const StyledHome = styled.div`

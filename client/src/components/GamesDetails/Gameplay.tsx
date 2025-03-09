@@ -1,4 +1,4 @@
-import { HLTB } from '#/types/types';
+import { HLTB } from '../../types/types';
 import styled from 'styled-components';
 
 export const StyledGameplayWrapper = styled.div`

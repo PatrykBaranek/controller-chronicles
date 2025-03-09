@@ -1,8 +1,8 @@
-import { resetPassword } from '#/api/gamesApi';
-import crossedEye from '#/assets/crossedEye.svg';
-import eye from '#/assets/eye.svg';
-import successIco from '#/assets/successIco.svg';
-import { validatePassword } from '#/utils/formValidation';
+import { resetPassword } from '../api/gamesApi';
+import crossedEye from '../assets/crossedEye.svg';
+import eye from '../assets/eye.svg';
+import successIco from '../assets/successIco.svg';
+import { validatePassword } from '../utils/formValidation';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSignOut } from 'react-auth-kit';

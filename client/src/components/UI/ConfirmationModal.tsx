@@ -1,4 +1,4 @@
-import { StyledButton } from '#/pages/Login';
+import { StyledButton } from '../../pages/Login';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';

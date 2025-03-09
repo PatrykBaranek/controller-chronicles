@@ -1,5 +1,5 @@
-import Collections from '#/components/Collections/Collections';
-import ProfileComponent from '#/components/Profile/Profile';
+import Collections from '../components/Collections/Collections';
+import ProfileComponent from '../components/Profile/Profile';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`

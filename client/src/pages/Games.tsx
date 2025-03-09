@@ -1,8 +1,8 @@
-import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
-import GameCard from '#/components/GameCard/GameCard';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import useStore from '#/store/store';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import { getGames, getGamesBySearchQuery } from '../api/gamesApi';
+import GameCard from '../components/GameCard/GameCard';
+import useWindowWidth from '../hooks/useWindowWidth';
+import useStore from '../store/store';
+import isDesktopWidth from '../utils/isDesktopWidth';
 import { Pagination, Skeleton, ThemeProvider, createTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';

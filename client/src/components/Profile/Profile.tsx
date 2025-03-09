@@ -1,13 +1,13 @@
-import { deleteUserAccount, getUserProfile, requestPasswordChange } from '#/api/gamesApi';
-import { StyledButton } from '#/pages/Login';
-import getAuthToken from '#/utils/getAuthToken';
+import { deleteUserAccount, getUserProfile, requestPasswordChange } from '../../api/gamesApi';
+import { StyledButton } from '../../pages/Login';
+import getAuthToken from '../../utils/getAuthToken';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
 import ConfirmationModal from '../UI/ConfirmationModal';
 import { toast } from 'sonner';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
+import errorIco from '../../assets/errorIco.svg';
+import successIco from '../../assets/successIco.svg';
 import { useNavigate } from 'react-router-dom';
 import { useSignOut } from 'react-auth-kit';
 

@@ -1,4 +1,4 @@
-import { ReviewsSites } from '#/types/types';
+import { ReviewsSites } from '../../types/types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';

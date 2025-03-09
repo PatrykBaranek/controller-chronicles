@@ -1,4 +1,4 @@
-import { StyledButton } from '#/pages/Login';
+import { StyledButton } from '../../pages/Login';
 import { useSignOut } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';

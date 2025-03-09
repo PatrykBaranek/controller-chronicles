@@ -1,5 +1,5 @@
-import infoIcon from '#/assets/infoIcon.svg';
-import { Episode, Soundtrack } from '#/types/types';
+import infoIcon from '../../assets/infoIcon.svg';
+import { Episode, Soundtrack } from '../../types/types';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';

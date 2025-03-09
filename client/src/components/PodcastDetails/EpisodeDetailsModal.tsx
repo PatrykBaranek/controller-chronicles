@@ -1,4 +1,4 @@
-import { getEpisodeById } from '#/api/gamesApi';
+import { getEpisodeById } from '../../api/gamesApi';
 import { DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import NavMenu from './NavMenu';
-import useStore from '#/store/store';
+import useStore from '../../store/store';
 
 type NavStyleProps = {
   isOpen: boolean | null;

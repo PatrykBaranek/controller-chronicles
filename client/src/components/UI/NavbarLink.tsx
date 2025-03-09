@@ -1,4 +1,4 @@
-import useStore from '#/store/store';
+import useStore from '../../store/store';
 import { useSignOut } from 'react-auth-kit';
 import { NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';

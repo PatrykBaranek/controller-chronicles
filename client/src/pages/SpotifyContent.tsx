@@ -1,8 +1,8 @@
-import { getEpisodesByGameId, getSoundtrackByGameId } from '#/api/gamesApi';
-import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
-import Spinner from '#/components/UI/Spinner';
-import { useSpotifyStore } from '#/store/store';
-import { Episode, Soundtrack } from '#/types/types';
+import { getEpisodesByGameId, getSoundtrackByGameId } from '../api/gamesApi';
+import PodcastEpisodes from '../components/PodcastDetails/PodcastEpisodes';
+import Spinner from '../components/UI/Spinner';
+import { useSpotifyStore } from '../store/store';
+import { Episode, Soundtrack } from '../types/types';
 import { useState } from 'react';
 import { useQueries } from 'react-query';
 import { Link } from 'react-router-dom';

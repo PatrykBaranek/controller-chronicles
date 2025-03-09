@@ -1,7 +1,7 @@
-import heartIcon from '#/assets/heartIcon.svg';
-import starIcon from '#/assets/starIcon.svg';
-import { RawgGameDetails } from '#/types/types';
-import iconFilter from '#/utils/iconFilter';
+import heartIcon from '../../assets/heartIcon.svg';
+import starIcon from '../../assets/starIcon.svg';
+import { RawgGameDetails } from '../../types/types';
+import iconFilter from '../../utils/iconFilter';
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { useIsAuthenticated } from 'react-auth-kit';

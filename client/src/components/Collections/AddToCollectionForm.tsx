@@ -1,9 +1,9 @@
-import { addGameToCollection, getUserCollections } from '#/api/gamesApi';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import { GameDetailsResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { addGameToCollection, getUserCollections } from '../../api/gamesApi';
+import errorIco from '../../assets/errorIco.svg';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
+import { GameDetailsResponse } from '../../types/types';
+import getAuthToken from '../../utils/getAuthToken';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';

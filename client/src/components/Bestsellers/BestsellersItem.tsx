@@ -1,8 +1,8 @@
-import { type Bestseller } from '#/types/types';
+import { type Bestseller } from '../../types/types';
 import styled from 'styled-components';
 import Card from '../UI/Card';
 import { Link } from 'react-router-dom';
-import getGameIdFromUrl from '#/utils/getGameIdFromUrl';
+import getGameIdFromUrl from '../../utils/getGameIdFromUrl';
 
 const StyledBestsellersItem = styled(Link)`
   border-radius: 0.7rem;

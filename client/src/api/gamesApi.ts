@@ -1,4 +1,4 @@
-import { dateFormat } from '#/components/FilterDrawer/FilterDrawer.utils';
+import { dateFormat } from '../components/FilterDrawer/FilterDrawer.utils';
 import {
   AuthResponse,
   BestsellerResponse,
@@ -17,7 +17,7 @@ import {
   UserPodcasts,
   UserProfile,
   YoutubeResponse,
-} from '#/types/types';
+} from '../types/types';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { createRefresh } from 'react-auth-kit';
@@ -25,6 +25,10 @@ import { createRefresh } from 'react-auth-kit';
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000/api',
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  },
 });
 
 export const getBestsellers = async (): Promise<BestsellerResponse> => {
@@ -37,18 +41,19 @@ export const getGames = async (page = 1, pageSize = 8): Promise<GamesResponse> =
 
   return response.data;
 };
-export const getGameById = async (
-  id: number | undefined | string
-): Promise<GameDetailsResponse> => {
+
+export const getGameById = async (id: number | undefined | string): Promise<GameDetailsResponse> => {
   const response = await gamesApi.get(`/games/${id}`);
 
   return response.data;
 };
+
 export const getGamesBySearchQuery = async (query = ''): Promise<GamesResponse> => {
   const response = await gamesApi.get(`/games?page=1&page_size=8&search=${query}`);
 
   return response.data;
 };
+
 export const getFilteredGames = async (query: string): Promise<GamesResponse> => {
   const response = await gamesApi.get(`/games?page=1&page_size=8&${query}`);
 
@@ -65,24 +70,14 @@ export const getNewReleasedGames = async (): Promise<GamesResponse> => {
   const current = dayjs().format(dateFormat);
   const nextMonth = dayjs().add(1, 'month').format(dateFormat);
   const response = await gamesApi.get(`/games?page=1&page_size=5&dates=${current},${nextMonth}`);
+
   return response.data;
 };
 
 export const signUpUser = async ({ email, password }: UserInputs): Promise<SignUpResponse> => {
   try {
-    const response = gamesApi.post(
-      '/auth/signup',
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    const response = gamesApi.post('/auth/signup', { email, password });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -91,19 +86,8 @@ export const signUpUser = async ({ email, password }: UserInputs): Promise<SignU
 
 export const logInUser = async ({ email, password }: UserInputs): Promise<AuthResponse> => {
   try {
-    const response = gamesApi.post(
-      '/auth/login',
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    const response = gamesApi.post('/auth/login', { email, password });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -114,11 +98,10 @@ export const getUserProfile = async (authToken: string): Promise<UserProfile> =>
   try {
     const response = gamesApi.get('/users/profile', {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
     });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -129,11 +112,10 @@ export const deleteUserAccount = async (authToken: string, id: string): Promise<
   try {
     const response = gamesApi.delete(`/users/${id}`, {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
     });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -143,22 +125,20 @@ export const deleteUserAccount = async (authToken: string, id: string): Promise<
 export const requestPasswordChange = async (email: string): Promise<any> => {
   try {
     const response = gamesApi.post(`/auth/request-reset-password?email=${email}`);
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
   }
 };
 
-export const resetPassword = async (
-  token: string,
-  password: string,
-  repeatPassword: string
-): Promise<any> => {
+export const resetPassword = async (token: string, password: string, repeatPassword: string): Promise<any> => {
   try {
     const response = gamesApi.post(`/auth/reset-password?token=${token}`, {
       password,
       repeat_password: repeatPassword,
     });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -169,11 +149,10 @@ export const getUserCollections = async (authToken: string): Promise<CollectionR
   try {
     const response = gamesApi.get('/collections', {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
     });
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -184,8 +163,6 @@ export const deleteCollection = async (id: string, authToken: string) => {
   try {
     const response = gamesApi.delete(`/collections/${id}`, {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
     });
@@ -196,16 +173,10 @@ export const deleteCollection = async (id: string, authToken: string) => {
   }
 };
 
-export const deleteGameFromCollection = async (
-  collectionId: string,
-  gameId: string | number,
-  authToken: string
-) => {
+export const deleteGameFromCollection = async (collectionId: string, gameId: string | number, authToken: string) => {
   try {
     const response = gamesApi.delete(`/collections/${collectionId}/game/${gameId}`, {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         Authorization: `Bearer ${authToken}`,
       },
     });
@@ -216,26 +187,18 @@ export const deleteGameFromCollection = async (
   }
 };
 
-export const addGameToCollection = async (
-  authToken: string,
-  gameId: number,
-  collectionId: string
-) => {
+export const addGameToCollection = async (authToken: string, gameId: number, collectionId: string) => {
   try {
-    const response = gamesApi.post(
-      '/collections/add-game',
-      {
-        gameId,
-        collectionId,
-      },
+    const body = { gameId, collectionId };
+
+    const response = gamesApi.post('/collections/add-game', body,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${authToken}`,
         },
       }
     );
+
     return (await response).data;
   } catch (error: any) {
     throw error.response?.data;
@@ -262,8 +225,6 @@ export const addCollection = async ({
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${authToken}`,
         },
       }
@@ -324,10 +285,7 @@ export const getNewestYoutubeVideos = async (
   }
 };
 
-export const getYoutubeVideosByGameId = async (
-  videoType: 'review' | 'trailer',
-  gameId: string
-): Promise<YoutubeResponse> => {
+export const getYoutubeVideosByGameId = async (videoType: 'review' | 'trailer', gameId: string): Promise<YoutubeResponse> => {
   try {
     const response = await gamesApi.get(`/youtube?gameId=${gameId}&videoType=${videoType}`);
 
@@ -337,17 +295,13 @@ export const getYoutubeVideosByGameId = async (
   }
 };
 
-export const getSteamReviews = async (
-  id: string | number | undefined
-): Promise<SteamReviewsResponse> => {
+export const getSteamReviews = async (id: string | number | undefined): Promise<SteamReviewsResponse> => {
   const response = await gamesApi.get(`/steam/${id}/reviews`);
 
   return response.data;
 };
 
-export const getSteamPlayersCount = async (
-  id: string | number | undefined
-): Promise<PlayersCountResponse> => {
+export const getSteamPlayersCount = async (id: string | number | undefined): Promise<PlayersCountResponse> => {
   const response = await gamesApi.get(`/steam/${id}/players-count`);
 
   return response.data;

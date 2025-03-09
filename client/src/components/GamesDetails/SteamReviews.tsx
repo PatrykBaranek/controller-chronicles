@@ -1,4 +1,4 @@
-import { getSteamPlayersCount, getSteamReviews } from '#/api/gamesApi';
+import { getSteamPlayersCount, getSteamReviews } from '../../api/gamesApi';
 import { Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
 import { useQuery } from 'react-query';

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { getGameById } from '#/api/gamesApi';
-import iconFilter from '#/utils/iconFilter';
+import { getGameById } from '../../api/gamesApi';
+import iconFilter from '../../utils/iconFilter';
 import dayjs from 'dayjs';
 type CarouseItemProps = {
   id: number;

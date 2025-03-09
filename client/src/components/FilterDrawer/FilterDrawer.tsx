@@ -1,4 +1,4 @@
-import useStore from '#/store/store';
+import useStore from '../../store/store';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { platforms, sortingOptions, stores } from './Filters.mock';
@@ -8,7 +8,7 @@ import RadioGroup from './components/RadioGroup';
 import { type Dayjs } from 'dayjs';
 import { formatDate, formatParams } from './FilterDrawer.utils';
 import { useQuery } from 'react-query';
-import { getFilteredGames } from '#/api/gamesApi';
+import { getFilteredGames } from '../../api/gamesApi';
 import { useEffect, useState } from 'react';
 
 type ButtonProps = {

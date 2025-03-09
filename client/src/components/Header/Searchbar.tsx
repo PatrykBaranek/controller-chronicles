@@ -1,6 +1,8 @@
-import errorIco from '#/assets/errorIco.svg';
-import searchIco from '#/assets/searchIco.svg';
-import useWindowWidth from '#/hooks/useWindowWidth';
+'use client';
+
+import errorIco from '../../assets/errorIco.svg';
+import searchIco from '../../assets/searchIco.svg';
+import useWindowWidth from '../../hooks/useWindowWidth';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';

@@ -1,6 +1,6 @@
-import useWindowWidth from '#/hooks/useWindowWidth';
-import { Children } from '#/types/types';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import { Children } from '../../types/types';
+import isDesktopWidth from '../../utils/isDesktopWidth';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 

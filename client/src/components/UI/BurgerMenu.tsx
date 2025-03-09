@@ -1,5 +1,4 @@
-import useStore from '#/store/store';
-import { Dispatch, SetStateAction } from 'react';
+import useStore from '../../store/store';
 import styled from 'styled-components';
 
 const StyledBurgerMenu = styled.div<{ isOpen: boolean }>`

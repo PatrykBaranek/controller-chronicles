@@ -1,5 +1,5 @@
-import useWindowWidth from '#/hooks/useWindowWidth';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import useWindowWidth from '../../hooks/useWindowWidth';
+import isDesktopWidth from '../../utils/isDesktopWidth';
 import { Skeleton } from '@mui/material';
 import styled from 'styled-components';
 

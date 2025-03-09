@@ -1,4 +1,4 @@
-import { Children } from '#/types/types';
+import { Children } from '../../types/types';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -48,7 +48,7 @@ const StyledCard = styled.div`
   }
 `;
 
-const Card = ({ children }: Children) => {
+const Card = ({ children }: { children: Children }) => {
   return (
     <Wrapper>
       <StyledCard>{children}</StyledCard>
