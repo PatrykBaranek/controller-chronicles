@@ -10,9 +10,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import Autocomplete, { Option } from '../FilterDrawer/components/Autocomplete';
 
 type Props = {
@@ -134,7 +134,7 @@ const CollectionEditModal = ({ handleClose, isOpen, games, collectionId, refetch
   };
 
   useEffect(() => {
-    if (deleteQueue.length > 0 && !removeGamesFromCollection.isLoading) {
+    if (deleteQueue.length > 0 && !removeGamesFromCollection.isPending) {
       removeGamesFromCollection.mutate(deleteQueue[0]);
     }
   }, [deleteQueue]);

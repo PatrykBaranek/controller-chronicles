@@ -1,10 +1,10 @@
 import useWindowWidth from '#/hooks/useWindowWidth';
 import leaveIcon from '#/assets/leaveIcon.svg';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import CollectionsDesktop from './CollectionsDesktop';
 import CollectionsMobile from './CollectionsMobile';
-import styled from 'styled-components';
-import { CollectionResponse } from '#/types/types';
+import { styled } from 'styled-components';
+import type { CollectionResponse } from '#/types/types';
 import CollectionsButton from './CollectionsButton';
 
 const StyledCardContainer = styled.div`
@@ -57,7 +57,9 @@ const StyledButtonContainer = styled.div`
       rgba(255, 255, 255, 0.2) 30%,
       rgba(255, 255, 255, 0) 70%
     );
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;

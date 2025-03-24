@@ -1,7 +1,6 @@
 import { StyledButton } from '#/pages/Login';
-import { useSignOut } from 'react-auth-kit';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useNavigate } from 'react-router';
+import { styled } from 'styled-components';
 
 const StyledAuthButton = styled(StyledButton)`
   width: unset;
@@ -17,10 +16,9 @@ const StyledAuthButton = styled(StyledButton)`
 
 const AuthButton = ({ isAuth }: { isAuth: boolean }) => {
   const navigate = useNavigate();
-  const signOut = useSignOut();
   const handleClick = () => {
     if (isAuth) {
-      signOut();
+      // signOut(); //TODO: implement this
     } else {
       navigate('/login');
     }

@@ -31,10 +31,10 @@ export class GamesUpdateService {
 
   async updateGame(game: Game): Promise<Game> {
     const updatedRawg = await this.updateRawgGame(game);
-    const updatedHltb = await this.updateHowLongToBeat(game);
+    // const updatedHltb = await this.updateHowLongToBeat(game);
 
     game.rawgGame = updatedRawg;
-    game.howLongToBeat = updatedHltb;
+    // game.howLongToBeat = updatedHltb;
 
     await this.gamesRepository.updateGame(game._id, game);
 

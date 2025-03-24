@@ -1,8 +1,8 @@
-import { type ReactNode } from 'react';
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { ThemeProvider } from 'styled-components';
-import { Children } from './types/types';
+import type { Children } from './types/types';
 
-const theme = {
+const styledComponentsTheme = {
   colors: {
     white: '#ffffff',
     primary: '#ebebf5bf',
@@ -26,8 +26,60 @@ const theme = {
   },
 };
 
+const theme = createTheme({
+  components: {
+    MuiPagination: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'center',
+          marginBlock: '1rem',
+        },
+        outlined: {
+          button: {
+            fontFamily: 'Inter',
+            fontSize: '.8rem',
+            background: 'transparent',
+            color: 'white',
+            borderColor: 'rgba(235, 235, 245, 0.2)',
+            '&:hover': {
+              background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
+            },
+          },
+        },
+        ul: {
+          gap: '.2rem',
+        },
+      },
+    },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+
+          '&.Mui-selected': {
+            background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
+          },
+        },
+
+        sizeSmall: {
+          borderRadius: '14px',
+          margin: '0 2px',
+          padding: '0 5px',
+          minWidth: '28px',
+          height: '28px',
+        },
+      },
+    },
+  },
+});
+
 const Theme = ({ children }: Children) => {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider theme={styledComponentsTheme}>
+      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
+    </ThemeProvider>
+  );
 };
 
 export default Theme;

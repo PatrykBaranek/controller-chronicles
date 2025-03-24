@@ -1,131 +1,16 @@
-import { addPodcastToCollection, getUserPodcasts } from '#/api/gamesApi';
+import { addPodcastToCollection } from '#/api/gamesApi';
 import errorIco from '#/assets/errorIco.svg';
 import heartIcon from '#/assets/heartIcon.svg';
 import successIco from '#/assets/successIco.svg';
-import { Podcast, UserPodcasts } from '#/types/types';
+import type { Podcast } from '#/types/types';
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { Link } from 'react-router';
 import { toast } from 'sonner';
-import styled from 'styled-components';
 import ConfirmationModal from '../UI/ConfirmationModal';
 
-const StyledTitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  text-align: left;
-  width: 100%;
-  @media screen and (min-width: 900px) {
-    margin-bottom: 0;
-    margin-left: 0;
-    gap: 1.5rem;
-  }
-  .title {
-    font-size: clamp(1.5rem, 5vw, 2.8rem);
-  }
-  .publisher {
-    font-size: clamp(0.9rem, 2vw, 1.2rem);
-    color: ${({ theme }) => theme.colors.primary};
-  }
-  .tagWrapper {
-    display: flex;
-    gap: 1rem;
-  }
-`;
-
-const StyledLanguagesWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-
-  p {
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const StyledTag = styled.span`
-  width: fit-content;
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
-  font-size: 0.8rem;
-  padding: 0.2rem 0.3rem;
-  border: 1px solid ${({ theme }) => theme.colors.secondary};
-  border-radius: 10px;
-  text-transform: capitalize;
-  @media screen and (min-width: 900px) {
-    padding: 0.4rem 0.5rem;
-    border-radius: 15px;
-  }
-
-  &.podcastType {
-    color: ${({ theme }) => theme.colors.white};
-    border: 1px solid ${({ theme }) => theme.colors.white};
-  }
-`;
-
-const StyledButtonsWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  @media screen and (min-width: 900px) {
-    justify-content: start;
-    gap: 5rem;
-  }
-  .link {
-    font-size: clamp(0.8rem, 3vw, 1rem);
-    color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.inputGradient};
-    padding: 1rem 2rem;
-    border-radius: 100vw;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-      filter: contrast(5);
-    }
-  }
-  .addToCollection {
-    background: ${({ theme }) => theme.colors.inputGradient};
-    border: none;
-    padding: 1.5rem;
-    border-radius: 100vw;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-      filter: contrast(5);
-    }
-    &:disabled {
-      pointer-events: none;
-      background: ${({ theme }) => theme.colors.secondary};
-    }
-    img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      transition-delay: 0.2;
-    }
-  }
-`;
-
-const StyledDescription = styled.div`
-  width: 100%;
-  word-wrap: break-word;
-  h2 {
-    font-size: clamp(1.5rem, 5vw, 2.8rem);
-    margin-bottom: 0.5rem;
-  }
-  p {
-    color: ${({ theme }) => theme.colors.primary};
-    line-height: 1.1;
-    font-weight: ${({ theme }) => theme.fontWeights.light};
-  }
-`;
-
-const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
+function MainInfo({ podcast }: { podcast?: Podcast }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPodcastInCollection, setIsPodcastInCollection] = useState(false);
 
@@ -139,7 +24,6 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
         icon: <img src={successIco} />,
         position: 'top-right',
       });
-      refetch();
     },
     onError: (error: any) => {
       toast('Error', {
@@ -152,34 +36,43 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
     },
   });
 
-  const { data, refetch } = useQuery(['spotify/podcasts/list'], () => getUserPodcasts(), {
-    onSuccess: (data: UserPodcasts) =>
-      setIsPodcastInCollection(data.items.some(({ show }) => show.id === podcast?.id)),
-  });
-
   return (
     <>
-      <StyledTitleWrapper>
-        <h1 className='title'>{podcast?.name}</h1>
-        <div className='tagWrapper'>
-          <StyledTag className='podcastType'>{podcast?.media_type}</StyledTag>
-          <StyledTag className='podcastType'>{podcast?.type}</StyledTag>
+      <div className='mt-4 mb-8 flex w-full flex-col gap-4 text-left md:mb-0 md:ml-0 md:gap-6'>
+        <h1 className='text-[clamp(1.5rem,5vw,2.8rem)]'>{podcast?.name}</h1>
+        <div className='flex gap-4'>
+          <span className='w-fit rounded-[10px] border border-white px-[0.3rem] py-1 text-sm font-medium text-white capitalize md:rounded-[15px] md:px-2 md:py-2'>
+            {podcast?.media_type}
+          </span>
+          <span className='w-fit rounded-[10px] border border-white px-[0.3rem] py-1 text-sm font-medium text-white capitalize md:rounded-[15px] md:px-2 md:py-2'>
+            {podcast?.type}
+          </span>
         </div>
-        <p className='publisher'>{podcast?.publisher}</p>
+        <p className='text-[clamp(0.9rem,2vw,1.2rem)] text-[#ebebf5bf]'>{podcast?.publisher}</p>
 
-        <StyledLanguagesWrapper>
-          <p>Languages</p>
+        <div className='flex items-center gap-4'>
+          <p className='text-[#ebebf5bf]'>Languages</p>
           {podcast?.languages.slice(0, 4).map((language) => (
-            <StyledTag key={language}>{language}</StyledTag>
+            <span
+              key={language}
+              className='w-fit rounded-[10px] border border-[#ffffff99] px-[0.3rem] py-1 text-sm font-medium text-[#ebebf5bf] capitalize md:rounded-[15px] md:px-2 md:py-2'
+            >
+              {language}
+            </span>
           ))}
-        </StyledLanguagesWrapper>
-        <StyledDescription>
-          <h2>Description</h2>
-          <p>{podcast?.description}</p>
-        </StyledDescription>
+        </div>
 
-        <StyledButtonsWrapper>
-          <Link className='link' target='_blank' to={podcast?.external_urls?.spotify || ''}>
+        <div className='w-full break-words'>
+          <h2 className='mb-2 text-[clamp(1.5rem,5vw,2.8rem)]'>Description</h2>
+          <p className='leading-tight font-light text-[#ebebf5bf]'>{podcast?.description}</p>
+        </div>
+
+        <div className='flex w-full justify-between md:justify-start md:gap-20'>
+          <Link
+            className='rounded-full bg-gradient-to-r from-[rgba(15,85,232,0.1)] to-[rgba(157,223,243,0.1)] px-8 py-4 text-[clamp(0.8rem,3vw,1rem)] text-[#ebebf5bf] transition-all duration-200 hover:contrast-[5]'
+            target='_blank'
+            to={podcast?.external_urls?.spotify || ''}
+          >
             Check on Spotify
           </Link>
           <Tooltip
@@ -189,15 +82,19 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
             <span>
               <button
                 disabled={isPodcastInCollection}
-                className='addToCollection'
+                className='relative cursor-pointer rounded-full border-none bg-gradient-to-r from-[rgba(15,85,232,0.1)] to-[rgba(157,223,243,0.1)] p-6 transition-all duration-200 hover:contrast-[5] disabled:pointer-events-none disabled:bg-[#ffffff99]'
                 onClick={() => setIsDialogOpen(true)}
               >
-                <img src={heartIcon} alt='add to collection' />
+                <img
+                  src={heartIcon}
+                  alt='add to collection'
+                  className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform'
+                />
               </button>
             </span>
           </Tooltip>
-        </StyledButtonsWrapper>
-      </StyledTitleWrapper>
+        </div>
+      </div>
       {isDialogOpen && (
         <ConfirmationModal
           heading={`Add ${podcast?.name} to collection?`}
@@ -210,6 +107,6 @@ const MainInfo = ({ podcast }: { podcast?: Podcast }) => {
       )}
     </>
   );
-};
+}
 
 export default MainInfo;

@@ -1,8 +1,8 @@
 import leaveIcon from '#/assets/leaveIcon.svg';
 import redditIcon from '#/assets/redditIcon.svg';
-import { RawgGameDetails } from '#/types/types';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import type { RawgGameDetails } from '#/types/types';
+import { Link } from 'react-router';
+import { styled } from 'styled-components';
 
 const StyledTitleWrapper = styled.div`
   display: flex;
@@ -33,7 +33,9 @@ const StyledDescription = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const RedditInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => {
+type RedditInfoProps = { gameInfo: RawgGameDetails | undefined };
+
+function RedditInfo({ gameInfo }: RedditInfoProps) {
   const fallbackUrlName = gameInfo?.reddit_url.split('/r/').at(-1);
 
   return (
@@ -57,6 +59,6 @@ const RedditInfo = ({ gameInfo }: { gameInfo: RawgGameDetails | undefined }) => 
       )}
     </div>
   );
-};
+}
 
 export default RedditInfo;

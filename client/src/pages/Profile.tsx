@@ -1,33 +1,13 @@
 import Collections from '#/components/Collections/Collections';
 import ProfileComponent from '#/components/Profile/Profile';
-import styled from 'styled-components';
 
-const StyledContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 1rem;
-  gap: 5rem;
-  margin-top: 2rem;
-  @media screen and (min-width: 900px) {
-    align-items: center;
-    gap: 3.5rem;
-    padding-inline: 2rem;
-  }
-  @media screen and (min-width: 1200px) {
-    flex-direction: row;
-    align-items: unset;
-  }
-`;
-
-const Profile = () => {
+function Profile() {
   return (
-    <StyledContainer>
+    <div className='mt-[2rem] flex w-full flex-col justify-center gap-[5rem] pb-[1rem] lg:items-center lg:gap-[3.5rem] lg:px-[2rem] xl:flex-row'>
       <ProfileComponent />
       <Collections />
-    </StyledContainer>
+    </div>
   );
-};
+}
 
 export default Profile;

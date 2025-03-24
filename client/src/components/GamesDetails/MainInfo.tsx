@@ -1,13 +1,16 @@
+import React, { useState } from 'react';
+import type { RawgGameDetails } from '#/types/types';
+import { Tooltip } from '@mui/material';
+import { Link } from 'react-router';
+
+import AddToCollectionForm from '../Collections/AddToCollectionForm';
+
 import heartIcon from '#/assets/heartIcon.svg';
 import starIcon from '#/assets/starIcon.svg';
-import { RawgGameDetails } from '#/types/types';
+
 import iconFilter from '#/utils/iconFilter';
-import { Tooltip } from '@mui/material';
-import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import AddToCollectionForm from '../Collections/AddToCollectionForm';
+import { styled } from 'styled-components';
+
 type StarProps = {
   rating: number;
   index: number;
@@ -154,27 +157,24 @@ const StyledButtonsWrapper = styled.div`
   }
 `;
 
-const MainInfo = ({
-  gameInfo,
-  gameId,
-  setIsDrawerOpen,
-  hasReviewSites,
-}: {
+type MainInfoProps = {
   gameInfo: RawgGameDetails | undefined;
   gameId?: string | number;
   setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  hasReviewSites: boolean;
-}) => {
+};
+
+function MainInfo({ gameInfo, gameId, setIsDrawerOpen }: MainInfoProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
-  const auth = useIsAuthenticated();
-  const isLogged = auth();
+  const isLogged = false; // TODO: fix this
 
   return (
     <StyledTitleWrapper>
       <h1 className='title'>{gameInfo?.name}</h1>
-      <p className='publisher'>{gameInfo?.publishers.map((item) => item.name)}</p>
+      <p className='publisher'>
+        {gameInfo?.publishers?.map((item) => <p key={item.id}>{item.name}</p>)}
+      </p>
       <StyledStarWrapper>
         <p className='rating'>{rating}</p>
         {Array.from({ length: 5 }).map((_, idx) => (
@@ -189,7 +189,7 @@ const MainInfo = ({
         <p className='rating'>{gameInfo?.ratings_count} ratings</p>
       </StyledStarWrapper>
       <StyledGenresWrapper>
-        {gameInfo?.genres.slice(0, 4).map((genre) => (
+        {gameInfo?.genres?.slice(0, 4).map((genre) => (
           <span key={genre.id} className='genre'>
             {genre?.name}
           </span>
@@ -198,7 +198,7 @@ const MainInfo = ({
       <StyledStoresWrapper>
         <h4>Available in</h4>
         <StyledIconsWrapper>
-          {gameInfo?.stores.map((store) => (
+          {gameInfo?.stores?.map((store) => (
             <img key={store.id} src={iconFilter(store.store.slug)} alt={store.store.name} />
           ))}
         </StyledIconsWrapper>
@@ -224,11 +224,9 @@ const MainInfo = ({
             </span>
           </Tooltip>
         </div>
-        {hasReviewSites && (
-          <button className='link' onClick={() => setIsDrawerOpen((prev) => !prev)}>
-            Check sites with reviews
-          </button>
-        )}
+        <button className='link' onClick={() => setIsDrawerOpen((prev) => !prev)}>
+          Check sites with reviews
+        </button>
       </StyledButtonsWrapper>
       {isDialogOpen && (
         <AddToCollectionForm
@@ -239,6 +237,6 @@ const MainInfo = ({
       )}
     </StyledTitleWrapper>
   );
-};
+}
 
 export default MainInfo;

@@ -1,14 +1,13 @@
 import { requestPasswordChange } from '#/api/gamesApi';
 import errorIco from '#/assets/errorIco.svg';
 import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
 import { validateEmail } from '#/utils/formValidation';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 type InputValue = {
   email: string;

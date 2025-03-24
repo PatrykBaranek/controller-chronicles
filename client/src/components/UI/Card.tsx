@@ -1,5 +1,5 @@
-import { Children } from '#/types/types';
-import styled from 'styled-components';
+import type { Children } from '#/types/types';
+import { styled } from 'styled-components';
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -21,37 +21,21 @@ const Wrapper = styled.div`
       rgba(255, 255, 255, 0.6) 30%,
       rgba(255, 255, 255, 0) 100%
     );
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
-  }
-`;
-const StyledCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  a {
-    display: inherit;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-  }
-
-  a:hover h1 {
-    transition: all 0.3s ease-in-out;
-    background-image: ${({ theme }) => theme.colors.secondaryGradient};
-    color: transparent;
-    -webkit-background-clip: text;
-    background-clip: text;
   }
 `;
 
 const Card = ({ children }: Children) => {
   return (
     <Wrapper>
-      <StyledCard>{children}</StyledCard>
+      <div className='flex h-full w-full flex-col [&>a]:flex [&>a]:h-full [&>a]:w-full [&>a]:flex-col [&>a:hover_h1]:transition-all [&>a:hover_h1]:duration-300 [&>a:hover_h1]:ease-in-out'>
+        {children}
+      </div>
     </Wrapper>
   );
 };

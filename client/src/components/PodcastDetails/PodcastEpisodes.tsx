@@ -1,77 +1,14 @@
 import infoIcon from '#/assets/infoIcon.svg';
-import { Episode, Soundtrack } from '#/types/types';
+import type { Episode, Soundtrack } from '#/types/types';
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import Spinner from '../UI/Spinner';
+import { Link } from 'react-router';
 import EpisodeDetailsModal from './EpisodeDetailsModal';
 
 type Props = { data: Episode[] | Soundtrack[]; url?: string; heading: string };
 
-type StyledProps = {
-  areIframesLoaded: boolean;
-};
-
-const StyledContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem;
-  position: relative;
-  min-height: 80svh;
-
-  @media screen and (min-width: 900px) {
-    margin-block: 2rem;
-  }
-  @media screen and (min-width: 1050px) {
-    gap: 2rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  @media screen and (min-width: 1380px) {
-    gap: 3rem;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  h1,
-  .link {
-    grid-column: 1 / -1;
-  }
-
-  .link {
-    font-size: clamp(0.8rem, 3vw, 1rem);
-    color: ${({ theme }) => theme.colors.primary};
-    background: ${({ theme }) => theme.colors.inputGradient};
-    padding: 1rem 2rem;
-    border-radius: 100vw;
-    transition: all 0.2s ease-in-out;
-    text-align: center;
-    width: fit-content;
-    margin: 0 auto 1rem;
-    &:hover {
-      filter: contrast(5);
-    }
-  }
-`;
-
-const StyledIframeWrapper = styled.div<StyledProps>`
-  position: relative;
-  button {
-    display: ${({ areIframesLoaded }) => (areIframesLoaded ? 'none' : 'block')};
-    position: absolute;
-    top: 2%;
-    left: 3%;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    img {
-      width: 2rem;
-      aspect-ratio: 1;
-    }
-  }
-`;
-
 const PodcastEpisodes = ({ data, url, heading }: Props) => {
-  const [iframeIndex, setIframeIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [iframeIndex, setIframeIndex] = useState(0);
   const [episodeId, setEpisodeId] = useState('');
 
   const formatSpotifyLink = (link: string) => {
@@ -117,23 +54,22 @@ const PodcastEpisodes = ({ data, url, heading }: Props) => {
   };
 
   return (
-    <StyledContainer>
-      <h1>{heading}</h1>
-      {iframeIndex < formatedEpisodes.length && <Spinner />}
+    <div className='relative grid min-h-[80svh] grid-cols-1 gap-4 md:my-8 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 xl:gap-12'>
+      <h1 className='col-span-full'>{heading}</h1>
       {formatedEpisodes?.map((episode) => (
-        <StyledIframeWrapper
-          areIframesLoaded={iframeIndex < formatedEpisodes.length}
-          key={episode?.id}
-        >
+        <div className='relative' key={episode?.id}>
           {episode?.type === 'episode' && (
-            <button onClick={() => handleOpenModal(episode?.id)}>
-              <img src={infoIcon} alt='informations icon' />
+            <button
+              onClick={() => handleOpenModal(episode?.id)}
+              className={`${iframeIndex < formatedEpisodes.length ? 'hidden' : 'block'} absolute top-[2%] left-[3%] cursor-pointer border-none bg-transparent`}
+            >
+              <img src={infoIcon} alt='informations icon' className='aspect-square w-8' />
             </button>
           )}
           <iframe
             src={episode?.external_urls.spotify}
             width='100%'
-            height='352'
+            height='360'
             allow='clipboard-write; encrypted-media; fullscreen; picture-in-picture'
             style={{
               border: 'none',
@@ -141,17 +77,21 @@ const PodcastEpisodes = ({ data, url, heading }: Props) => {
             }}
             onLoad={() => setIframeIndex((prev) => prev + 1)}
           />
-        </StyledIframeWrapper>
+        </div>
       ))}
       {iframeIndex === formatedEpisodes.length && url && (
-        <Link className='link' target='_blank' to={url}>
+        <Link
+          className='col-span-full mx-auto mb-4 w-fit rounded-full bg-gradient-to-r from-[rgba(15,85,232,0.1)] to-[rgba(157,223,243,0.1)] px-8 py-4 text-center text-[clamp(0.8rem,3vw,1rem)] text-[#ebebf5bf] transition-all duration-200 hover:contrast-[5]'
+          target='_blank'
+          to={url}
+        >
           See more episodes
         </Link>
       )}
       {isModalOpen && (
         <EpisodeDetailsModal id={episodeId} isOpen={isModalOpen} handleClose={handleCloseModal} />
       )}
-    </StyledContainer>
+    </div>
   );
 };
 

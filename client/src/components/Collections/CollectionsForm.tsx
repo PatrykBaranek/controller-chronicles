@@ -8,9 +8,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import errorIco from '#/assets/errorIco.svg';
 
 type Props = {

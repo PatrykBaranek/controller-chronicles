@@ -5,15 +5,14 @@ import eye from '#/assets/eye.svg';
 import loggedInIco from '#/assets/loggedIco.svg';
 import ChangePasswordModal from '#/components/Form/ChangePasswordModal';
 import Form from '#/components/Form/Form';
-import { AuthError, UserInputs } from '#/types/types';
+import type { AuthError, UserInputs } from '#/types/types';
 import { validateEmail } from '#/utils/formValidation';
 import { useEffect, useState } from 'react';
-import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 export const StyledAuth = styled.div`
   width: 100%;
@@ -150,12 +149,13 @@ const Login = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [error, setError] = useState<AuthError>();
-  const signIn = useSignIn();
-  const isAuthenticated = useIsAuthenticated();
+  // const signIn = useSignIn();
+  // const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = false;
   const navigate = useNavigate();
 
   useEffect(() => {
-    isAuthenticated() && navigate('/');
+    isAuthenticated && navigate('/'); // isAuthenticated FIXME: uncomment when isAuthenticated is implemented
   }, []);
 
   const {
@@ -173,14 +173,15 @@ const Login = () => {
     logIn.mutate(data, {
       onSuccess: (data) => {
         if (
-          signIn({
-            token: data.access_token,
-            expiresIn: data.access_token_expires_in,
-            tokenType: 'string',
-            authState: {},
-            refreshToken: data.refresh_token,
-            refreshTokenExpireIn: data.refresh_token_expires_in,
-          })
+          // signIn({
+          //   token: data.access_token,
+          //   expiresIn: data.access_token_expires_in,
+          //   tokenType: 'string',
+          //   authState: {},
+          //   refreshToken: data.refresh_token,
+          //   refreshTokenExpireIn: data.refresh_token_expires_in,
+          // })
+          false
         ) {
           navigate('/');
           toast('Logged In', {
@@ -209,7 +210,7 @@ const Login = () => {
   };
 
   return (
-    <StyledAuth>
+    <div className='flex w-full items-center justify-center'>
       <StyledAuthWrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <StyledEmailContainer>
@@ -262,7 +263,7 @@ const Login = () => {
           }}
         />
       )}
-    </StyledAuth>
+    </div>
   );
 };
 

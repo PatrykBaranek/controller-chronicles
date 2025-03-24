@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+@import 'tailwindcss';
+
+@theme {
+  --tw-color-primary: #221475;
+  --tw-color-secondary: #221738;
+  --tw-color-accent: rgba(60, 112, 85, 0.6);
+  --tw-color-disabled: #ebebf5bf;
+}
+
+@layer base {
+  body {
+    @apply min-h-screen scroll-smooth font-['Inter',sans-serif] leading-none text-white;
+    background: linear-gradient(234.73deg, rgba(60, 112, 85, 0.6) 12.85%, #221738 61.83%), #221475;
+    scrollbar-color: rgba(255, 255, 255, 0.2)
+      linear-gradient(180deg, rgba(60, 112, 85, 0.6) 12.85%, rgba(60, 112, 85, 0.35) 61.83%);
+  }
+  body::-webkit-scrollbar {
+    @apply w-2;
+  }
+  body::-webkit-scrollbar-track {
+    background: linear-gradient(
+      180deg,
+      rgba(60, 112, 85, 0.6) 12.85%,
+      rgba(60, 112, 85, 0.35) 61.83%
+    );
+  }
+  body::-webkit-scrollbar-thumb {
+    @apply rounded-[20px] bg-white/20;
+  }
+  ol,
+  ul {
+    @apply list-none;
+  }
+  a {
+    @apply no-underline;
+  }
+}
+
+@layer utilities {
+  .bg-gradient {
+    background:
+      linear-gradient(234.73deg, var(--tw-color-accent) 12.85%, var(--tw-color-secondary) 61.83%),
+      var(--tw-color-primary);
+  }
+}

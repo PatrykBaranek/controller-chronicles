@@ -1,5 +1,5 @@
 import { HLTB } from '#/types/types';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 export const StyledGameplayWrapper = styled.div`
   display: grid;
@@ -53,7 +53,8 @@ export const StyledGameplayWrapper = styled.div`
     }
   }
 `;
-const Gameplay = ({ hltbData }: { hltbData: HLTB | undefined }) => {
+
+function Gameplay({ hltbData }: { hltbData: HLTB | undefined }) {
   return (
     <StyledGameplayWrapper>
       <h2>Gameplay</h2>
@@ -71,6 +72,6 @@ const Gameplay = ({ hltbData }: { hltbData: HLTB | undefined }) => {
       </div>
     </StyledGameplayWrapper>
   );
-};
+}
 
 export default Gameplay;

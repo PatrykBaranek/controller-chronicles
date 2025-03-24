@@ -2,14 +2,13 @@ import { deleteUserAccount, getUserProfile, requestPasswordChange } from '#/api/
 import { StyledButton } from '#/pages/Login';
 import getAuthToken from '#/utils/getAuthToken';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import styled from 'styled-components';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { styled } from 'styled-components';
 import ConfirmationModal from '../UI/ConfirmationModal';
 import { toast } from 'sonner';
 import errorIco from '#/assets/errorIco.svg';
 import successIco from '#/assets/successIco.svg';
-import { useNavigate } from 'react-router-dom';
-import { useSignOut } from 'react-auth-kit';
+import { useNavigate } from 'react-router';
 
 type ButtonProps = {
   isDelete: boolean;
@@ -41,7 +40,9 @@ export const StyledContainer = styled.div`
         rgba(255, 255, 255, 0.2) 30%,
         rgba(255, 255, 255, 0) 100%
       );
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
       mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
@@ -105,10 +106,15 @@ const Profile = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const authToken = getAuthToken();
   const navigate = useNavigate();
-  const signOut = useSignOut();
+  // const signOut = useSignOut(); TODO: implement signOut
 
-  const { data } = useQuery(['user'], () => getUserProfile(authToken), {
-    onSuccess: (data) => setUserName(data.email.split('@')[0]),
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const user = await getUserProfile(authToken);
+      setUserName(user.email.split('@')[0]);
+      return user;
+    },
   });
 
   const changePassword = useMutation({
@@ -136,7 +142,7 @@ const Profile = () => {
   const removeUser = useMutation({
     mutationFn: () => deleteUserAccount(authToken, data?.id!),
     onSuccess: () => {
-      signOut();
+      // signOut();
       navigate('/');
       toast('Success', {
         className: 'default',

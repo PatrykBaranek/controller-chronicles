@@ -1,6 +1,6 @@
 import { Autocomplete as AutocompleteComponent, TextField } from '@mui/material';
 import { type Control, Controller } from 'react-hook-form';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 export type Option = {
   id: string | number;

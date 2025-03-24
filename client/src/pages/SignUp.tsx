@@ -4,26 +4,16 @@ import errorIco from '#/assets/errorIco.svg';
 import eye from '#/assets/eye.svg';
 import successIco from '#/assets/successIco.svg';
 import Form from '#/components/Form/Form';
-import { AuthError, UserInputs } from '#/types/types';
+import type { AuthError, UserInputs } from '#/types/types';
 import { validateEmail, validatePassword } from '#/utils/formValidation';
 import { useEffect, useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import {
-  StyledAuth,
-  StyledAuthWrapper,
-  StyledButton,
-  StyledEmailContainer,
-  StyledInput,
-  StyledPasswordContainer,
-  StyledTextContainer,
-} from './Login';
 
 const SignUp = () => {
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = false; // replace with your auth logic
   const navigate = useNavigate();
 
   const signUp = useMutation({
@@ -41,7 +31,7 @@ const SignUp = () => {
   } = useForm<UserInputs>();
 
   useEffect(() => {
-    isAuthenticated() && navigate('/');
+    isAuthenticated && navigate('/');
   }, []);
 
   const onSubmit: SubmitHandler<UserInputs> = async (data) => {
@@ -76,11 +66,12 @@ const SignUp = () => {
   };
 
   return (
-    <StyledAuth>
-      <StyledAuthWrapper>
+    <div className='flex w-full items-center justify-center md:items-start'>
+      <div className='mt-16 flex w-[65%] flex-col md:w-[40vw] md:self-start lg:w-[30vw]'>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <StyledEmailContainer>
-            <StyledInput
+          <div className='relative w-full'>
+            <input
+              className='font-inherit w-full rounded-full border border-white/20 bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-[0.6rem] text-[#ebebf5bf] focus:border-white/40 focus:outline-none'
               type='text'
               defaultValue=''
               aria-invalid={errors.email || error ? true : false}
@@ -89,10 +80,17 @@ const SignUp = () => {
                 validate: (v) => validateEmail(v),
               })}
             />
-            <p role='alert'>{errors.email?.message}</p>
-          </StyledEmailContainer>
-          <StyledPasswordContainer>
-            <StyledInput
+            <p
+              className='absolute -bottom-[55%] left-[5%] z-2 text-[0.8rem] text-[#ED695E]'
+              role='alert'
+            >
+              {errors.email?.message}
+            </p>
+          </div>
+
+          <div className='relative w-full'>
+            <input
+              className='font-inherit w-full rounded-full border border-white/20 bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-[0.6rem] text-[#ebebf5bf] focus:border-white/40 focus:outline-none'
               type={isPasswordShown ? 'text' : 'password'}
               defaultValue=''
               aria-invalid={errors.password || error ? true : false}
@@ -102,20 +100,37 @@ const SignUp = () => {
               })}
             />
             <img
+              className='absolute top-1/2 right-[5%] w-6 -translate-y-1/2 cursor-pointer'
               onClick={() => setIsPasswordShown((p) => !p)}
               src={isPasswordShown ? eye : crossedEye}
               alt='eye icon'
             />
-            <p role='alert'>{errors.password?.message}</p>
-          </StyledPasswordContainer>
-          <StyledButton>Sign up</StyledButton>
-          <StyledTextContainer>
-            <h3>You have an account already?</h3>
-            <Link to={'/login'}>Log in! </Link>
-          </StyledTextContainer>
+            <p
+              className='absolute -bottom-[55%] left-[5%] text-[0.8rem] text-[#ED695E]'
+              role='alert'
+            >
+              {errors.password?.message}
+            </p>
+          </div>
+
+          <button className='font-inherit w-[45%] cursor-pointer rounded-[2rem] border border-[#ffffff34] bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-2 text-[1.2rem] font-medium text-[#ebebf5bf]'>
+            Sign up
+          </button>
+
+          <div className='text-center'>
+            <h3 className='mb-4 text-[0.95rem] font-medium text-[#ffffff99]'>
+              You have an account already?
+            </h3>
+            <Link
+              to={'/login'}
+              className="relative bg-gradient-to-r from-[#A73EE7] to-[#00EBFF] bg-clip-text font-bold text-transparent after:absolute after:-bottom-[2px] after:left-0 after:h-[1px] after:w-full after:bg-gradient-to-r after:from-[#A73EE7] after:to-[#00EBFF] after:content-['']"
+            >
+              Log in!
+            </Link>
+          </div>
         </Form>
-      </StyledAuthWrapper>
-    </StyledAuth>
+      </div>
+    </div>
   );
 };
 

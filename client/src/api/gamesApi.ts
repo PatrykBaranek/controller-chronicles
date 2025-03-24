@@ -1,5 +1,5 @@
 import { dateFormat } from '#/components/FilterDrawer/FilterDrawer.utils';
-import {
+import type {
   AuthResponse,
   BestsellerResponse,
   CollectionResponse,
@@ -20,7 +20,20 @@ import {
 } from '#/types/types';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { createRefresh } from 'react-auth-kit';
+import { redirect } from 'react-router';
+
+export async function clearEmptyParams(url: URL) {
+  let shouldRedirect = false;
+  for (const [key, value] of url.searchParams.entries()) {
+    if (value === '') {
+      url.searchParams.delete(key);
+      shouldRedirect = true;
+    }
+  }
+  if (shouldRedirect) {
+    throw redirect(url.toString());
+  }
+}
 
 const gamesApi = axios.create({
   baseURL: 'http://localhost:3000/api',
@@ -32,20 +45,24 @@ export const getBestsellers = async (): Promise<BestsellerResponse> => {
   return response.data;
 };
 
-export const getGames = async (page = 1, pageSize = 8): Promise<GamesResponse> => {
-  const response = await gamesApi.get(`/games?page=${page}&page_size=${pageSize}`);
+export const getGames = async (page = 1, pageSize = 8, query: string | null): Promise<GamesResponse> => {
+  const url = new URL(gamesApi.defaults.baseURL + '/games');
+  url.searchParams.set('page', page.toString());
+  url.searchParams.set('page_size', pageSize.toString());
+
+  if (query != null && query !== '') {
+    url.searchParams.set('search', query);
+  }
+
+  const response = await gamesApi.get(url.toString());
 
   return response.data;
 };
+
 export const getGameById = async (
   id: number | undefined | string
 ): Promise<GameDetailsResponse> => {
   const response = await gamesApi.get(`/games/${id}`);
-
-  return response.data;
-};
-export const getGamesBySearchQuery = async (query = ''): Promise<GamesResponse> => {
-  const response = await gamesApi.get(`/games?page=1&page_size=8&search=${query}`);
 
   return response.data;
 };
@@ -274,32 +291,32 @@ export const addCollection = async ({
   }
 };
 
-export const refreshToken = createRefresh({
-  interval: 13,
-  // @ts-ignore
-  refreshApiCallback: async ({ refreshToken }) => {
-    try {
-      const response = await gamesApi.get('/auth/refresh', {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      });
-      return {
-        isSuccess: true,
-        newAuthToken: response.data.access_token,
-        newAuthTokenExpireIn: response.data.access_token_expires_in,
-        newRefreshTokenExpiresIn: response.data.refresh_token_expires_in,
-        newRefreshToken: response.data.refresh_token,
-        newAuthUserState: {},
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        isSuccess: false,
-      };
-    }
-  },
-});
+// export const refreshToken = createRefresh({
+//   interval: 13,
+//   // @ts-ignore
+//   refreshApiCallback: async ({ refreshToken }) => {
+//     try {
+//       const response = await gamesApi.get('/auth/refresh', {
+//         headers: {
+//           Authorization: `Bearer ${refreshToken}`,
+//         },
+//       });
+//       return {
+//         isSuccess: true,
+//         newAuthToken: response.data.access_token,
+//         newAuthTokenExpireIn: response.data.access_token_expires_in,
+//         newRefreshTokenExpiresIn: response.data.refresh_token_expires_in,
+//         newRefreshToken: response.data.refresh_token,
+//         newAuthUserState: {},
+//       };
+//     } catch (error) {
+//       console.error(error);
+//       return {
+//         isSuccess: false,
+//       };
+//     }
+//   },
+// });
 
 export const getNewestYoutubeVideos = async (
   videoType: 'review' | 'trailer'

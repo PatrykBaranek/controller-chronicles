@@ -1,7 +1,6 @@
 import { addGameToCollection, getUserCollections } from '#/api/gamesApi';
 import errorIco from '#/assets/errorIco.svg';
 import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
 import { GameDetailsResponse } from '#/types/types';
 import getAuthToken from '#/utils/getAuthToken';
 import Dialog from '@mui/material/Dialog';
@@ -10,11 +9,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import styled from 'styled-components';
 import Autocomplete from '../FilterDrawer/components/Autocomplete';
 import CollectionsForm from './CollectionsForm';
 
@@ -37,117 +34,39 @@ type MappedCollection = {
   games?: GameDetailsResponse[];
 };
 
-type StyledProp = {
-  $isOpen?: boolean;
-};
-
-const StyledDialog = styled(Dialog)<StyledProp>`
-  display: ${({ $isOpen }) => ($isOpen ? 'none' : 'initial')};
-  .MuiDialog-paper {
-    background: ${({ theme }) => theme.colors.mainGradient};
-    border-radius: 10px;
-    filter: brightness(1.2);
-    scrollbar-color: rgba(255, 255, 255, 0.2)
-      linear-gradient(180deg, rgba(60, 112, 85, 0.6) 12.85%, rgba(60, 112, 85, 0.35) 61.83%);
-    &::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-    }
-    &:has(.Mui-focused) {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    & > * {
-      color: ${({ theme }) => theme.colors.secondary};
-      font-family: inherit;
-    }
-  }
-  .MuiDialogContent-root {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .MuiDialogContentText-root {
-    color: ${({ theme }) => theme.colors.secondary};
-    font-family: inherit;
-    margin-bottom: 0.5rem;
-  }
-  .MuiDialogActions-root {
-    justify-content: space-between;
-    padding-inline: clamp(0.7rem, 2vw, 1.5rem);
-  }
-  p[role='alert'] {
-    font-size: 0.8rem;
-    top: 80%;
-    left: 50%;
-    text-align: center;
-    margin-top: 0.5rem;
-    color: ${({ theme }) => theme.colors.red} !important;
-  }
-  .MuiAutocomplete-popper > * {
-    background: linear-gradient(135deg, #0f54e8 0%, #9ddff3 100%);
-    border-radius: 10px;
-  }
-`;
-
-const StyledAddButton = styled(StyledButton)`
-  width: unset;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  font-size: 1rem;
-  color: ${({ theme }) => theme.colors.secondary};
-  margin-bottom: 1rem;
-`;
-
 const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
-  const [collections, setColletions] = useState<MappedCollection[]>();
   const [isGameInEveryCollection, setIsGameInEveryCollection] = useState(false);
-  const authToken = getAuthToken();
-  const isAuth = useIsAuthenticated();
   const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] = useState(false);
 
-  const { data, refetch } = useQuery(
-    ['availableCollections'],
-    () => getUserCollections(authToken),
-    {
-      onSuccess: (data) => {
-        const mappedCollections: MappedCollection[] = data.map((collection) => ({
-          id: collection._id,
-          name: collection.name,
-          games: collection.games,
-        }));
+  const authToken = getAuthToken();
+  const isAuth = false; // TODO: fix this
 
-        const filteredCollections = mappedCollections?.filter((collection) => {
-          return !collection.games?.some((game) => Number(game._id) === gameId);
-        });
+  const { data: collections, refetch } = useQuery({
+    enabled: isAuth && isOpen,
+    queryKey: ['availableCollections'],
+    queryFn: async () => {
+      const collections = await getUserCollections(authToken);
 
-        setIsGameInEveryCollection(() => {
-          return mappedCollections.every((collection) =>
-            collection.games?.some((game) => Number(game._id) === gameId)
-          );
-        });
+      const mappedCollections: MappedCollection[] = collections.map((collection) => ({
+        id: collection._id,
+        name: collection.name,
+        games: collection.games,
+      }));
 
-        setColletions(filteredCollections);
-      },
-      enabled: isAuth() && isOpen,
-      onError: (error: any) => {
-        toast('Error', {
-          className: 'default',
-          description: error?.message,
-          duration: 5000,
-          icon: <img src={errorIco} />,
-          position: 'top-right',
-        });
-      },
-    }
-  );
+      const filteredCollections = mappedCollections?.filter((collection) => {
+        return !collection.games?.some((game) => Number(game._id) === gameId);
+      });
+
+      setIsGameInEveryCollection(() => {
+        return mappedCollections.every((collection) =>
+          collection.games?.some((game) => Number(game._id) === gameId)
+        );
+      });
+
+      return filteredCollections;
+    },
+  });
+
   const addToCollection = useMutation({
     mutationFn: (id: string) => addGameToCollection(authToken, gameId, id),
   });
@@ -175,11 +94,64 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
 
   return (
     <>
-      <StyledDialog
+      <Dialog
         open={isOpen}
         onClose={handleClose}
         fullWidth
-        $isOpen={isNewCollectionModalOpen}
+        sx={{
+          display: isNewCollectionModalOpen ? 'none' : 'initial',
+          '& .MuiDialog-paper': {
+            background: colors.mainGradient,
+            borderRadius: '10px',
+            filter: 'brightness(1.2)',
+            scrollbarColor:
+              'rgba(255, 255, 255, 0.2) linear-gradient(180deg, rgba(60, 112, 85, 0.6) 12.85%, rgba(60, 112, 85, 0.35) 61.83%)',
+            '&::-webkit-scrollbar': {
+              width: '5px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '20px',
+            },
+            '&:has(.Mui-focused)': {
+              borderTopRightRadius: '0',
+              borderBottomRightRadius: '0',
+            },
+            '& > *': {
+              color: colors.secondary,
+              fontFamily: 'inherit',
+            },
+          },
+          '& .MuiDialogContent-root': {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          },
+          '& .MuiDialogContentText-root': {
+            color: colors.secondary,
+            fontFamily: 'inherit',
+            marginBottom: '0.5rem',
+          },
+          '& .MuiDialogActions-root': {
+            justifyContent: 'space-between',
+            paddingInline: 'clamp(0.7rem, 2vw, 1.5rem)',
+          },
+          '& p[role="alert"]': {
+            fontSize: '0.8rem',
+            top: '80%',
+            left: '50%',
+            textAlign: 'center',
+            marginTop: '0.5rem',
+            color: `${colors.red} !important`,
+          },
+          '& .MuiAutocomplete-popper > *': {
+            background: 'linear-gradient(135deg, #0f54e8 0%, #9ddff3 100%)',
+            borderRadius: '10px',
+          },
+        }}
       >
         <DialogTitle>Add game to collection</DialogTitle>
         <DialogContent>
@@ -205,20 +177,32 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
           )}
         </DialogContent>
         <DialogActions>
-          <StyledAddButton onClick={handleClose}>Close</StyledAddButton>
+          <button
+            className='font-inherit mb-4 cursor-pointer rounded-[2rem] border border-[#ffffff34] bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-2 text-base font-medium text-[#ffffff99]'
+            onClick={handleClose}
+          >
+            Close
+          </button>
+
           {isGameInEveryCollection ? (
-            <StyledAddButton
+            <button
+              className='font-inherit mb-4 cursor-pointer rounded-[2rem] border border-[#ffffff34] bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-2 text-base font-medium text-[#ffffff99]'
               onClick={() => {
                 setIsNewCollectionModalOpen(true);
               }}
             >
               Create new collection
-            </StyledAddButton>
+            </button>
           ) : (
-            <StyledAddButton onClick={handleSubmit(onSubmit)}>Add to collection</StyledAddButton>
+            <button
+              className='font-inherit mb-4 cursor-pointer rounded-[2rem] border border-[#ffffff34] bg-gradient-to-r from-[rgba(15,85,232,0.2)] to-[rgba(157,223,243,0.2)] px-4 py-2 text-base font-medium text-[#ffffff99]'
+              onClick={handleSubmit(onSubmit)}
+            >
+              Add to collection
+            </button>
           )}
         </DialogActions>
-      </StyledDialog>
+      </Dialog>
     </>
   );
 };

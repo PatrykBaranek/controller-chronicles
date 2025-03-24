@@ -1,34 +1,14 @@
-import styled from 'styled-components';
-
+import { useRouteLoaderData } from 'react-router';
 import Carousel from './Carousel';
-import { useQuery } from 'react-query';
-import { getNewReleasedGames } from '#/api/gamesApi';
 
-const StyledWrapper = styled.div`
-  width: 100%;
-  height: 65vw;
-  @media screen and (min-width: 900px) {
-    padding-top: 2rem;
-    height: unset;
-    padding-inline: 1rem;
-    grid-column-start: 2;
-    grid-column-end: 5;
-  }
-`;
+function NewReleases() {
+  const { newReleases } = useRouteLoaderData('home');
 
-const NewReleases = () => {
-  const {
-    data: games,
-    isLoading,
-    isError,
-  } = useQuery(['newReleases'], () => getNewReleasedGames(), {
-    staleTime: 24 * 60 * 60 * 1000,
-  });
   return (
-    <StyledWrapper>
-      <Carousel newReleases={games?.results} isLoading={isLoading} isError={isError} />
-    </StyledWrapper>
+    <div className='h-[65vw] w-full lg:col-start-2 lg:col-end-5 lg:h-[unset] lg:px-4 lg:pt-8'>
+      <Carousel newReleases={newReleases} />
+    </div>
   );
-};
+}
 
 export default NewReleases;

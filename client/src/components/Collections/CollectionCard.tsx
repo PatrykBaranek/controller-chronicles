@@ -1,65 +1,35 @@
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-
-type Props = {
-  length?: number;
-};
-
-const StyledCollectionCard = styled.div<Props>`
-  border-radius: 0.7rem;
-  overflow: hidden;
-  img {
-    width: 100%;
-    aspect-ratio: 3/2;
-  }
-  @media screen and (min-width: 1200px) {
-    display: flex;
-    transition: 0.4s ease-out;
-    position: relative;
-    left: 0px;
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
-    padding: 1px;
-    transition: all 0.2s ease-in-out;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 1rem;
-      padding: 1.5px;
-      background: linear-gradient(270deg, #00ebff7a 100%, rgba(255, 255, 255, 0) 70%);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-    &:not(:first-child) {
-      margin-left: -50px;
-    }
-    &:hover {
-      transform: ${({ length }) => (length && length > 1 ? 'translateY(-8px)' : '')};
-      transition: 0.4s ease-out;
-    }
-    &:hover ~ & {
-      position: relative;
-      left: 30px;
-      transition: 0.4s ease-out;
-    }
-    img {
-      border-radius: 1rem;
-      width: ${({ length }) => length && `${18 - 1.5 * length}vw`};
-    }
-  }
-`;
+import { Link } from 'react-router';
+import { twMerge } from 'tailwind-merge';
 
 const CollectionCard = ({ img, length, id }: { img: string; length?: number; id: string }) => {
+  // Calculate width based on length for larger screens
+  const dynamicWidth = length ? `${18 - 1.5 * length}vw` : 'auto';
+
   return (
-    <StyledCollectionCard length={length}>
+    <div
+      className={twMerge(
+        "overflow-hidden rounded-[0.7rem]",
+        "xl:relative xl:left-0 xl:flex xl:cursor-pointer xl:overflow-hidden xl:p-[1px]",
+        "xl:transition-all xl:duration-[0.4s] xl:ease-out xl:not-first:ml-[-50px]",
+        "xl:before:pointer-events-none xl:before:absolute xl:before:inset-0 xl:before:rounded-2xl",
+        "xl:before:bg-gradient-to-l xl:before:from-[#00ebff7a]",
+        "xl:before:mask-[linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)]",
+        "xl:before:mask-composite-xor xl:before:mask-composite-exclude",
+        "xl:before:p-[1.5px] xl:before:content-['']",
+        "hover:xl:transform hover:xl:transition-all hover:xl:duration-[0.4s] hover:xl:ease-out",
+        "hover:xl:~:relative hover:xl:~:left-[30px] hover:xl:~:transition-all hover:xl:~:duration-[0.4s] hover:xl:~:ease-out",
+        length && length > 1 ? "hover:xl:translate-y-[-8px]" : ""
+      )}
+    >
       <Link to={`/games/${id}`}>
-        <img src={img} alt='' />
+      <img
+        src={img}
+        alt=''
+        className='aspect-[3/2] w-full xl:rounded-2xl'
+        style={{ width: window.innerWidth >= 1200 ? dynamicWidth : '100%' }}
+      />
       </Link>
-    </StyledCollectionCard>
+    </div>
   );
 };
 

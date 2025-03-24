@@ -1,11 +1,12 @@
-import { YoutubeVideo } from '#/types/types';
+import React from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import styled from 'styled-components';
 import VideoSliderItem from '../UI/VideoSliderItem';
+import { styled } from 'styled-components';
+import { YoutubeVideo } from '~/types/types';
 
 type Props = {
-  heading: string;
-  videos: YoutubeVideo[];
+  heading: 'Trailers' | 'Reviews';
+  videosPromise: Promise<YoutubeVideo[]>;
 };
 
 const StyledVideoSlider = styled.div`
@@ -47,12 +48,6 @@ const StyledVideoSlider = styled.div`
   @media screen and (min-width: 1050px) {
     grid-column: span 2 / span 2;
   }
-  h3 {
-    font-size: 1.2rem;
-    font-weight: ${({ theme }) => theme.fontWeights.semiBold};
-    margin-bottom: 1rem;
-    margin-left: 1rem;
-  }
 `;
 const StyledSplideSlide = styled(SplideSlide)`
   @media screen and (min-width: 900px) {
@@ -60,10 +55,12 @@ const StyledSplideSlide = styled(SplideSlide)`
   }
 `;
 
-const DetailsSlider = ({ videos, heading }: Props) => {
+function DetailsSlider({ heading, videosPromise }: Props) {
+  const videos = React.use(videosPromise) as YoutubeVideo[];
+
   return (
     <StyledVideoSlider>
-      <h3>{heading}</h3>
+      <h3 className='mb-4 ml-4 text-[1.2rem] font-bold'>{heading}</h3>
       <Splide
         options={{
           arrows: true,
@@ -93,6 +90,6 @@ const DetailsSlider = ({ videos, heading }: Props) => {
       </Splide>
     </StyledVideoSlider>
   );
-};
+}
 
 export default DetailsSlider;

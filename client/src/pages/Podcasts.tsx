@@ -1,165 +1,116 @@
-import { Pagination, ThemeProvider, createTheme } from '@mui/material';
+import { Button, CircularProgress, Pagination } from '@mui/material';
 
-import { connectToSpotify, getAllPodcasts } from '#/api/gamesApi';
-import GameCard from '#/components/GameCard/GameCard';
-import Spinner from '#/components/UI/Spinner';
+import type { Route } from './+types/Podcasts';
 import useWindowWidth from '#/hooks/useWindowWidth';
-import { useSpotifyStore } from '#/store/store';
 import isDesktopWidth from '#/utils/isDesktopWidth';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import styled from 'styled-components';
+import { clearEmptyParams, connectToSpotify, getAllPodcasts } from '~/api/gamesApi';
+import { AxiosError } from 'axios';
+import GameCard from '~/components/GameCard/GameCard';
+import { redirect, useFetcher, useSearchParams } from 'react-router';
 
-const theme = createTheme({
-  components: {
-    MuiPagination: {
-      styleOverrides: {
-        root: {
-          display: 'flex',
-          justifyContent: 'center',
-          marginBlock: '1rem',
-        },
-        outlined: {
-          button: {
-            fontFamily: 'Inter',
-            fontSize: '.8rem',
-            background: 'transparent',
-            color: 'white',
-            borderColor: 'rgba(235, 235, 245, 0.2)',
-            '&:hover': {
-              background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
-            },
-          },
-        },
-        ul: {
-          gap: '.2rem',
-        },
-      },
-    },
-    MuiPaginationItem: {
-      styleOverrides: {
-        root: {
-          color: 'white',
+export async function clientAction() {
+  const resp = await connectToSpotify();
+  return redirect(resp.url);
+}
 
-          '&.Mui-selected': {
-            background: `linear-gradient(131.88deg, rgba(167, 62, 231, 0.15) 14.48%, rgba(0, 235, 255, 0.15) 83.43%)`,
-          },
-        },
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const url = new URL(request.url);
+  await clearEmptyParams(url);
+  const searchParams = url.searchParams;
 
-        sizeSmall: {
-          borderRadius: '14px',
-          margin: '0 2px',
-          padding: '0 5px',
-          minWidth: '28px',
-          height: '28px',
-        },
-      },
-    },
-  },
-});
+  const page = Number(searchParams.get('page') || 1);
+  const limit = Number(searchParams.get('limit') || 20);
 
-const StyledContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-bottom: 1rem;
-  padding-inline: clamp(1.625rem, 5vw, 3.25rem);
-  @media screen and (min-width: 900px) {
-    padding-left: 0;
-  }
-`;
+  const podcasts = await getAllPodcasts((page - 1) * limit);
 
-const StyledWrapper = styled.div`
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(1, 1fr);
-  row-gap: 2rem;
-  @media screen and (min-width: 500px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
+  return { podcasts };
+}
 
-  @media screen and (min-width: 900px) {
-    padding-top: 2rem;
-  }
-  @media screen and (min-width: 1000px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-  @media screen and (min-width: 1300px) {
-    padding-inline: 2rem;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-  }
-`;
+export default function Podcasts({ loaderData }: Route.ComponentProps) {
+  const { podcasts } = loaderData;
 
-const Podcasts = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
-  const [page, setPage] = useState(1);
-  const { isAuth, setAuth } = useSpotifyStore();
 
-  const { data, isLoading } = useQuery(['spotify/login'], () => connectToSpotify(), {
-    onSuccess: (data) => {
-      setAuth(true);
-      window.location.replace(data.url);
-    },
-    onError: () => {
-      setAuth(false);
-    },
-    enabled: !isAuth,
-  });
-
-  const { data: podcastData, isLoading: isPodcastLoading } = useQuery(
-    ['spotify', page],
-    () => getAllPodcasts((page - 1) * 20),
-    {
-      enabled: isAuth,
-      keepPreviousData: true,
-      onError: () => {
-        setAuth(false);
-      },
-    }
-  );
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
-    <StyledContainer>
-      {isLoading || isPodcastLoading ? (
-        <Spinner />
-      ) : (
-        <>
-          <StyledWrapper>
-            {podcastData?.items.map((podcast) => (
-              <GameCard
-                key={podcast.id}
-                id={podcast.id}
-                image={podcast.images[0]?.url}
-                title={podcast.name}
-                isPodcastCard={true}
-                description={podcast.description}
-                totalEpisodes={podcast.total_episodes}
-              />
-            ))}
-          </StyledWrapper>
-          <ThemeProvider theme={theme}>
-            <Pagination
-              siblingCount={isDesktop ? 1 : 0}
-              size={isDesktop ? 'medium' : 'small'}
-              count={podcastData?.total}
-              variant='outlined'
-              page={page}
-              onChange={handlePageChange}
-            />
-          </ThemeProvider>
-        </>
-      )}
-    </StyledContainer>
+    <div className='flex w-full flex-col justify-center px-[clamp(1.625rem,5vw,3.25rem)] pb-4 md:pl-0'>
+      <div className='grid w-full grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-6 md:pt-8 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4 xl:grid-rows-2 xl:px-8'>
+        {podcasts?.items.map((podcast) => (
+          <GameCard
+            key={podcast.id}
+            id={podcast.id}
+            image={podcast.images[0]?.url}
+            title={podcast.name}
+            isPodcastCard={true}
+            description={podcast.description}
+            totalEpisodes={podcast.total_episodes}
+          />
+        ))}
+      </div>
+      <Pagination
+        siblingCount={isDesktop ? 1 : 0}
+        size={isDesktop ? 'medium' : 'small'}
+        count={podcasts.total}
+        variant='outlined'
+        page={searchParams.get('page') ? Number(searchParams.get('page')) : 1}
+        onChange={(_, page) => {
+          setSearchParams((prev) => {
+            return { ...prev, page: page.toString() };
+          });
+        }}
+      />
+    </div>
   );
-};
+}
 
-export default Podcasts;
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const fetcher = useFetcher();
+
+  if (error instanceof AxiosError) {
+    if (error.status === 403) {
+      if (fetcher.state === 'loading') {
+        return (
+          <div className='flex w-full flex-col items-center justify-center px-[clamp(1.625rem,5vw,3.25rem)] pb-4 md:pl-0'>
+            <CircularProgress size={30} />
+          </div>
+        );
+      }
+
+      return (
+        <div className='flex w-full flex-col justify-center px-[clamp(1.625rem,5vw,3.25rem)] pb-4 md:pl-0'>
+          <fetcher.Form method='post'>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '1rem',
+              }}
+            >
+              <p>Please log in to see the content</p>
+              <Button
+                className='flex h-full cursor-pointer items-center justify-center rounded-lg bg-[#1db954] p-4 font-bold text-white uppercase transition-colors hover:bg-[#1ed760]'
+                type='submit'
+              >
+                LogIn to Spotify
+              </Button>
+            </div>
+          </fetcher.Form>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div className='flex w-full flex-col justify-center px-[clamp(1.625rem,5vw,3.25rem)] pb-4 md:pl-0'>
+      <div className='grid w-full grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-6 md:pt-8 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4 xl:grid-rows-2 xl:px-8'>
+        <h1>Something went wrong</h1>
+        <br />
+        <p>Please refresh page</p>
+        <p>{JSON.stringify(error)}</p>
+      </div>
+    </div>
+  );
+}

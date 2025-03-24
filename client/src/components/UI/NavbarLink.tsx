@@ -1,8 +1,7 @@
 import useStore from '#/store/store';
-import { useSignOut } from 'react-auth-kit';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 type NavbarLink = {
   text: string;
@@ -129,7 +128,9 @@ const StyledWrapper = styled.div`
         border-radius: 100vh;
         padding: 1px;
         background: ${({ theme }) => theme.colors.secondaryGradient};
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
         mask-composite: xor;
         mask-composite: exclude;
         pointer-events: none;
@@ -161,7 +162,7 @@ const StyledWrapper = styled.div`
 const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
   const { pathname } = useLocation();
   const { toggleMenuOpen } = useStore();
-  const logout = useSignOut();
+  // const logout = useSignOut(); TODO: Implement useSignOut hook
 
   const isLinkActive = () => {
     if (text.toLowerCase() === 'home') {
@@ -186,7 +187,7 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
         },
       });
 
-      logout();
+      // logout();
     }
   };
 

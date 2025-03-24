@@ -1,91 +1,46 @@
 import useWindowWidth from '#/hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
-import { Skeleton } from '@mui/material';
-import styled from 'styled-components';
+import { twMerge } from 'tailwind-merge';
 
-type StyledProps = {
+type CarouselPaginationProps = {
   isActive: boolean;
-};
-
-type Props = StyledProps & {
   onClick: React.MouseEventHandler<HTMLDivElement>;
   image: string;
   name: string;
 };
 
-const StyledPaginationDot = styled.div<StyledProps>`
-  height: 10px;
-  width: 10px;
-  background-color: ${({ isActive }) => (isActive ? 'steelblue' : '#f5f5f5')};
-  border-radius: 50%;
-  display: inline-block;
-  margin-left: 10px;
-  cursor: pointer;
-`;
-
-const StyledPaginationItem = styled.div<StyledProps>`
-  height: 100%;
-  background: ${({ isActive, theme }) =>
-    isActive
-      ? theme.colors.secondaryGradient
-      : 'linear-gradient(131.88deg, #a63ee72f 14.48%, #00eaff2b 83.43%)'};
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  border-radius: 0.7rem;
-  gap: 10px;
-
-  @media screen and (min-width: 900px) {
-    padding-inline: 1rem;
-  }
-  @media screen and (min-width: 1500px) {
-    padding-block: 0;
-  }
-`;
-
-const StyledImageWrapper = styled.div`
-  width: 40%;
-  display: flex;
-  align-items: center;
-  @media screen and (min-width: 1500px) {
-    width: 30%;
-  }
-  img {
-    width: 80%;
-    max-height: 80%;
-    border-radius: 0.7rem;
-  }
-`;
-const StyledTitleWrapper = styled.div<StyledProps>`
-  width: 60%;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-  p {
-    color: ${({ isActive, theme }) => (isActive ? '#fff' : theme.colors.primary)};
-  }
-`;
-const CarouselPagination = ({ name, image, isActive, onClick }: Props) => {
+function CarouselPagination({ name, image, isActive, onClick }: CarouselPaginationProps) {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
 
+  if (!isDesktop) {
+    return (
+      <div
+        className={twMerge(
+          'ml-2.5 inline-block h-2.5 w-2.5 cursor-pointer rounded-full',
+          isActive ? 'bg-[steelblue]' : 'bg-[#f5f5f5]'
+        )}
+        onClick={onClick}
+      />
+    );
+  }
+
   return (
-    <>
-      {!isDesktop ? (
-        <StyledPaginationDot isActive={isActive} onClick={onClick}></StyledPaginationDot>
-      ) : (
-        <StyledPaginationItem isActive={isActive} onClick={onClick}>
-          <StyledImageWrapper>
-            <img src={image} alt={`${name} image`} />
-          </StyledImageWrapper>
-          <StyledTitleWrapper isActive={isActive}>
-            <p>{name}</p>
-          </StyledTitleWrapper>
-        </StyledPaginationItem>
+    <div
+      className={twMerge(
+        'flex h-25 w-full cursor-pointer rounded-xl bg-[linear-gradient(131.88deg,#a63ee72f_14.48%,#00eaff2b_83.43%)] p-2 md:px-4',
+        isActive && 'bg-[linear-gradient(131.88deg,#A73EE7_14.48%,#00EBFF_83.43%)]'
       )}
-    </>
+      onClick={onClick}
+    >
+      <div className='flex w-[40%] items-center 2xl:w-[30%]'>
+        <img src={image} alt={`${name} image`} className='max-h-[80%] w-[80%] rounded-xl' />
+      </div>
+      <div className='flex w-[60%] items-center justify-center text-center'>
+        <p className='text-white active:text-[#ebebf5bf]'>{name}</p>
+      </div>
+    </div>
   );
-};
+}
 
 export default CarouselPagination;

@@ -1,55 +1,19 @@
 import { type Bestseller } from '#/types/types';
-import styled from 'styled-components';
 import Card from '../UI/Card';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import getGameIdFromUrl from '#/utils/getGameIdFromUrl';
 
-const StyledBestsellersItem = styled(Link)`
-  border-radius: 0.7rem;
-  overflow: hidden;
-  img {
-    width: 100%;
-    height: 100%;
-  }
-`;
+type BestsellersItemProps = Bestseller & {
+  idx: number;
+};
 
-const StyledOverlay = styled.span`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 30%, rgba(255, 255, 255, 0) 50%);
-  border-radius: 1rem;
-  color: white;
-  span {
-    display: flex;
-    width: 80%;
-    justify-content: center;
-    position: absolute;
-    bottom: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-weight: ${({ theme }) => theme.fontWeights.semiBold};
-    font-size: clamp(0.7rem, 2vw, 0.9rem);
-    text-align: center;
-  }
-`;
-const StyledCount = styled.p`
-  color: white;
-  position: absolute;
-  bottom: 7%;
-  right: 5%;
-  font-size: clamp(0.7rem, 2vw, 0.9rem);
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-`;
-
-const BestsellersItem = ({ img, link, name, idx }: Bestseller & { idx: number }) => {
+const BestsellersItem = ({ img, link, name, idx }: BestsellersItemProps) => {
   const gameId = getGameIdFromUrl(link);
   return (
     <Card>
-      <StyledBestsellersItem to={link}>
+      <Link to={link} target='_blank' className='overflow-hidden rounded-[0.7rem]'>
         <img
+          className='h-full w-full'
           src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${gameId}/header.jpg`}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
@@ -57,13 +21,15 @@ const BestsellersItem = ({ img, link, name, idx }: Bestseller & { idx: number })
           }}
           alt={`${name} image`}
         />
-        <StyledOverlay>
-          <span>
+        <span className='rounded-4 absolute left-1/2 h-full w-full -translate-x-1/2 bg-gradient-to-t from-black/40 via-transparent to-transparent text-white'>
+          <span className='absolute bottom-[15%] left-1/2 flex w-4/5 -translate-x-1/2 justify-center text-center text-[clamp(0.7rem,2vw,0.9rem)] font-medium'>
             <p>{name}</p>
           </span>
-          <StyledCount>{idx + 1}</StyledCount>
-        </StyledOverlay>
-      </StyledBestsellersItem>
+          <p className='absolute right-[5%] bottom-[7%] text-[clamp(0.7rem,2vw,0.9rem)] font-bold text-white'>
+            {idx + 1}
+          </p>
+        </span>
+      </Link>
     </Card>
   );
 };

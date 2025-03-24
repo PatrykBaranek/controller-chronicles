@@ -1,107 +1,32 @@
+import type { Route } from './+types/PodcastDetails';
 import { getPodcastById } from '#/api/gamesApi';
 import MainInfo from '#/components/PodcastDetails/MainInfo';
 import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
-import Spinner from '#/components/UI/Spinner';
-import { useSpotifyStore } from '#/store/store';
-import { Episode } from '#/types/types';
-import { useState } from 'react';
-import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 
-const StyledDetailsPage = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  @media screen and (min-width: 900px) {
-    padding-top: 2rem;
-  }
-`;
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+  const podcast = await getPodcastById(params.id);
 
-const StyledTopSection = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  return { podcast };
+}
 
-  @media screen and (min-width: 900px) {
-    padding-inline: 1rem;
-    width: 100%;
-    flex-direction: column;
-  }
-  @media screen and (min-width: 1050px) {
-    width: 100%;
-    flex-direction: row;
-    gap: 2rem;
-  }
-`;
+export default function PodcastDetails({ loaderData }: Route.ComponentProps) {
+  const { podcast } = loaderData;
 
-const StyledHeroImage = styled.img`
-  width: 100%;
-  @media screen and (min-width: 900px) {
-    border-radius: 1rem;
-    max-width: 100vw;
-  }
-  @media screen and (min-width: 1050px) {
-    width: 50%;
-    aspect-ratio: 3/2;
-  }
-`;
-
-const StyledInfoWrapper = styled.div`
-  width: 100%;
-  padding-inline: 1.5rem;
-  @media screen and (min-width: 900px) {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
-    padding-inline: 0;
-  }
-  @media screen and (min-width: 1050px) {
-    gap: 0;
-    justify-content: center;
-  }
-`;
-
-const PodcastDetails = () => {
-  const { id } = useParams();
-  const { isAuth, setAuth } = useSpotifyStore();
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-
-  const {
-    data: podcast,
-    isLoading,
-    isError,
-  } = useQuery(['spotify', id], () => getPodcastById(id!), {
-    enabled: isAuth,
-    keepPreviousData: true,
-    onSuccess: (data) => {
-      setEpisodes(data.episodes.items?.slice(0, 8));
-    },
-    onError: (e) => {
-      setAuth(false);
-    },
-  });
+  const episodes = podcast?.episodes?.items?.slice(0, 8) ?? [];
 
   return (
-    <StyledDetailsPage>
-      {isLoading || isError ? (
-        <Spinner />
-      ) : (
-        <>
-          <StyledTopSection>
-            <StyledHeroImage src={podcast?.images[0].url} alt={podcast?.name} />
-            <StyledInfoWrapper>
-              <MainInfo podcast={podcast} />
-            </StyledInfoWrapper>
-          </StyledTopSection>
-          <PodcastEpisodes
-            heading='Episodes'
-            data={episodes}
-            url={podcast?.external_urls.spotify}
-          />
-        </>
-      )}
-    </StyledDetailsPage>
+    <div className='min-h-screen w-full md:pt-8'>
+      <div className='flex w-full flex-col md:flex-col md:px-4 lg:flex-row lg:gap-8'>
+        <img
+          src={podcast?.images[0].url}
+          alt={podcast?.name}
+          className='w-full md:max-w-screen md:rounded-2xl lg:aspect-[3/2] lg:w-1/2'
+        />
+        <div className='w-full px-6 md:flex md:flex-col md:gap-12 md:px-0 lg:justify-center lg:gap-0'>
+          <MainInfo podcast={podcast} />
+        </div>
+      </div>
+      <PodcastEpisodes heading='Episodes' data={episodes} url={podcast?.external_urls.spotify} />
+    </div>
   );
-};
-
-export default PodcastDetails;
+}

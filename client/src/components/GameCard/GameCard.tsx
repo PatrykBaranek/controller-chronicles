@@ -1,90 +1,11 @@
+import React from 'react';
+import type { Gamecard } from '#/types/types';
 import heartIcon from '#/assets/heartIcon.svg';
-import { Gamecard } from '#/types/types';
-import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link } from 'react-router';
 import AddToCollectionForm from '../Collections/AddToCollectionForm';
 import Card from '../UI/Card';
 
-const StyledImage = styled.div`
-  width: 100%;
-  height: 100%;
-  img {
-    border-radius: 1rem 1rem 0 0;
-    width: 100%;
-    aspect-ratio: 3/2;
-  }
-`;
-
-const StyledContent = styled.div`
-  width: 100%;
-  height: 100%;
-  padding-inline: 1rem;
-  padding-top: 1.2rem;
-  display: grid;
-`;
-
-const StyledTopSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  h1 {
-    width: 100%;
-    color: white;
-    font-weight: ${({ theme }) => theme.fontWeights.bold};
-    font-size: clamp(0.8rem, 2vw, 1rem);
-    @media screen and (min-width: 900px) {
-      font-size: clamp(0.7rem, 1vw, 1rem);
-      padding-block: 0.2rem;
-    }
-  }
-  p {
-    width: 100%;
-    text-align: right;
-    font-size: clamp(0.8rem, 2vw, 1rem);
-    color: ${({ theme }) => theme.colors.primary};
-    @media screen and (min-width: 900px) {
-      font-size: clamp(0.7rem, 1vw, 1rem);
-    }
-    span {
-      display: inline-block;
-      margin-top: 5px;
-      color: ${({ theme }) => theme.colors.yellow};
-    }
-  }
-`;
-
-const StyledDescription = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
-  margin-block: 0.3rem;
-  line-height: 1.1;
-  p {
-    font-size: 0.8rem;
-  }
-`;
-
-const StyledAddToCollection = styled.button`
-  margin-top: 0.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  width: 40px;
-  aspect-ratio: 1;
-  border: none;
-  border-radius: 100vw;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  display: grid;
-  place-items: center;
-  @media screen and (min-width: 900px) {
-    background: rgba(255, 255, 255, 0.05);
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  }
-`;
-
-const GameCard = ({
+function GameCard({
   id,
   image,
   title,
@@ -92,40 +13,52 @@ const GameCard = ({
   description,
   isPodcastCard,
   totalEpisodes,
-}: Gamecard) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const isAuth = useIsAuthenticated();
+}: Gamecard) {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const isAuth = false; // TODO: fix this
 
   return (
     <>
       <Card>
         <Link style={{ paddingBottom: '2rem' }} to={`${id}`}>
-          <StyledImage>
-            <img src={image} alt={`${title} image`} />
-          </StyledImage>
+          <div className='h-full w-full'>
+            <img
+              className='aspect-[3/2] w-full rounded-t-2xl'
+              src={image}
+              alt={`${title} image`}
+              loading='lazy'
+            />
+          </div>
 
-          <StyledContent>
-            <StyledTopSection>
-              <h1>{title}</h1>
+          <div className='grid h-full w-full ps-[1rem] pe-[1rem] pt-[0.5rem]'>
+            <div className='flex items-center justify-between'>
+              <h1 className='w-full text-[clamp(0.8rem,2vw,1rem)] font-bold md:text-[clamp(0.7rem,1vw,1rem)]'>
+                {title}
+              </h1>
               {isPodcastCard ? (
-                <p>
-                  Episodes <span>{totalEpisodes || 0}</span>
+                <p className='text-right text-[clamp(0.8rem,2vw,1rem)] md:text-[clamp(0.8rem,2vw,1rem)]'>
+                  Episodes{' '}
+                  <span className='mt-[5px] inline-block text-yellow-300'>
+                    {totalEpisodes || 0}
+                  </span>
                 </p>
               ) : (
-                <p>
-                  Rating <span>{rating ? rating : 0}/10</span>
+                <p className='text-right text-[clamp(0.8rem,2vw,1rem)] md:text-[clamp(0.8rem,2vw,1rem)]'>
+                  Rating{' '}
+                  <span className='mt-[5px] inline-block text-yellow-300'>{rating ?? 0}/10</span>
                 </p>
               )}
-            </StyledTopSection>
-            <StyledDescription>
+            </div>
+            <div className='leading-[1.1] text-[#ebebf5bf]'>
               {description ? (
-                <p>{description && description.slice(0, 250) + ' ...'}</p>
+                <p className='text-[0.8rem]'>{description && description.slice(0, 250) + ' ...'}</p>
               ) : (
-                <p>Something went wrong!</p>
+                <p className='text-[0.8rem]'>Something went wrong!</p>
               )}
-            </StyledDescription>
-            {isAuth() && !isPodcastCard && (
-              <StyledAddToCollection
+            </div>
+            {isAuth && !isPodcastCard && (
+              <button
+                className='mt-[0.5rem] grid aspect-[1] w-[40px] cursor-pointer justify-center rounded-full border-none bg-[rgba(255,255,255,0.2)] hover:bg-[rgba(255,255,255,0.2)]'
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
@@ -133,9 +66,9 @@ const GameCard = ({
                 }}
               >
                 <img src={heartIcon} alt='add to collection' />
-              </StyledAddToCollection>
+              </button>
             )}
-          </StyledContent>
+          </div>
         </Link>
       </Card>
       {isDialogOpen && (
@@ -147,6 +80,6 @@ const GameCard = ({
       )}
     </>
   );
-};
+}
 
 export default GameCard;

@@ -3,11 +3,11 @@ import { StyledButton } from '#/pages/Login';
 import { CollectionResponse } from '#/types/types';
 import getAuthToken from '#/utils/getAuthToken';
 import { useState } from 'react';
-import { useQuery } from 'react-query';
-import styled from 'styled-components';
+import { useQuery } from '@tanstack/react-query';
+import { styled } from 'styled-components';
 import CollectionList from './CollectionList';
 import CollectionsForm from './CollectionsForm';
-import Spinner from '../UI/Spinner';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -61,32 +61,30 @@ const StyledCollectionButton = styled(StyledButton)`
   color: ${({ theme }) => theme.colors.secondary};
 `;
 
-const Collections = () => {
+function Collections() {
   const [collections, setCollections] = useState<CollectionResponse[]>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const authToken = getAuthToken();
 
-  const { refetch, isLoading, isFetched } = useQuery(
-    ['collections'],
-    () => getUserCollections(authToken),
-    {
-      onSuccess: (data) => {
-        data.sort((a, b) => b.priority - a.priority);
-        setCollections(data);
-      },
-    }
-  );
+  const { refetch, isLoading, isFetched } = useQuery({
+    queryKey: ['collections'],
+    queryFn: async () => {
+      const userCollection = await getUserCollections(authToken);
+      userCollection.sort((a, b) => b.priority - a.priority);
+      setCollections(userCollection);
+    },
+  });
 
-  const toggleDialog = () => {
+  function toggleDialog() {
     setIsDialogOpen((prev) => !prev);
-  };
+  }
 
   return (
-    <StyledCollectionsContainer hasCollections={!!collections?.length}>
+    <StyledCollectionsContainer hasCollections={Boolean(collections?.length)}>
       <h1>Your Collections</h1>
       <StyledCollectionWrapper isLoading={isLoading}>
         {isLoading || !isFetched ? (
-          <Spinner />
+          <CircularProgress size={40} />
         ) : (
           <>
             {!!collections?.length ? (

@@ -1,3 +1,5 @@
+import React from "react";
+
 export type Gamecard = {
   id: number | string;
   image: any;
@@ -8,7 +10,9 @@ export type Gamecard = {
   totalEpisodes?: number;
 };
 
-export type Children = ReactNode;
+export type Children = {
+  children: React.ReactNode,
+};
 
 export type UserInputs = { email: string; password: string };
 

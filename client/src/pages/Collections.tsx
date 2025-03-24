@@ -11,15 +11,15 @@ import trashIcon from '#/assets/trashIco.svg';
 import CollectionsForm from '#/components/Collections/CollectionsForm';
 import Card from '#/components/UI/Card';
 import ConfirmationModal from '#/components/UI/ConfirmationModal';
-import Spinner from '#/components/UI/Spinner';
 import getAuthToken from '#/utils/getAuthToken';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { StyledButton } from './Login';
+import CircularProgress from '@mui/material/CircularProgress';
 import CollectionEditModal from '#/components/UI/CollectionEditModal';
 import { useSpotifyStore } from '#/store/store';
 
@@ -133,28 +133,33 @@ const StyledCollectionButton = styled(StyledButton)<StyledProps>`
   }
 `;
 
-const Collections = () => {
+function Collections() {
   const authToken = getAuthToken();
   const { isAuth } = useSpotifyStore();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isPodcastModalOpen, setIsPodcastModalOpen] = useState(false);
-  const [pickedCollectionId, setPickedCollectionId] = useState('');
-  const [podcastId, setPodcastId] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = React.useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [isPodcastModalOpen, setIsPodcastModalOpen] = React.useState(false);
+  const [pickedCollectionId, setPickedCollectionId] = React.useState('');
+  const [podcastId, setPodcastId] = React.useState('');
   const navigate = useNavigate();
 
   const {
     data: collections,
     refetch,
     isLoading,
-  } = useQuery(['availableCollections'], () => getUserCollections(authToken));
+  } = useQuery({
+    queryKey: ['availableCollections'],
+    queryFn: () => getUserCollections(authToken),
+  });
 
   const {
     data: podcastsCollection,
     refetch: refetchPodcasts,
     isLoading: isLoadingPodcasts,
-  } = useQuery(['userPodcasts'], () => getUserPodcasts(), {
+  } = useQuery({
+    queryKey: ['userPodcasts'],
+    queryFn: () => getUserPodcasts(),
     enabled: isAuth,
   });
 
@@ -231,12 +236,14 @@ const Collections = () => {
   return (
     <StyledWrapper>
       {isLoading || isLoadingPodcasts ? (
-        <Spinner />
+        <div className='flex w-full items-center justify-center'>
+          <CircularProgress size={40} />
+        </div>
       ) : (
         <>
           <StyledCollectionButton
-            hasGames={!!collections?.length}
-            hasCollections={!!collections?.length}
+            hasGames={Boolean(collections?.length)}
+            hasCollections={Boolean(collections?.length)}
             onClick={toggleDialog}
           >
             Add new collection
@@ -296,7 +303,7 @@ const Collections = () => {
                   start: 0,
                 }}
               >
-                {!!collection.games.length ? (
+                {Boolean(collection.games.length) ? (
                   collection.games.map((game) => (
                     <StyledSplideSlide key={`${collection.name}:${game._id}`}>
                       <Card>
@@ -413,6 +420,6 @@ const Collections = () => {
       )}
     </StyledWrapper>
   );
-};
+}
 
 export default Collections;

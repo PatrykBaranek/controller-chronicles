@@ -4,7 +4,7 @@ import {
   RadioGroup as RadioGroupComponent,
 } from '@mui/material';
 import { Controller, type Control } from 'react-hook-form';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 type Props = {
   options: Value[];

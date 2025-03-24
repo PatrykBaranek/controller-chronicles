@@ -1,6 +1,6 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { type Control, Controller } from 'react-hook-form';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 type Props = {
   label: string;

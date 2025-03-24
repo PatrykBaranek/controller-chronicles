@@ -1,6 +1,6 @@
 import { GameDetailsResponse } from '#/types/types';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import CollectionCard from './CollectionCard';
 
 const StyledSplideSlide = styled(SplideSlide)`
