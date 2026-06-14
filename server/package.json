@@ -1,8 +1,6 @@
 {
-  "name": "controller-chronicles-api",
+  "name": "server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

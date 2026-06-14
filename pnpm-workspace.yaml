@@ -1,0 +1,11 @@
+packages:
+  - client
+  - server
+  - mobile
+
+allowBuilds:
+  '@nestjs/core': true
+  bcrypt: true
+  mongodb-client-encryption: true
+  puppeteer: true
+  sharp: true
