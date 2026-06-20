@@ -1,6 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ElementHandle, Page } from 'puppeteer';
-import { HowLongToBeatService as HLTBService, HowLongToBeatEntry } from 'howlongtobeat';
+import {
+  HowLongToBeatService as HLTBService,
+  HowLongToBeatEntry,
+} from 'howlongtobeat';
 
 import { PuppeteerService } from 'src/puppeteer/services/puppeteer.service';
 
@@ -22,7 +25,9 @@ export class HowLongToBeatService {
     this.hltbService = new HLTBService();
   }
 
-  async getGameByName(gameName: string): Promise<Partial<HowLongToBeatResponseDto>> {
+  async getGameByName(
+    gameName: string,
+  ): Promise<Partial<HowLongToBeatResponseDto>> {
     try {
       this.logger.log(`Searching for ${gameName} in HLTB API`);
       const hltbGame = await this.hltbService.search(gameName);
@@ -34,7 +39,9 @@ export class HowLongToBeatService {
     }
   }
 
-  private mapHltbGameToResponseDto(hltbGame: HowLongToBeatEntry): HowLongToBeatResponseDto {
+  private mapHltbGameToResponseDto(
+    hltbGame: HowLongToBeatEntry,
+  ): HowLongToBeatResponseDto {
     return {
       name: hltbGame.name,
       gameplayMain: hltbGame.gameplayMain,
@@ -43,9 +50,14 @@ export class HowLongToBeatService {
     };
   }
 
-  private async scrapeGameDetails(gameName: string): Promise<Partial<HowLongToBeatResponseDto>> {
+  private async scrapeGameDetails(
+    gameName: string,
+  ): Promise<Partial<HowLongToBeatResponseDto>> {
     return this.puppeteerService.withBrowser(async (browser) => {
-      const page = await this.puppeteerService.createPage(browser, this.HLTB_SEARCH_URL + gameName);
+      const page = await this.puppeteerService.createPage(
+        browser,
+        this.HLTB_SEARCH_URL + gameName,
+      );
 
       const HltbSearchResults = await this.getSearchResults(page);
 
@@ -67,17 +79,28 @@ export class HowLongToBeatService {
     return title.toLocaleLowerCase().includes(gameName.toLocaleLowerCase());
   }
 
-  private async getSearchResults(page: Page): Promise<ElementHandle<HTMLLIElement>[]> {
-    const HltbSearchResultsElement = await page.waitForSelector(SELECTORS.searchResults);
-
+  private async getSearchResults(
+    page: Page,
+  ): Promise<ElementHandle<HTMLLIElement>[]> {
+    const HltbSearchResultsElement = await page.waitForSelector(
+      SELECTORS.searchResults,
+    );
+    if (!HltbSearchResultsElement) {
+      return [];
+    }
     return HltbSearchResultsElement.$$('li');
   }
 
-  private async getGameTitle(result: ElementHandle<HTMLLIElement>): Promise<string> {
+  private async getGameTitle(
+    result: ElementHandle<HTMLLIElement>,
+  ): Promise<string> {
     return result.$eval(SELECTORS.gameTitle, (el) => el.textContent);
   }
 
-  private async getGameDetails(result: ElementHandle<HTMLLIElement>, HltbGameTitle: string): Promise<HowLongToBeatResponseDto> {
+  private async getGameDetails(
+    result: ElementHandle<HTMLLIElement>,
+    HltbGameTitle: string,
+  ): Promise<HowLongToBeatResponseDto> {
     const gameplayTimeElements = await this.getGameplayTimeElements(result);
 
     const gameplayMain = this.parseOrZero(gameplayTimeElements[0]);
@@ -92,7 +115,9 @@ export class HowLongToBeatService {
     };
   }
 
-  private async getGameplayTimeElements(result: ElementHandle<HTMLLIElement>): Promise<number[]> {
+  private async getGameplayTimeElements(
+    result: ElementHandle<HTMLLIElement>,
+  ): Promise<number[]> {
     return result
       .$$eval(SELECTORS.gameplayTime, (els) =>
         els.map((el, i) => {
@@ -104,7 +129,7 @@ export class HowLongToBeatService {
             return isNaN(Number(gameplayTime)) ? null : Number(gameplayTime);
           }
           return null;
-        })
+        }),
       )
       .then((times) => times.filter((time) => time !== null));
   }

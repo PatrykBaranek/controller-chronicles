@@ -18,8 +18,6 @@ export class AxiosExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    response
-      .status(status)
-      .json(responseBody)
+    response.status(status).json(responseBody);
   }
 }

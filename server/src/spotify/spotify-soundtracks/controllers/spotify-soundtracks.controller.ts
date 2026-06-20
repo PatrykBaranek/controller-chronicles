@@ -1,4 +1,14 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SpotifySoundtracksService } from '../services/spotify-soundtracks.service';
 import { ApiTags } from '@nestjs/swagger';
 import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
@@ -7,7 +17,9 @@ import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 @Controller('spotify/soundtracks')
 @UseGuards(SpotifyAuthGuard)
 export class SpotifySoundtracksController {
-  constructor(private readonly spotifySoundtracksService: SpotifySoundtracksService) {}
+  constructor(
+    private readonly spotifySoundtracksService: SpotifySoundtracksService,
+  ) {}
 
   @Get(':gameId')
   getSoundtracksForGame(@Param('gameId', ParseIntPipe) gameId: number) {

@@ -3,14 +3,13 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { OnEvent } from '@nestjs/event-emitter';
 
 interface EventPayloads {
-  'user.welcome': { email: string },
-  'user.reset-password': { email: string, link: string },
-  'user.verify-email': { email: string, otp: string },
+  'user.welcome': { email: string };
+  'user.reset-password': { email: string; link: string };
+  'user.verify-email': { email: string; otp: string };
 }
 
 @Injectable()
 export class EmailService {
-
   constructor(private readonly mailerService: MailerService) {}
 
   @OnEvent('user.reset-password')
@@ -24,8 +23,8 @@ export class EmailService {
       subject,
       template: './forgot-password',
       context: {
-        link: link
-      }
+        link: link,
+      },
     });
   }
 

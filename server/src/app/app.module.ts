@@ -45,7 +45,7 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
     SteamModule,
     YoutubeModule,
     GamesUpdateModule,
-    EmailModule
+    EmailModule,
   ],
   providers: [
     {
@@ -67,7 +67,7 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
     {
       provide: APP_FILTER,
       useClass: AxiosExceptionFilter,
-    }
+    },
   ],
 })
 export class AppModule {}

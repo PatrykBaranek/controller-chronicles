@@ -7,12 +7,8 @@ import { RawgApiModule } from 'src/rawg/rawg-api/rawg-api.module';
 import { UpdateStrategyFactory } from './services/strategies/update-strategy-factory';
 
 @Module({
-  imports: [
-    forwardRef(() => GamesModule),
-    HowLongToBeatModule,
-    RawgApiModule,
-  ],
+  imports: [forwardRef(() => GamesModule), HowLongToBeatModule, RawgApiModule],
   providers: [GamesUpdateService, UpdateStrategyFactory],
-  exports: [GamesUpdateService]
+  exports: [GamesUpdateService],
 })
 export class GamesUpdateModule {}

@@ -4,8 +4,10 @@ packages:
   - mobile
 
 allowBuilds:
-  '@nestjs/core': true
-  bcrypt: true
-  mongodb-client-encryption: true
-  puppeteer: true
-  sharp: true
+  '@nestjs/core': false
+  '@scarf/scarf': false
+  bcrypt: false
+  mongodb-client-encryption: false
+  puppeteer: false
+  sharp: false
+  unrs-resolver: false

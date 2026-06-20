@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { GetGameQueryParamsDto } from 'src/games/dto/get-game-query-params.dto';
@@ -8,16 +15,17 @@ import { PaginationDto } from 'src/rawg/helpers/dto/pagination.dto';
 
 import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
 
-
 @ApiTags('api/games')
 @Controller('games')
 export class GamesController {
-  constructor(
-    private readonly gamesService: GamesService,
-  ) { }
+  constructor(private readonly gamesService: GamesService) {}
 
   @ApiOperation({ summary: 'Get games' })
-  @ApiResponse({ status: 200, description: 'Returns a list of games', type: [PaginationDto<RawgGameResponseDto>] })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of games',
+    type: [PaginationDto<RawgGameResponseDto>],
+  })
   @Get()
   async getGames(@Query() queryParams: GetGameQueryParamsDto) {
     return this.gamesService.getGames(queryParams);
@@ -30,10 +38,16 @@ export class GamesController {
     return this.gamesService.getGameById(id);
   }
 
-  @ApiOperation({ summary: 'Update game reviews embargo date'})
-  @ApiResponse({ status: 201, description: 'Manualy set game review embargo date' })
+  @ApiOperation({ summary: 'Update game reviews embargo date' })
+  @ApiResponse({
+    status: 201,
+    description: 'Manualy set game review embargo date',
+  })
   @Post(':id/embargo-date')
-  async setEmbargeDate(@Param('id', ParseIntPipe) id: number, @Query('date') date: Date) {
+  async setEmbargeDate(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('date') date: Date,
+  ) {
     return this.gamesService.setGameReviewEmbargoDate(id, date);
   }
 

@@ -11,24 +11,41 @@ export class CollectionsService {
     private readonly gamesService: GamesService,
   ) {}
 
-  async createCollection(userId: string, createNewCollectionDto: CreateNewCollectionDto) {
-    return await this.collectionsRepository.createCollection(userId, createNewCollectionDto);
+  async createCollection(
+    userId: string,
+    createNewCollectionDto: CreateNewCollectionDto,
+  ) {
+    return await this.collectionsRepository.createCollection(
+      userId,
+      createNewCollectionDto,
+    );
   }
 
   async deleteCollection(userId: string, collectionId: string) {
-    return await this.collectionsRepository.deleteCollection(userId, collectionId);
+    return await this.collectionsRepository.deleteCollection(
+      userId,
+      collectionId,
+    );
   }
 
   async addGameToCollection(gameToCollectionDto: AddGameToCollectionDto) {
-    const game = await this.gamesService.getGameById(gameToCollectionDto.gameId);
+    const game = await this.gamesService.getGameById(
+      gameToCollectionDto.gameId,
+    );
 
-    return await this.collectionsRepository.addGameToCollection(game, gameToCollectionDto.collectionId);
+    return await this.collectionsRepository.addGameToCollection(
+      game,
+      gameToCollectionDto.collectionId,
+    );
   }
 
   async deleteGameFromCollection(collectionId: string, gameId: number) {
     const game = await this.gamesService.getGameById(gameId);
 
-    return await this.collectionsRepository.deleteGameFromCollection(game, collectionId);
+    return await this.collectionsRepository.deleteGameFromCollection(
+      game,
+      collectionId,
+    );
   }
 
   async getCollections(userId: string) {

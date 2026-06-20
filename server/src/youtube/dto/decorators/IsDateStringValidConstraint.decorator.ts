@@ -1,4 +1,9 @@
-import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { parse, isValid } from 'date-fns';
 
 @ValidatorConstraint({ async: false })
@@ -14,7 +19,7 @@ export class IsDateStringValidConstraint implements ValidatorConstraintInterface
 }
 
 export function IsDateStringValid(validationOptions?: ValidationOptions) {
-  return (object: Object, propertyName: string) => {
+  return (object: object, propertyName: string) => {
     registerDecorator({
       name: 'IsDateStringValid',
       target: object.constructor,

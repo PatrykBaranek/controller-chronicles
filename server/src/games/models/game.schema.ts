@@ -132,12 +132,12 @@ export class Game {
   steam_players_in_game?: SteamPlayersInGame;
 
   @Prop({
-    type: Array<YoutubeVideo>
+    type: Array<YoutubeVideo>,
   })
   video_reviews?: YoutubeVideo[];
 
   @Prop({
-    type: Array<YoutubeVideo>
+    type: Array<YoutubeVideo>,
   })
   game_trailers?: YoutubeVideo[];
 
@@ -147,7 +147,7 @@ export class Game {
   review_embargo_date?: Date;
 
   @Prop({
-    type: Array<ReviewsSites>
+    type: Array<ReviewsSites>,
   })
   reviews_sites?: ReviewsSites[];
 

@@ -12,21 +12,29 @@ export class SpotifySoundtracksService {
   async getSoundtracksForGame(gameId: number) {
     const game = await this.gamesService.getGameById(gameId);
 
-    const soundtracks = await this.spotifyAuthService.api.searchAlbums(game.rawgGame.name + ' soundtrack');
+    const soundtracks = await this.spotifyAuthService.api.searchAlbums(
+      game.rawgGame.name + ' soundtrack',
+    );
 
-    return soundtracks.body.albums.items.filter(item => item.name.includes(game.rawgGame.name));
+    return soundtracks.body.albums!.items.filter((item) =>
+      item.name.includes(game.rawgGame.name),
+    );
   }
 
   async getPlaylistsForGame(gameId: number) {
     const game = await this.gamesService.getGameById(gameId);
 
-    const playlists = await this.spotifyAuthService.api.searchPlaylists(game.rawgGame.name);
+    const playlists = await this.spotifyAuthService.api.searchPlaylists(
+      game.rawgGame.name,
+    );
 
-    return playlists.body.playlists.items.filter(item => item.name.includes(game.rawgGame.name));
+    return playlists.body.playlists!.items.filter((item) =>
+      item.name.includes(game.rawgGame.name),
+    );
   }
 
   async addSoundtrack(id: string) {
-    if (this.isInUserLibrary(id)) {
+    if (await this.isInUserLibrary(id)) {
       throw new BadRequestException('Soundtrack is already saved');
     }
     await this.spotifyAuthService.api.addToMySavedAlbums([id]);
@@ -37,7 +45,7 @@ export class SpotifySoundtracksService {
   }
 
   async removeSoundtrack(id: string) {
-    if (!this.isInUserLibrary(id)) {
+    if (!(await this.isInUserLibrary(id))) {
       throw new BadRequestException('Soundtrack is not saved');
     }
 
@@ -49,6 +57,7 @@ export class SpotifySoundtracksService {
   }
 
   private async isInUserLibrary(id: string) {
-    return (await this.spotifyAuthService.api.containsMySavedAlbums([id])).body[0];
+    return (await this.spotifyAuthService.api.containsMySavedAlbums([id]))
+      .body[0];
   }
 }

@@ -2,7 +2,6 @@ import { IsString } from 'class-validator';
 import { IsSameAs } from './decorators/is-same-as.decorator';
 
 export class ResetPasswordDto {
-
   @IsString()
   password: string;
 

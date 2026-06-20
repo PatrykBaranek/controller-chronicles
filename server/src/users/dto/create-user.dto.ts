@@ -4,11 +4,11 @@ import { User } from '../models/user.schema';
 export class CreateUserDto extends User {
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  declare email: string;
 
   @IsStrongPassword()
   @IsNotEmpty()
-  password: string;
+  declare password: string;
 
-  refresh_token: string;
+  declare refresh_token: string;
 }

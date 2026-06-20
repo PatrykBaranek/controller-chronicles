@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { YoutubeService } from '../services/youtube.service';
 
@@ -9,17 +18,20 @@ import { DeleteVideoDto } from '../dto/delete-video.dto';
 @ApiTags('api/youtube')
 @Controller('youtube')
 export class YoutubeController {
-
   constructor(private readonly youtubeService: YoutubeService) {}
 
   @ApiOperation({ summary: 'Get game video review or by game ID' })
   @Get()
-  async getGameVideoReviewByGameId(@Query() getGameVideoReviewDto: GetGameVideoReviewDto) {
+  async getGameVideoReviewByGameId(
+    @Query() getGameVideoReviewDto: GetGameVideoReviewDto,
+  ) {
     return this.youtubeService.getGameVideosByGameId(getGameVideoReviewDto);
   }
 
   @Get('videos/date-range')
-  async getTrailerOrReviewByDateRange(@Query() getVideosByDateRangeDto: GetVideosByDateRangeDto) {
+  async getTrailerOrReviewByDateRange(
+    @Query() getVideosByDateRangeDto: GetVideosByDateRangeDto,
+  ) {
     return this.youtubeService.getVideosByDateRange(getVideosByDateRangeDto);
   }
 

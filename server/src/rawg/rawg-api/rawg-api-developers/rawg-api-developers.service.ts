@@ -9,14 +9,14 @@ import { RawgDeveloperResponseDto } from 'src/rawg/rawg-developers/dto/rawg-deve
 export class RawgApiDevelopersService extends RawgApiService {
   constructor(
     private readonly configService: ConfigService,
-    protected readonly httpService: HttpService
+    protected readonly httpService: HttpService,
   ) {
     super(httpService, 'developers');
   }
 
   async getDevelopers(page: number, page_size: number) {
     const paramsObject = {
-      key: this.configService.get<string>('RAWG_API_KEY'),
+      key: this.configService.get<string>('RAWG_API_KEY')!,
       page: page.toString(),
       page_size: page_size.toString(),
     };
@@ -27,7 +27,11 @@ export class RawgApiDevelopersService extends RawgApiService {
       params: httpParams,
     });
 
-    return paginateResponse(response, page, page_size, RawgDeveloperResponseDto,
+    return paginateResponse(
+      response,
+      page,
+      page_size,
+      RawgDeveloperResponseDto,
       { showTotalPages: false },
     );
   }

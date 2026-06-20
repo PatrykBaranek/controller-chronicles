@@ -1,7 +1,6 @@
-import { IsIn, IsNotEmpty, IsNumberString, IsString } from "class-validator";
-import { VideoType } from "../util/youtube-utility.service";
-import { ApiProperty } from "@nestjs/swagger";
-
+import { IsIn, IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import { VideoType } from '../util/youtube-utility.service';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DeleteVideoDto {
   @ApiProperty()

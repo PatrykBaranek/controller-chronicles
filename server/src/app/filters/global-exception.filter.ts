@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AxiosError } from 'axios';
 
 interface ExceptionResponse {
@@ -21,7 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = context.getRequest();
     const exceptionResponse = exception.getResponse() as ExceptionResponse;
 
-    const status = 
+    const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -34,8 +40,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    response
-      .status(status)
-      .json(responseBody);
+    response.status(status).json(responseBody);
   }
 }

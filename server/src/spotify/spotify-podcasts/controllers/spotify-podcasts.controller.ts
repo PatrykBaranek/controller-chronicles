@@ -1,5 +1,20 @@
-import { Controller, Delete, Get, HttpCode, Param, Post, Query, UseGuards, HttpStatus } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DefaultQueryParamsDto } from 'src/spotify/dto/default-query-params.dto';
 import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 import { SpotifyPodcastsService } from '../services/spotify-podcasts.service';
@@ -35,7 +50,10 @@ export class SpotifyPodcastsController {
   }
 
   @ApiOperation({ summary: 'Add podcast to user library' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'Podcast added to user library' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Podcast added to user library',
+  })
   @HttpCode(HttpStatus.CREATED)
   @Post('/add/:id')
   async addPodcastToMyList(@Param('id') id: string) {
@@ -47,7 +65,10 @@ export class SpotifyPodcastsController {
   }
 
   @ApiOperation({ summary: 'Remove podcast from user library' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Podcast removed from user library' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Podcast removed from user library',
+  })
   @HttpCode(HttpStatus.OK)
   @Delete('/remove/:id')
   async removePodcastFromMyList(@Param('id') id: string) {

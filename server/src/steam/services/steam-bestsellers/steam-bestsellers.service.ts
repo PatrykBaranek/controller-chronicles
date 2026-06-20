@@ -12,18 +12,19 @@ const SELECTORS = {
   title: '.title',
   link: 'a',
   price: '.discount_final_price',
-}
+};
 
 @Injectable()
 export class SteamBestSellersService {
   private readonly logger = new Logger(SteamBestSellersService.name);
-  private readonly steamBestsellersUrl = 'https://store.steampowered.com/search/?ignore_preferences=1&category1=998&os=win%2Cmac%2Clinux&hidef2p=1&filter=topsellers&ndl=1';
+  private readonly steamBestsellersUrl =
+    'https://store.steampowered.com/search/?ignore_preferences=1&category1=998&os=win%2Cmac%2Clinux&hidef2p=1&filter=topsellers&ndl=1';
 
   constructor(
     private readonly steamRepository: SteamRepository,
     private readonly steamUtilityService: SteamUtilityService,
     private readonly puppeteerService: PuppeteerService,
-  ) { }
+  ) {}
 
   async getBestSellers() {
     try {
@@ -32,7 +33,7 @@ export class SteamBestSellersService {
         return this.steamRepository.getBestSellers();
       }
       const bestSellersJson = await this.scrapeBestSellers();
-      
+
       return bestSellersJson;
     } catch (err) {
       this.logger.error('Error while scraping bestsellers from Steam', err);
@@ -44,33 +45,43 @@ export class SteamBestSellersService {
   private async scrapeBestSellers(): Promise<SteamBestSellers> {
     this.logger.log('Scraping bestsellers from Steam');
     return this.puppeteerService.withBrowser(async (browser) => {
-      const page = await this.puppeteerService.createPage(browser, this.steamBestsellersUrl);
+      const page = await this.puppeteerService.createPage(
+        browser,
+        this.steamBestsellersUrl,
+      );
 
-      const bestsellersList = await page.waitForSelector(SELECTORS.bestSellersList);
+      const bestsellersList = await page.waitForSelector(
+        SELECTORS.bestSellersList,
+      );
+      if (!bestsellersList) {
+        throw new Error('Could not find bestsellers list on Steam page');
+      }
 
-      const listOfBestSellingGameHTMLElements = await bestsellersList.$$(SELECTORS.game);
+      const listOfBestSellingGameHTMLElements = await bestsellersList.$$(
+        SELECTORS.game,
+      );
 
       const bestSellingGamesFromSteam = await Promise.all(
         listOfBestSellingGameHTMLElements.map(async (gameHTMLElement) => {
           const img = await gameHTMLElement
             .$(SELECTORS.img)
-            .then((el) => el.evaluate((el) => el.getAttribute('src')))
-            .catch((err) => { 
+            .then((el) => el!.evaluate((el) => el.getAttribute('src')))
+            .catch((err) => {
               this.logger.error('Error while getting img from Steam', err);
               return '';
             });
 
           const name = await gameHTMLElement
             .$(SELECTORS.title)
-            .then((title) => title.evaluate((title) => title.textContent))
+            .then((title) => title!.evaluate((title) => title.textContent))
             .catch((err) => {
               this.logger.error('Error while getting title from Steam', err);
               return '';
             });
 
           const link = await gameHTMLElement
-            .evaluate(el => el.getAttribute('href'))
-            .catch(err => {
+            .evaluate((el) => el.getAttribute('href'))
+            .catch((err) => {
               this.logger.error('Error while getting link from Steam', err);
               return '';
             });
@@ -84,11 +95,11 @@ export class SteamBestSellersService {
       );
 
       const bestSellers: SteamBestSellers = {
-        games: bestSellingGamesFromSteam,
+        games: bestSellingGamesFromSteam as any,
       };
 
       await this.steamRepository.saveBestSellers({
-        games: bestSellingGamesFromSteam,
+        games: bestSellingGamesFromSteam as any,
       });
 
       return bestSellers;

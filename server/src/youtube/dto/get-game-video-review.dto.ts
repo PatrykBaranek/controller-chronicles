@@ -14,10 +14,7 @@ export class GetGameVideoReviewDto {
   @ApiProperty({
     description: 'Video type',
     required: true,
-    enum: [
-      VideoType.REVIEW,
-      VideoType.TRAILER,
-    ],
+    enum: [VideoType.REVIEW, VideoType.TRAILER],
   })
   @IsIn([VideoType.REVIEW, VideoType.TRAILER])
   videoType: VideoType;

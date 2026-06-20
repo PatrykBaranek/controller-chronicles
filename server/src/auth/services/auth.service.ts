@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
@@ -28,7 +33,10 @@ export class AuthService {
     this.eventEmitter.emit('user.welcome', { email });
 
     const hashedPassword = await this.hashService.hashData(password);
-    const newUser = await this.usersService.create({ ...createUserDto, password: hashedPassword });
+    const newUser = await this.usersService.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
     const tokens = await this.getTokens(newUser._id, newUser.email);
 
     await this.updateRefreshToken(newUser._id, tokens.refresh_token);
@@ -45,7 +53,10 @@ export class AuthService {
       throw new NotFoundException('User does not exist');
     }
 
-    const passwordMatches = await this.hashService.compare(password, user.password);
+    const passwordMatches = await this.hashService.compare(
+      password,
+      user.password,
+    );
 
     if (!passwordMatches) {
       throw new BadRequestException('Invalid credentials');
@@ -64,7 +75,13 @@ export class AuthService {
       throw new NotFoundException('User does not exist');
     }
 
-    const resetToken = await this.jwtService.signAsync({ email }, { secret: this.configService.get<string>('JWT_RESET_SECRET'), expiresIn: '15m' });
+    const resetToken = await this.jwtService.signAsync(
+      { email },
+      {
+        secret: this.configService.get<string>('JWT_RESET_SECRET'),
+        expiresIn: '15m',
+      },
+    );
     const link = `${this.configService.get<string>('FRONTEND_URL')}/reset-password?token=${resetToken}`;
 
     this.eventEmitter.emit('user.reset-password', { email, link });
@@ -73,7 +90,9 @@ export class AuthService {
   }
 
   public async resetPassword(token: string, password: string) {
-    const { email } = await this.jwtService.verifyAsync(token, { secret: this.configService.get<string>('JWT_RESET_SECRET') });
+    const { email } = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get<string>('JWT_RESET_SECRET'),
+    });
     const user = await this.usersService.findByEmail(email);
 
     if (!user || !user.reset_token) {
@@ -81,11 +100,14 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashService.hashData(password);
-    await this.usersService.update(user._id, { password: hashedPassword, reset_token: null });
+    await this.usersService.update(user._id, {
+      password: hashedPassword,
+      reset_token: null as any,
+    });
   }
 
   public async logout(userId: string) {
-    return this.usersService.update(userId, { refresh_token: null });
+    return this.usersService.update(userId, { refresh_token: null as any });
   }
 
   public async refreshTokens(userId: string, refreshToken: string) {
@@ -95,7 +117,10 @@ export class AuthService {
       throw new BadRequestException('Access Denied');
     }
 
-    const refreshTokenMatches = await this.hashService.compare(refreshToken, user.refresh_token);
+    const refreshTokenMatches = await this.hashService.compare(
+      refreshToken,
+      user.refresh_token,
+    );
 
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access Denied');
@@ -109,15 +134,23 @@ export class AuthService {
 
   private async updateRefreshToken(userId: string, refreshToken: string) {
     const hashedRefreshToken = await this.hashService.hashData(refreshToken);
-    await this.usersService.update(userId, { refresh_token: hashedRefreshToken });
+    await this.usersService.update(userId, {
+      refresh_token: hashedRefreshToken,
+    });
   }
 
   private async getTokens(userId: string, email: string) {
-    const accessTokenPayload  = { email, sub: userId };
+    const accessTokenPayload = { email, sub: userId };
     const refreshTokenPayload = { email, sub: userId, tokenType: 'refresh' };
 
-    const access_token  = await this.jwtService.signAsync(accessTokenPayload, { secret: this.configService.get<string>('JWT_ACCESS_SECRET'), expiresIn: '15m' });
-    const refresh_token = await this.jwtService.signAsync(refreshTokenPayload, { secret: this.configService.get<string>('JWT_REFRESH_SECRET'), expiresIn: '7d' });
+    const access_token = await this.jwtService.signAsync(accessTokenPayload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: '15m',
+    });
+    const refresh_token = await this.jwtService.signAsync(refreshTokenPayload, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: '7d',
+    });
 
     return {
       access_token,

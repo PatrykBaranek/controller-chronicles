@@ -13,12 +13,13 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule.register({}),
-    JwtModule.register({})
+  imports: [UsersModule, PassportModule.register({}), JwtModule.register({})],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    HashService,
   ],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy, HashService],
   controllers: [AuthController],
   exports: [AuthService],
 })

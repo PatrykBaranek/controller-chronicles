@@ -7,13 +7,11 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiTags('api/steam')
 @Controller('steam')
 export class SteamController {
-
   constructor(
     private readonly steamBestSellersService: SteamBestSellersService,
     private readonly steamReviewsService: SteamReviewsService,
     private readonly steamPlayersInGameService: SteamPlayersInGameService,
   ) {}
-
 
   @ApiOperation({ summary: 'Get steam bestsellers' })
   @Get('bestsellers')
@@ -29,8 +27,9 @@ export class SteamController {
 
   @ApiOperation({ summary: 'Get steam players count by game ID' })
   @Get(':gameId/players-count')
-  async getSteamPlayersCountByGameId(@Param('gameId', ParseIntPipe) gameId: number) {
+  async getSteamPlayersCountByGameId(
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
     return this.steamPlayersInGameService.getSteamPlayersCountByGameId(gameId);
   }
-
 }

@@ -5,7 +5,10 @@ import { Injectable } from '@nestjs/common';
 export abstract class RawgApiService {
   protected rawgApiUrl = 'https://api.rawg.io/api/';
 
-  constructor(protected readonly httpService: HttpService, routeName: string) {
+  constructor(
+    protected readonly httpService: HttpService,
+    routeName: string,
+  ) {
     this.rawgApiUrl += routeName;
   }
 }

@@ -24,4 +24,4 @@ import { GamesModule } from 'src/games/games.module';
     SpotifySoundtracksController,
   ],
 })
-export class SpotifyModule { }
+export class SpotifyModule {}

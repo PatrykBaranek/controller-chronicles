@@ -1,16 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService }      from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { google, youtube_v3 } from 'googleapis';
-import { differenceInDays }   from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { plainToInstance } from 'class-transformer';
 
-import { SearchResultDto }         from '../dto/search-result.dto';
-import { GamesService }            from 'src/games/services/games.service';
-import { GamesRepository }         from 'src/games/database/games.repository';
-import { GetGameVideoReviewDto }   from '../dto/get-game-video-review.dto';
+import { SearchResultDto } from '../dto/search-result.dto';
+import { GamesService } from 'src/games/services/games.service';
+import { GamesRepository } from 'src/games/database/games.repository';
+import { GetGameVideoReviewDto } from '../dto/get-game-video-review.dto';
 import { GetVideosByDateRangeDto } from '../dto/get-videos-by-date-range.dto';
 
-import { VideoType, YoutubeUtilityService } from '../util/youtube-utility.service';
+import {
+  VideoType,
+  YoutubeUtilityService,
+} from '../util/youtube-utility.service';
 import { Game, GameDocument } from 'src/games/models/game.schema';
 import { YoutubeVideo } from '../models/youtube-video.schema';
 import { DeleteVideoDto } from '../dto/delete-video.dto';
@@ -32,7 +35,9 @@ export class YoutubeService {
     private readonly youtubeUtilityService: YoutubeUtilityService,
   ) {}
 
-  async getGameVideosByGameId(getGameVideoReviewDto: GetGameVideoReviewDto): Promise<SearchResultDto[]> {
+  async getGameVideosByGameId(
+    getGameVideoReviewDto: GetGameVideoReviewDto,
+  ): Promise<SearchResultDto[]> {
     const { gameId, videoType } = getGameVideoReviewDto;
 
     const videos = await this.getOrFetchGameVideos(gameId, videoType);
@@ -40,16 +45,24 @@ export class YoutubeService {
     return videos;
   }
 
-  async getVideosByDateRange(getVideosByDateRangeDto: GetVideosByDateRangeDto): Promise<SearchResultDto[]> {
+  async getVideosByDateRange(
+    getVideosByDateRangeDto: GetVideosByDateRangeDto,
+  ): Promise<SearchResultDto[]> {
     const { fromDate, toDate, videoType, gamesCount } = getVideosByDateRangeDto;
 
     const dateQuery = `${fromDate},${toDate}`;
 
-    const games = await this.gamesService.getGames({ page: 1, page_size: gamesCount, dates: dateQuery });
+    const games = await this.gamesService.getGames({
+      page: 1,
+      page_size: gamesCount,
+      dates: dateQuery,
+    });
 
-    const videos = await Promise.all(games.results.map(async (game) => {
-      return await this.getOrFetchGameVideos(game.id, videoType);
-    }));
+    const videos = await Promise.all(
+      games.results.map(async (game) => {
+        return await this.getOrFetchGameVideos(game.id, videoType);
+      }),
+    );
 
     return videos.flat();
   }
@@ -64,75 +77,147 @@ export class YoutubeService {
     }
 
     if (videoType === VideoType.REVIEW) {
-      const videoReviews = gameInDb.video_reviews.filter(video => !video.link.includes(videoId));
-      await this.gamesRepository.updateGame(gameId, { video_reviews: videoReviews });
+      const videoReviews = gameInDb.video_reviews!.filter(
+        (video) => !video.link.includes(videoId),
+      );
+      await this.gamesRepository.updateGame(gameId, {
+        video_reviews: videoReviews,
+      });
     }
 
     if (videoType === VideoType.TRAILER) {
-      const gameTrailers = gameInDb.game_trailers.filter(video => !video.link.includes(videoId));
-      await this.gamesRepository.updateGame(gameId, { game_trailers: gameTrailers });
+      const gameTrailers = gameInDb.game_trailers!.filter(
+        (video) => !video.link.includes(videoId),
+      );
+      await this.gamesRepository.updateGame(gameId, {
+        game_trailers: gameTrailers,
+      });
     }
   }
 
-  private async getOrFetchGameVideos(gameId: number, videoType: VideoType, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
-    const gameInDb = await this.youtubeUtilityService.fetchGame(gameId, videoType);
-    const videoFieldName = this.youtubeUtilityService.getVideoFieldName(videoType);
+  private async getOrFetchGameVideos(
+    gameId: number,
+    videoType: VideoType,
+    apiParams?: youtube_v3.Params$Resource$Search$List,
+  ): Promise<SearchResultDto[]> {
+    const gameInDb = await this.youtubeUtilityService.fetchGame(
+      gameId,
+      videoType,
+    );
+    const videoFieldName =
+      this.youtubeUtilityService.getVideoFieldName(videoType);
 
     const cachedVideos = this.getCachedVideosIfValid(gameInDb, videoFieldName);
     if (cachedVideos) {
       return cachedVideos;
     }
 
-    return this.fetchAndUpdateGameVideos(gameInDb, videoFieldName, videoType, apiParams);
+    return this.fetchAndUpdateGameVideos(
+      gameInDb,
+      videoFieldName,
+      videoType,
+      apiParams,
+    );
   }
 
-  private getCachedVideosIfValid(gameInDb: Game, videoFieldName: keyof GameDocument): SearchResultDto[] | null {
-    const dayDifference = differenceInDays(new Date(), gameInDb.updatedAt);
-    const isCacheValid = gameInDb[videoFieldName]?.length > 0 && dayDifference <= DAY_DIFFERENCE_THRESHOLD;
+  private getCachedVideosIfValid(
+    gameInDb: Game,
+    videoFieldName: keyof GameDocument,
+  ): SearchResultDto[] | null {
+    const dayDifference = differenceInDays(
+      new Date(),
+      gameInDb.updatedAt ?? new Date(),
+    );
+    const isCacheValid =
+      gameInDb[videoFieldName]?.length > 0 &&
+      dayDifference <= DAY_DIFFERENCE_THRESHOLD;
 
     if (isCacheValid) {
-      this.logger.log(`Using cached ${videoFieldName} for game ${gameInDb.rawgGame.name}`);
+      this.logger.log(
+        `Using cached ${videoFieldName} for game ${gameInDb.rawgGame.name}`,
+      );
       return gameInDb[videoFieldName];
     }
 
     return null;
   }
 
-  private async fetchAndUpdateGameVideos(gameInDb: Game, videoFieldName: keyof GameDocument, videoType: VideoType, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
+  private async fetchAndUpdateGameVideos(
+    gameInDb: Game,
+    videoFieldName: keyof GameDocument,
+    videoType: VideoType,
+    apiParams?: youtube_v3.Params$Resource$Search$List,
+  ): Promise<SearchResultDto[]> {
     try {
-      this.logger.log(`Fetching ${videoType} for game ${gameInDb.rawgGame.name}`);
-      const searchQuery = this.youtubeUtilityService.constructQuery(gameInDb.rawgGame.name, videoType);
-      const videos = await this.youtubeSearch(gameInDb._id, searchQuery, apiParams);
-      let filteredVideos = this.youtubeUtilityService.filterResults(videos, videoType);
+      this.logger.log(
+        `Fetching ${videoType} for game ${gameInDb.rawgGame.name}`,
+      );
+      const searchQuery = this.youtubeUtilityService.constructQuery(
+        gameInDb.rawgGame.name,
+        videoType,
+      );
+      const videos = await this.youtubeSearch(
+        gameInDb._id,
+        searchQuery,
+        apiParams,
+      );
+      let filteredVideos = this.youtubeUtilityService.filterResults(
+        videos,
+        videoType,
+      );
 
-      filteredVideos = this.mergeWithExistingVideos(filteredVideos, gameInDb[videoFieldName]);
+      filteredVideos = this.mergeWithExistingVideos(
+        filteredVideos,
+        gameInDb[videoFieldName],
+      );
       await this.saveGameVideos(gameInDb._id, filteredVideos, videoFieldName);
 
       return filteredVideos;
     } catch (err) {
-      this.logger.error(`Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`);
+      this.logger.error(
+        `Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`,
+      );
       return gameInDb[videoFieldName] ?? [];
     }
   }
 
-  private mergeWithExistingVideos(newVideos: SearchResultDto[], existingVideos?: SearchResultDto[]): SearchResultDto[] {
+  private mergeWithExistingVideos(
+    newVideos: SearchResultDto[],
+    existingVideos?: SearchResultDto[],
+  ): SearchResultDto[] {
     if (!existingVideos) {
       return newVideos;
     }
 
-    const existingVideoLinks = new Set(existingVideos.map(video => video.link));
-    const uniqueNewVideos = newVideos.filter(video => !existingVideoLinks.has(video.link));
+    const existingVideoLinks = new Set(
+      existingVideos.map((video) => video.link),
+    );
+    const uniqueNewVideos = newVideos.filter(
+      (video) => !existingVideoLinks.has(video.link),
+    );
 
     return [...existingVideos, ...uniqueNewVideos];
   }
 
-  private async saveGameVideos(gameId: number, videos: SearchResultDto[], videoFieldName: keyof GameDocument): Promise<void> {
-    const youtubeVideos = videos.map(videoDto => plainToInstance(YoutubeVideo, videoDto));
+  private async saveGameVideos(
+    gameId: number,
+    videos: SearchResultDto[],
+    videoFieldName: keyof GameDocument,
+  ): Promise<void> {
+    const youtubeVideos = videos.map((videoDto) =>
+      plainToInstance(YoutubeVideo, videoDto),
+    );
 
-    await this.gamesRepository.updateGame(gameId, { [videoFieldName]: youtubeVideos });
+    await this.gamesRepository.updateGame(gameId, {
+      [videoFieldName]: youtubeVideos,
+    });
   }
 
-  private async youtubeSearch(gameId: number, query: string, apiParams?: youtube_v3.Params$Resource$Search$List): Promise<SearchResultDto[]> {
+  private async youtubeSearch(
+    gameId: number,
+    query: string,
+    apiParams?: youtube_v3.Params$Resource$Search$List,
+  ): Promise<SearchResultDto[]> {
     try {
       const requestOptions: youtube_v3.Params$Resource$Search$List = {
         key: this.configService.get<string>('YOUTUBE_API_KEY'),
@@ -146,15 +231,17 @@ export class YoutubeService {
       };
 
       const response = await this.youtube.search.list(requestOptions);
-      return response.data.items.map((item) => ({
+      return response.data.items!.map((item) => ({
         game_id: gameId,
-        title: item.snippet?.title,
-        thumbnail: item.snippet?.thumbnails?.high?.url,
-        author: item.snippet?.channelTitle,
+        title: item.snippet?.title ?? '',
+        thumbnail: item.snippet?.thumbnails?.high?.url ?? '',
+        author: item.snippet?.channelTitle ?? '',
         link: `https://www.youtube.com/embed/${item.id?.videoId}`,
       }));
     } catch (err) {
-      this.logger.error(`Error fetching videos from Youtube: ${err} for query ${query}`);
+      this.logger.error(
+        `Error fetching videos from Youtube: ${err} for query ${query}`,
+      );
       return [];
     }
   }

@@ -25,12 +25,21 @@ export class SpotifyAuthController {
   async handleCallback(@Query('code') code: string, @Res() res: Response) {
     const tokens = await this.spotifyAuthService.getTokens(code);
 
-    res.cookie('spotify_access_token', tokens.access_token, { httpOnly: true, secure: true, expires: new Date(Date.now() + tokens.expires_in * 1000) });
-    res.cookie('spotify_refresh_token', tokens.refresh_token, { httpOnly: true, secure: true });
+    res.cookie('spotify_access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: true,
+      expires: new Date(Date.now() + tokens.expires_in * 1000),
+    });
+    res.cookie('spotify_refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
 
-    const redirectUrl = this.configService.get<string>('SPOTIFY_CLIENT_REDIRECT_URI_AUTH_SUCCESS');
+    const redirectUrl = this.configService.get<string>(
+      'SPOTIFY_CLIENT_REDIRECT_URI_AUTH_SUCCESS',
+    );
 
-    res.redirect(redirectUrl);
+    res.redirect(redirectUrl!);
   }
 
   @Get('getMe')

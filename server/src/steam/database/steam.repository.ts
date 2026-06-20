@@ -2,8 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { SteamBestSellers, SteamBestSellersDocument } from '../models/steam-bestsellers.schema';
-import { SteamReviews, SteamReviewsDocument} from '../models/steam-reviews.schema';
+import {
+  SteamBestSellers,
+  SteamBestSellersDocument,
+} from '../models/steam-bestsellers.schema';
+import {
+  SteamReviews,
+  SteamReviewsDocument,
+} from '../models/steam-reviews.schema';
 import { Game, GameDocument } from 'src/games/models/game.schema';
 import { SteamPlayersInGame } from '../models/steam-players-in-game.schema';
 
@@ -27,7 +33,7 @@ export class SteamRepository {
 
   async saveReviews(reviews: SteamReviews) {
     const game = await this.gameModel.findOne({
-      _id: reviews.game_id,
+      _id: reviews.game_id as any,
     });
 
     if (!game) {
@@ -45,15 +51,14 @@ export class SteamRepository {
     const end = new Date();
     end.setHours(23, 59, 59, 999);
 
-    const bestSellersFromDb = await this.steamBestSellerModel.find(
-        {
-          updatedAt: {
-            $gte: start,
-            $lte: end,
-          },
+    const bestSellersFromDb = await this.steamBestSellerModel
+      .find({
+        updatedAt: {
+          $gte: start,
+          $lte: end,
         },
-      ).sort({ updatedAt: -1 });
-
+      })
+      .sort({ updatedAt: -1 });
 
     return bestSellersFromDb[0];
   }

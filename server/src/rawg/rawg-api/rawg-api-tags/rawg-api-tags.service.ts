@@ -16,7 +16,7 @@ export class RawgApiTagsService extends RawgApiService {
 
   async getTags(page: number, page_size: number) {
     const paramsObject = {
-      key: this.configService.get<string>('RAWG_API_KEY'),
+      key: this.configService.get<string>('RAWG_API_KEY')!,
       page: page.toString(),
       page_size: page_size.toString(),
     };

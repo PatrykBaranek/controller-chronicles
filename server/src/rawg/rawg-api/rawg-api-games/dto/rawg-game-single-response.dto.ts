@@ -1,5 +1,17 @@
-import { Exclude, Type } from "class-transformer";
-import { AddedByStatus, DevelopersEntityOrGenresEntityOrPublishersEntity, MetacriticPlatformsEntity, ParentPlatformsEntity, PlatformOrEsrbRating, PlatformsEntity, RatingsEntity, RawgGameResponse, Reactions, StoresEntity, TagsEntity } from "src/rawg/types/rawg-game-response";
+import { Exclude, Type } from 'class-transformer';
+import {
+  AddedByStatus,
+  DevelopersEntityOrGenresEntityOrPublishersEntity,
+  MetacriticPlatformsEntity,
+  ParentPlatformsEntity,
+  PlatformOrEsrbRating,
+  PlatformsEntity,
+  RatingsEntity,
+  RawgGameResponse,
+  Reactions,
+  StoresEntity,
+  TagsEntity,
+} from 'src/rawg/types/rawg-game-response';
 
 export class RawgGameSingleResponseDto implements RawgGameResponse {
   name: string;
@@ -38,10 +50,10 @@ export class RawgGameSingleResponseDto implements RawgGameResponse {
 
   @Exclude()
   id: number;
-  
+
   @Exclude()
   slug: string;
-  
+
   @Exclude()
   name_original: string;
 

@@ -5,24 +5,41 @@ import { SpotifyItemObjectDto } from '../../dto/spotify-item-object.dto';
 import { PagingObjectDto } from 'src/spotify/dto/pagining-object.dto';
 import { GetUserPodcastsDto } from 'src/spotify/dto/get-user-podcasts.dto';
 
-const GAMING_KEYWORDS = ['games', 'video games', 'gaming', 'video game podcasts', 'gaming podcasts', 'game reviews'];
+const GAMING_KEYWORDS = [
+  'games',
+  'video games',
+  'gaming',
+  'video game podcasts',
+  'gaming podcasts',
+  'game reviews',
+];
 
 @Injectable()
 export class SpotifyPodcastsService {
-  constructor(
-    private readonly spotifyAuthService: SpotifyAuthService,
-  ) {}
+  constructor(private readonly spotifyAuthService: SpotifyAuthService) {}
 
-  async getAllGamePodcasts(limit: number, offset: number): Promise<PagingObjectDto<SpotifyItemObjectDto[]>> {
+  async getAllGamePodcasts(
+    limit: number,
+    offset: number,
+  ): Promise<PagingObjectDto<SpotifyItemObjectDto[]>> {
     const query = GAMING_KEYWORDS.map((keyword) => `${keyword}`).join(' OR ');
 
-    const response = await this.spotifyAuthService.api.searchShows(query, { limit, offset });
+    const response = await this.spotifyAuthService.api.searchShows(query, {
+      limit,
+      offset,
+    });
 
-    const items = plainToInstance(SpotifyItemObjectDto, response.body.shows.items);
+    const items = plainToInstance(
+      SpotifyItemObjectDto,
+      response.body.shows!.items,
+    );
 
-    response.body.shows.items = items;
+    response.body.shows!.items = items;
 
-    return plainToInstance(PagingObjectDto<SpotifyItemObjectDto[]>, response.body.shows);
+    return plainToInstance(
+      PagingObjectDto<SpotifyItemObjectDto[]>,
+      response.body.shows,
+    );
   }
 
   async getPodcastById(id: string): Promise<SpotifyItemObjectDto> {
@@ -31,9 +48,12 @@ export class SpotifyPodcastsService {
   }
 
   async getUserPodcasts(limit: number, offset: number) {
-    const response = await this.spotifyAuthService.api.getMySavedShows({ limit, offset });
+    const response = await this.spotifyAuthService.api.getMySavedShows({
+      limit,
+      offset,
+    });
 
-    response.body.items.forEach(item => {
+    response.body.items.forEach((item) => {
       item.show = plainToInstance(SpotifyItemObjectDto, item.show);
     });
 
@@ -44,7 +64,7 @@ export class SpotifyPodcastsService {
     const podcastInLibrary = await this.isInUserLibrary(id);
     if (podcastInLibrary) {
       throw new BadRequestException('Podcast is already saved');
-  }
+    }
 
     await this.spotifyAuthService.api.addToMySavedShows([id]);
   }
@@ -59,6 +79,7 @@ export class SpotifyPodcastsService {
   }
 
   private async isInUserLibrary(id: string) {
-    return (await this.spotifyAuthService.api.containsMySavedShows([id])).body[0];
+    return (await this.spotifyAuthService.api.containsMySavedShows([id]))
+      .body[0];
   }
 }

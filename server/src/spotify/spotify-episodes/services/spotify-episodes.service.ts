@@ -12,9 +12,11 @@ export class SpotifyEpisodesService {
   async getEpisodesByGameTitle(gameId: number) {
     const game = await this.gamesService.getGameById(gameId);
 
-    const response = await this.spotifyAuthService.api.searchEpisodes(game.rawgGame.name);
+    const response = await this.spotifyAuthService.api.searchEpisodes(
+      game.rawgGame.name,
+    );
 
-    return response.body.episodes.items;
+    return response.body.episodes!.items;
   }
 
   async getEpisodeById(id: string) {

@@ -30,7 +30,10 @@ export class SpotifyAuthService {
 
   getAuthorizeURL(): string {
     this.initializeSpotifyApi();
-    return this.spotifyApi.createAuthorizeURL(scopes, this.configService.get<string>('SPOTIFY_CLIENT_STATE'));
+    return this.spotifyApi.createAuthorizeURL(
+      scopes,
+      this.configService.get<string>('SPOTIFY_CLIENT_STATE')!,
+    );
   }
 
   async getTokens(code: string) {

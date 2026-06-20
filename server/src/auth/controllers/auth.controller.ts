@@ -1,4 +1,16 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -41,8 +53,8 @@ export class AuthController {
   @Get('refresh')
   @HttpCode(HttpStatus.OK)
   refreshTokens(@Req() req: Request) {
-    const userId = req.user['sub'];
-    const refreshToken = req.user['refreshToken'];
+    const userId = req.user!['sub'];
+    const refreshToken = req.user!['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
   }
 
@@ -52,7 +64,7 @@ export class AuthController {
   @Get('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request) {
-    this.authService.logout(req.user['sub']);
+    this.authService.logout(req.user!['sub']);
     return {
       message: 'Logged out successfully',
     };
@@ -72,7 +84,10 @@ export class AuthController {
   @ApiBody({ type: ResetPasswordDto })
   @HttpCode(HttpStatus.OK)
   @Post('reset-password')
-  async resetPassword(@Query('token') token: string, @Body() resetPasswordDto: ResetPasswordDto) {
+  async resetPassword(
+    @Query('token') token: string,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
     return this.authService.resetPassword(token, resetPasswordDto.password);
   }
 }

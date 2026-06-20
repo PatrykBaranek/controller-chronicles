@@ -18,19 +18,22 @@ export class UsersService {
     return this.usersRepository.findAll();
   }
 
-  async findByEmail(email: string): Promise<UserDocument> {
+  async findByEmail(email: string): Promise<UserDocument | null> {
     return this.usersRepository.findByEmail(email);
   }
 
-  async findById(id: string): Promise<UserDocument> {
+  async findById(id: string): Promise<UserDocument | null> {
     return this.usersRepository.findById(id);
   }
 
-  async update(id: string, updateUserDto: Partial<UpdateUserDto>): Promise<UserDocument> {
+  async update(
+    id: string,
+    updateUserDto: Partial<UpdateUserDto>,
+  ): Promise<UserDocument | null> {
     return this.usersRepository.update(id, updateUserDto);
   }
 
-  async remove(id: string): Promise<UserDocument> {
+  async remove(id: string): Promise<UserDocument | null> {
     return this.usersRepository.remove(id);
   }
 }

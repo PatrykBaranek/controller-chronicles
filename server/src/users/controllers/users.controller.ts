@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from '../services/users.service';
@@ -11,7 +21,6 @@ import { GetUserDto } from '../dto/get-user.dto';
 @ApiTags('api/users')
 @Controller('users')
 export class UsersController {
-
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
@@ -27,11 +36,11 @@ export class UsersController {
   @Get('profile')
   @UseGuards(AccessTokenGuard)
   async getProfile(@Req() req: Request): Promise<GetUserDto> {
-    const userDocument = await this.usersService.findById(req.user['sub']);
+    const userDocument = await this.usersService.findById(req.user!['sub']);
 
     return {
-      id:    userDocument._id,
-      email: userDocument.email
+      id: userDocument!._id,
+      email: userDocument!.email,
     };
   }
 
@@ -51,5 +60,4 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
-
 }

@@ -10,12 +10,13 @@ import { GamesModule } from 'src/games/games.module';
 import { PuppeteerModule } from 'src/puppeteer/puppeteer.module';
 
 @Module({
-  imports: [
-    PuppeteerModule,
-    forwardRef(() => GamesModule),
-  ],
+  imports: [PuppeteerModule, forwardRef(() => GamesModule)],
   controllers: [ReviewsSitesController],
-  providers: [ReviewsSitesService, ReviewsSitesScraperFactory, FuseJsCompareService],
-  exports: [ReviewsSitesService]
+  providers: [
+    ReviewsSitesService,
+    ReviewsSitesScraperFactory,
+    FuseJsCompareService,
+  ],
+  exports: [ReviewsSitesService],
 })
 export class ReviewsSitesModule {}

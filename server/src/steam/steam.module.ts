@@ -6,10 +6,16 @@ import { GamesModule } from 'src/games/games.module';
 import { Game, GameSchema } from 'src/games/models/game.schema';
 
 import { SteamBestSellersService } from './services/steam-bestsellers/steam-bestsellers.service';
-import { SteamBestSellers, SteamBestSellersSchema } from './models/steam-bestsellers.schema';
+import {
+  SteamBestSellers,
+  SteamBestSellersSchema,
+} from './models/steam-bestsellers.schema';
 
 import { SteamReviewsService } from './services/steam-reviews/steam-reviews.service';
-import { SteamReviews, SteamReviewsSchema } from './models/steam-reviews.schema';
+import {
+  SteamReviews,
+  SteamReviewsSchema,
+} from './models/steam-reviews.schema';
 
 import { SteamPlayersInGameService } from './services/steam-players-in-game/steam-players-in-game.service';
 import { SteamPlayersInGameSchema } from './models/steam-players-in-game.schema';
@@ -23,7 +29,10 @@ import { SteamController } from './controllers/steam.controller';
     MongooseModule.forFeature([
       { name: SteamBestSellers.name, schema: SteamBestSellersSchema },
       { name: SteamReviews.name, schema: SteamReviewsSchema },
-      { name: SteamPlayersInGameService.name, schema: SteamPlayersInGameSchema },
+      {
+        name: SteamPlayersInGameService.name,
+        schema: SteamPlayersInGameSchema,
+      },
       { name: Game.name, schema: GameSchema },
     ]),
     forwardRef(() => GamesModule),
@@ -34,11 +43,11 @@ import { SteamController } from './controllers/steam.controller';
     SteamReviewsService,
     SteamPlayersInGameService,
     SteamRepository,
-    SteamUtilityService
+    SteamUtilityService,
   ],
   exports: [
-    SteamBestSellersService, 
-    SteamReviewsService, 
+    SteamBestSellersService,
+    SteamReviewsService,
     SteamPlayersInGameService,
     SteamUtilityService,
   ],
