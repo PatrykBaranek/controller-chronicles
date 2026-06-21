@@ -19,6 +19,7 @@
 
     /* Type Checking */
     "strictNullChecks": true,
+    "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 

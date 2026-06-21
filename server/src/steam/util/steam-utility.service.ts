@@ -17,6 +17,9 @@ const SELECTORS = {
   approveAgeBeforeCommunityPageButton: '.btn_blue_steamui.btn_medium',
 };
 
+// IGDB website "category" id for a Steam store link (stable across the v4 API)
+const IGDB_WEBSITE_CATEGORY_STEAM = 13;
+
 @Injectable()
 export class SteamUtilityService {
   constructor(
@@ -25,19 +28,23 @@ export class SteamUtilityService {
   ) {}
 
   public async checkIfGameIsReleased(game: Game) {
-    if (isBefore(new Date(), new Date(game.rawgGame.released))) {
+    if (isBefore(new Date(), game.igdbGame.firstReleaseDate ?? new Date(0))) {
       throw new NotFoundException('Game is not released yet ' + game._id);
     }
   }
 
   public async getSteamUrlByGameId(id: number) {
-    const stores = await this.gamesService.getGameStoresByGameId(id);
+    const game = await this.gamesService.getGameById(id);
 
-    if (!stores.some((store) => store.name === 'Steam')) {
+    const steamWebsite = game.igdbGame?.websites?.find(
+      (website) => website.category === IGDB_WEBSITE_CATEGORY_STEAM,
+    );
+
+    if (!steamWebsite) {
       throw new NotFoundException('Game is not available on Steam');
     }
 
-    return stores.find((store) => store.name === 'Steam')!.url;
+    return steamWebsite.url;
   }
 
   public async checkIfApproveAgeGateButtonExists(page: Page) {

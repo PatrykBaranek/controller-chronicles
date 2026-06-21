@@ -2,9 +2,11 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReviewsSitesService } from '../services/reviews-sites.service';
 import { ReviewsSitesGameReviewsDto } from '../dto/review-sites.dto';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 @ApiTags('api/reviews-sites')
 @Controller('reviews-sites')
+@AllowAnonymous()
 export class ReviewsSitesController {
   constructor(private readonly reviewsSitesService: ReviewsSitesService) {}
 

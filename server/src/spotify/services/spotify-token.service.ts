@@ -1,7 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { Request } from 'express';
 import SpotifyWebApi from 'spotify-web-api-node';
-import { getDb } from 'src/lib/auth';
+import { getDb } from 'src/app/lib/auth';
 
 interface SpotifyAccount {
   userId: string;

@@ -5,10 +5,9 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { YoutubeService } from '../services/youtube.service';
 
 import { GetVideosByDateRangeDto } from '../dto/get-videos-by-date-range.dto';
@@ -28,6 +27,7 @@ export class YoutubeController {
     type: [SearchResultDto],
   })
   @ApiResponse({ status: 400, description: 'Invalid query parameters' })
+  @AllowAnonymous()
   @Get()
   async getGameVideoReviewByGameId(
     @Query() getGameVideoReviewDto: GetGameVideoReviewDto,
@@ -42,6 +42,7 @@ export class YoutubeController {
     type: [SearchResultDto],
   })
   @ApiResponse({ status: 400, description: 'Invalid query parameters' })
+  @AllowAnonymous()
   @Get('videos/date-range')
   async getTrailerOrReviewByDateRange(
     @Query() getVideosByDateRangeDto: GetVideosByDateRangeDto,

@@ -2,7 +2,6 @@ import { getGameById, getReviewsSites, getYoutubeVideosByGameId } from '#/api/ga
 import DetailsSlider from '#/components/GamesDetails/DetailsSlider';
 import Gameplay from '#/components/GamesDetails/Gameplay';
 import MainInfo from '#/components/GamesDetails/MainInfo';
-import RedditInfo from '#/components/GamesDetails/RedditInfo';
 import SteamReviews from '#/components/GamesDetails/SteamReviews';
 import Spinner from '#/components/UI/Spinner';
 import { useQueries } from 'react-query';
@@ -116,11 +115,9 @@ const GameDetails = () => {
 
   const isLoading = results?.some((data) => data.isLoading);
   const isError = results?.some((data) => data?.isError);
-  const gameInfo = data?.rawgGame;
+  const gameInfo = data?.igdbGame;
 
-  const isGameOnSteam = gameInfo?.stores.filter((store) => {
-    return store.store.slug === 'steam';
-  });
+  const isGameOnSteam = Boolean(data?.steam_reviews || data?.steam_players_in_game);
 
   return (
     <StyledDetailsPage>
@@ -142,11 +139,10 @@ const GameDetails = () => {
           <StyledContainer>
             <StyledGameDescription>
               <h2>Game description</h2>
-              <p>{gameInfo?.description_raw.split('\n\n')[0]}</p>
+              <p>{gameInfo?.description?.split('\n\n')[0]}</p>
             </StyledGameDescription>
-            {(gameInfo?.reddit_url || gameInfo?.reddit_name) && <RedditInfo gameInfo={gameInfo} />}
             <Gameplay hltbData={data?.howLongToBeat} />
-            {Boolean(isGameOnSteam?.length) && <SteamReviews />}
+            {isGameOnSteam && <SteamReviews />}
             {reviews && <DetailsSlider videos={reviews} heading='Reviews' />}
             {trailers && <DetailsSlider videos={trailers} heading='Trailers' />}
             <SpotifyContent id={data?._id} />

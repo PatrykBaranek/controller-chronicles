@@ -139,7 +139,7 @@ const CollectionEditModal = ({ handleClose, isOpen, games, collectionId, refetch
 
   const formattedGames: Option[] = games?.map((game) => ({
     id: game._id,
-    name: game.rawgGame?.name,
+    name: game.igdbGame?.name,
   }));
 
   return (

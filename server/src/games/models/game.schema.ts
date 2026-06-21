@@ -10,7 +10,7 @@ import { SteamReviews } from 'src/steam/models/steam-reviews.schema';
 
 import { YoutubeVideo } from 'src/youtube/models/youtube-video.schema';
 
-export class RawgGame {
+export class IgdbGame {
   @Prop()
   slug: string;
 
@@ -18,91 +18,31 @@ export class RawgGame {
   name: string;
 
   @Prop()
-  name_original: string;
+  description?: string;
 
   @Prop()
-  description_raw: string;
+  aggregatedRating?: number;
+
+  @Prop({ type: Date })
+  firstReleaseDate?: Date;
 
   @Prop()
-  metacritic: number;
+  background_image?: string;
 
   @Prop({ type: Array })
-  metacritic_platforms?: any[] | null;
-
-  @Prop()
-  released: string;
-
-  @Prop()
-  updated: string;
-
-  @Prop()
-  background_image: string;
-
-  @Prop()
-  background_image_additional: string;
-
-  @Prop()
-  website: string;
-
-  @Prop()
-  screenshots_count: number;
-
-  @Prop()
-  movies_count: number;
-
-  @Prop()
-  creators_count: number;
-
-  @Prop()
-  achievements_count: number;
-
-  @Prop()
-  parent_achievements_count: number;
-
-  @Prop()
-  reddit_url: string;
-
-  @Prop()
-  reddit_name: string;
-
-  @Prop()
-  reddit_description: string;
-
-  @Prop()
-  reddit_logo: string;
-
-  @Prop()
-  suggestions_count: number;
+  screenshots?: string[] | null;
 
   @Prop({ type: Array })
-  alternative_names?: null[] | null;
-
-  @Prop()
-  metacritic_url: string;
-
-  @Prop()
-  parents_count: number;
-
-  @Prop()
-  additions_count: number;
-
-  @Prop()
-  game_series_count: number;
+  websites?: any[] | null;
 
   @Prop({ type: Array })
   platforms?: any[] | null;
-
-  @Prop({ type: Array })
-  stores?: any[] | null;
 
   @Prop({ type: Array })
   developers?: any[] | null;
 
   @Prop({ type: Array })
   genres?: any[] | null;
-
-  @Prop({ type: Array })
-  tags?: any[] | null;
 
   @Prop({ type: Array })
   publishers?: any[] | null;
@@ -113,8 +53,8 @@ export class Game {
   @Prop()
   _id: number;
 
-  @Prop({ type: RawgGame })
-  rawgGame: RawgGame;
+  @Prop({ type: IgdbGame })
+  igdbGame: IgdbGame;
 
   @Prop({
     type: HowLongToBeat,

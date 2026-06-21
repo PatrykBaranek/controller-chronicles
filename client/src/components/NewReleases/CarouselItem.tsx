@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getGameById } from '#/api/gamesApi';
-import iconFilter from '#/utils/iconFilter';
 import dayjs from 'dayjs';
 type CarouseItemProps = {
   id: number;
@@ -98,46 +97,17 @@ const StyledDescription = styled.span<StyledProps>`
     transform: translateY(${({ $isActive }) => ($isActive ? '60%' : '300%')});
   }
 `;
-const StyledIcon = styled.span<StyledProps>`
-  display: flex;
-  gap: 1rem;
-  opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
-  transform: translateY(${({ $isActive }) => ($isActive ? '52%' : '300%')});
-  transition: all 1s ease-in-out;
-  max-width: 3rem;
-  position: absolute;
-  bottom: 52%;
-  left: 5%;
-  @media screen and (min-width: 1000px) {
-    transform: translateY(${({ $isActive }) => ($isActive ? '100%' : '300%')});
-  }
-  img {
-    width: 90%;
-    aspect-ratio: 3/2;
-    object-fit: contain;
-    border-radius: 0;
-    @media screen and (min-width: 1800px) {
-      width: 100%;
-    }
-  }
-`;
 const CarouselItem = ({ isActive, image, id }: CarouseItemProps) => {
   const { data } = useQuery(['/games/:id', id], () => getGameById(id));
-  const title = data?.rawgGame.name;
-  const description = data?.rawgGame.description_raw;
-  const stores = data?.rawgGame.stores;
-  const releaseDate = dayjs(data?.rawgGame.released).format('DD.MM.YYYY');
+  const title = data?.igdbGame.name;
+  const description = data?.igdbGame.description;
+  const releaseDate = dayjs(data?.igdbGame.firstReleaseDate).format('DD.MM.YYYY');
   const isDateValid = releaseDate !== 'Invalid Date';
 
   return (
     <StyledCarouselItem $isActive={isActive} to={`/games/${id}`}>
       <img src={image} />
       <StyledOverlay></StyledOverlay>
-      <StyledIcon $isActive={isActive}>
-        {stores?.map((store) => (
-          <img key={store.store.slug} src={iconFilter(store.store.slug)} />
-        ))}
-      </StyledIcon>
       <StyledTitle $isActive={isActive}>{title}</StyledTitle>
       <StyledReleaseDate $isActive={isActive}>
         {`Date of release: ${isDateValid ? releaseDate : 'Unknown'}`}

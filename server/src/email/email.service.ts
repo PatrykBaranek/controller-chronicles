@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
-import { authEvents } from '../lib/auth';
+import { authEvents } from '../app/lib/auth';
 
 interface EventPayloads {
   'user.welcome': { email: string };

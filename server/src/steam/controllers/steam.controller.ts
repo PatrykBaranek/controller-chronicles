@@ -3,11 +3,13 @@ import { SteamBestSellersService } from '../services/steam-bestsellers/steam-bes
 import { SteamReviewsService } from '../services/steam-reviews/steam-reviews.service';
 import { SteamPlayersInGameService } from '../services/steam-players-in-game/steam-players-in-game.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 import { SteamReviewsDto } from '../dto/steam-reviews.dto';
 import { SteamPlayersCountInGameDto } from '../dto/steam-players-in-game.dto';
 
 @ApiTags('api/steam')
 @Controller('steam')
+@AllowAnonymous()
 export class SteamController {
   constructor(
     private readonly steamBestSellersService: SteamBestSellersService,

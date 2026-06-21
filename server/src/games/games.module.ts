@@ -6,7 +6,7 @@ import { GamesService } from './services/games.service';
 import { GamesRepository } from './database/games.repository';
 import { Game, GameSchema } from './models/game.schema';
 
-import { RawgApiModule } from 'src/rawg/rawg-api/rawg-api.module';
+import { IgdbApiModule } from 'src/igdb/igdb-api/igdb-api.module';
 
 import { HowLongToBeatModule } from 'src/how-long-to-beat/how-long-to-beat.module';
 import { GamesUpdateModule } from 'src/games-update/games-update.module';
@@ -16,7 +16,7 @@ import { GamesUpdateModule } from 'src/games-update/games-update.module';
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
     forwardRef(() => GamesUpdateModule),
     HowLongToBeatModule,
-    RawgApiModule,
+    IgdbApiModule,
   ],
   controllers: [GamesController],
   providers: [GamesService, GamesRepository],

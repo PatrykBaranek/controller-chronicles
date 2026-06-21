@@ -296,8 +296,8 @@ const Collections = () => {
                       <Card>
                         <StyledCollectionItem to={`/games/${game._id}`}>
                           <img
-                            src={game.rawgGame.background_image}
-                            alt={`${game.rawgGame.name} image`}
+                            src={game.igdbGame.background_image}
+                            alt={`${game.igdbGame.name} image`}
                           />
                         </StyledCollectionItem>
                       </Card>

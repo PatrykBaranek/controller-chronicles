@@ -16,7 +16,7 @@ export class SpotifyEpisodesService {
 
     const game = await this.gamesService.getGameById(gameId);
 
-    const response = await api.searchEpisodes(game.rawgGame.name);
+    const response = await api.searchEpisodes(game.igdbGame.name);
 
     return response.body.episodes!.items;
   }

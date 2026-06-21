@@ -29,7 +29,7 @@ export class YoutubeUtilityService {
     const game = await this.gamesService.getGameById(id);
     if (
       videoType === VideoType.REVIEW &&
-      isBefore(new Date(), new Date(game.rawgGame.released))
+      isBefore(new Date(), game.igdbGame.firstReleaseDate ?? new Date(0))
     ) {
       throw new NotFoundException('Game not released yet');
     }

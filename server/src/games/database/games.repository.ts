@@ -5,17 +5,17 @@ import { Model } from 'mongoose';
 
 import { Game, GameDocument } from '../models/game.schema';
 
-import { RawgGameResponseDto } from '../../rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
+import { IgdbGameResponseDto } from '../../igdb/igdb-api/igdb-api-games/dto/igdb-game-response.dto';
 
 @Injectable()
 export class GamesRepository {
   constructor(@InjectModel(Game.name) private gameModel: Model<GameDocument>) {}
 
-  async saveGames(games: RawgGameResponseDto[]) {
+  async saveGames(games: IgdbGameResponseDto[]) {
     const bulkOperations = games.map((game) => ({
       updateOne: {
         filter: { _id: game.id as any },
-        update: { $set: { rawgGame: game } },
+        update: { $set: { igdbGame: game } },
         upsert: true,
       },
     }));

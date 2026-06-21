@@ -7,6 +7,8 @@ import useWindowWidth from './hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
 import NewReleases from './components/NewReleases/NewReleases';
 import { Toaster } from 'sonner';
+import { ErrorBoundary } from 'react-error-boundary';
+import PageErrorFallback from './components/UI/PageErrorFallback';
 
 type StyledProps = {
   isHome: boolean;
@@ -55,7 +57,9 @@ const Layout = () => {
       <StyledMain isHome={isHome}>
         {isDesktop && <Nav />}
         {isHome && <NewReleases />}
-        <Outlet />
+        <ErrorBoundary FallbackComponent={PageErrorFallback} resetKeys={[location.pathname]}>
+          <Outlet />
+        </ErrorBoundary>
       </StyledMain>
       <StyledToaster />
     </>

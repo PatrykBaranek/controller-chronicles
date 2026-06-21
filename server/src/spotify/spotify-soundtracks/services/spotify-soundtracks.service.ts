@@ -17,11 +17,11 @@ export class SpotifySoundtracksService {
     const game = await this.gamesService.getGameById(gameId);
 
     const soundtracks = await api.searchAlbums(
-      game.rawgGame.name + ' soundtrack',
+      game.igdbGame.name + ' soundtrack',
     );
 
     return soundtracks.body.albums!.items.filter((item) =>
-      item.name.includes(game.rawgGame.name),
+      item.name.includes(game.igdbGame.name),
     );
   }
 
@@ -31,10 +31,10 @@ export class SpotifySoundtracksService {
 
     const game = await this.gamesService.getGameById(gameId);
 
-    const playlists = await api.searchPlaylists(game.rawgGame.name);
+    const playlists = await api.searchPlaylists(game.igdbGame.name);
 
     return playlists.body.playlists!.items.filter((item) =>
-      item.name.includes(game.rawgGame.name),
+      item.name.includes(game.igdbGame.name),
     );
   }
 

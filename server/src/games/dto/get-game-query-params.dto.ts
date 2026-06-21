@@ -5,18 +5,12 @@ import { PageQueryParamsDto } from './page-query-params.dto';
 const Ordering = [
   'name',
   'released',
-  'added',
-  'created',
-  'updated',
   'rating',
-  'metacritic',
+  'updated',
   '-name',
   '-released',
-  '-added',
-  '-created',
-  '-updated',
   '-rating',
-  '-metacritic',
+  '-updated',
 ];
 
 export class GetGameQueryParamsDto extends PageQueryParamsDto {
@@ -30,17 +24,7 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   search?: string;
 
   @ApiProperty({
-    description: 'Search exact term',
-    required: false,
-    default: false,
-    type: Boolean,
-  })
-  @IsOptional()
-  @IsString()
-  search_exact?: string;
-
-  @ApiProperty({
-    description: 'Filter by genres',
+    description: 'Filter by genre IDs (comma-separated)',
     required: false,
     type: String,
   })
@@ -49,7 +33,7 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   genres?: string;
 
   @ApiProperty({
-    description: 'Filter by platforms',
+    description: 'Filter by platform IDs (comma-separated)',
     required: false,
     type: String,
   })
@@ -58,16 +42,7 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   platforms?: string;
 
   @ApiProperty({
-    description: 'Filter by stores',
-    required: false,
-    type: String,
-  })
-  @IsOptional()
-  @IsString()
-  stores?: string;
-
-  @ApiProperty({
-    description: 'Filter by publishers',
+    description: 'Filter by publisher/developer company IDs (comma-separated)',
     required: false,
     type: String,
   })
@@ -76,7 +51,7 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   publishers?: string;
 
   @ApiProperty({
-    description: 'Filter by Metacritic score',
+    description: 'Minimum aggregated critic rating (0-100)',
     required: false,
     type: String,
   })
@@ -85,16 +60,7 @@ export class GetGameQueryParamsDto extends PageQueryParamsDto {
   metacritic?: string;
 
   @ApiProperty({
-    description: 'Filter by tags',
-    required: false,
-    type: String,
-  })
-  @IsOptional()
-  @IsString()
-  tags?: string;
-
-  @ApiProperty({
-    description: 'Filter by release dates',
+    description: 'Filter by release dates (ISO date range, comma-separated)',
     required: false,
     type: String,
   })

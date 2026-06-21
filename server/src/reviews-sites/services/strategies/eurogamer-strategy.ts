@@ -25,8 +25,9 @@ export class EurogamerStrategy implements IReviewSiteScraper {
 
   async scrapeData(game: Game): Promise<ReviewsSitesGameReviewsDto[]> {
     return await this.puppeteerService.withBrowser(async (browser) => {
-      const month = getMonth(new Date(game.rawgGame.released)) + 1;
-      const year = getYear(new Date(game.rawgGame.released));
+      const releaseDate = game.igdbGame.firstReleaseDate ?? new Date();
+      const month = getMonth(releaseDate) + 1;
+      const year = getYear(releaseDate);
 
       const page = await this.puppeteerService.createPage(
         browser,
@@ -53,7 +54,7 @@ export class EurogamerStrategy implements IReviewSiteScraper {
       );
 
       const matchedArticles = this.fuseJsCompareService.findBestMatch(
-        game.rawgGame.name,
+        game.igdbGame.name,
         reviewsArray,
       );
 

@@ -5,7 +5,7 @@ const collections = [
 		games: [
 			{
 				_id: 3498,
-				rawgGame: {
+				igdbGame: {
 					id: 3498,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -15,7 +15,7 @@ const collections = [
 			},
 			{
 				_id: 11,
-				rawgGame: {
+				igdbGame: {
 					id: 11,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -25,7 +25,7 @@ const collections = [
 			},
 			{
 				_id: 22,
-				rawgGame: {
+				igdbGame: {
 					id: 22,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -35,7 +35,7 @@ const collections = [
 			},
 			{
 				_id: 33,
-				rawgGame: {
+				igdbGame: {
 					id: 33,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -45,7 +45,7 @@ const collections = [
 			},
 			{
 				_id: 55,
-				rawgGame: {
+				igdbGame: {
 					id: 55,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -61,7 +61,7 @@ const collections = [
 		games: [
 			{
 				_id: 3498,
-				rawgGame: {
+				igdbGame: {
 					id: 3498,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -605,7 +605,7 @@ const collections = [
 			},
 			{
 				_id: 3498,
-				rawgGame: {
+				igdbGame: {
 					id: 3498,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -1157,7 +1157,7 @@ const collections = [
 		games: [
 			{
 				_id: 231,
-				rawgGame: {
+				igdbGame: {
 					id: 231,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -1701,7 +1701,7 @@ const collections = [
 			},
 			{
 				_id: 3498,
-				rawgGame: {
+				igdbGame: {
 					id: 3498,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -2253,7 +2253,7 @@ const collections = [
 		games: [
 			{
 				_id: 231,
-				rawgGame: {
+				igdbGame: {
 					id: 231,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',
@@ -2797,7 +2797,7 @@ const collections = [
 			},
 			{
 				_id: 3498,
-				rawgGame: {
+				igdbGame: {
 					id: 3498,
 					slug: 'grand-theft-auto-v',
 					name: 'Grand Theft Auto V',

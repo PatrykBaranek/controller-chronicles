@@ -134,7 +134,7 @@ export class YoutubeService {
 
     if (isCacheValid) {
       this.logger.log(
-        `Using cached ${videoFieldName} for game ${gameInDb.rawgGame.name}`,
+        `Using cached ${videoFieldName} for game ${gameInDb.igdbGame.name}`,
       );
       return gameInDb[videoFieldName];
     }
@@ -150,10 +150,10 @@ export class YoutubeService {
   ): Promise<SearchResultDto[]> {
     try {
       this.logger.log(
-        `Fetching ${videoType} for game ${gameInDb.rawgGame.name}`,
+        `Fetching ${videoType} for game ${gameInDb.igdbGame.name}`,
       );
       const searchQuery = this.youtubeUtilityService.constructQuery(
-        gameInDb.rawgGame.name,
+        gameInDb.igdbGame.name,
         videoType,
       );
       const videos = await this.youtubeSearch(
@@ -175,7 +175,7 @@ export class YoutubeService {
       return filteredVideos;
     } catch (err) {
       this.logger.error(
-        `Error fetching ${videoType} for game ${gameInDb.rawgGame.name}: ${err}`,
+        `Error fetching ${videoType} for game ${gameInDb.igdbGame.name}: ${err}`,
       );
       return gameInDb[videoFieldName] ?? [];
     }

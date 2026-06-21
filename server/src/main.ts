@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 
-import { initializeAuth } from './lib/auth';
+import { initializeAuth } from './app/lib/auth';
 
 async function bootstrap() {
   await initializeAuth();
@@ -33,7 +33,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  app.use('/api', apiReference({ content: document }));
+  app.use('/docs', apiReference({ content: document }));
 
   await app.listen(3000);
 }
