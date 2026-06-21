@@ -9,7 +9,7 @@ import { EurogamerStrategy } from './eurogamer-strategy';
 export enum ReviewsSites {
   EUROGAMER = 'eurogamer',
   GAMESRADAR = 'gamesradar',
-};
+}
 
 @Injectable()
 export class ReviewsSitesScraperFactory {
@@ -21,9 +21,15 @@ export class ReviewsSitesScraperFactory {
   createScraper(type: ReviewsSites) {
     switch (type) {
       case ReviewsSites.EUROGAMER:
-        return new EurogamerStrategy(this.puppeteerService, this.fuseJsCompareService);
+        return new EurogamerStrategy(
+          this.puppeteerService,
+          this.fuseJsCompareService,
+        );
       case ReviewsSites.GAMESRADAR:
-        return new GamesradarStrategy(this.puppeteerService, this.fuseJsCompareService);
+        return new GamesradarStrategy(
+          this.puppeteerService,
+          this.fuseJsCompareService,
+        );
       default:
         throw new Error('Invalid scraper type');
     }

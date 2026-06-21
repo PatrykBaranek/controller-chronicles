@@ -1,7 +1,6 @@
-import { getUserCollections } from '#/api/gamesApi';
-import { StyledButton } from '#/pages/Login';
-import { CollectionResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { getUserCollections } from '../../api/gamesApi';
+import { StyledButton } from '../../pages/Login';
+import { CollectionResponse } from '../../types/types';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -64,11 +63,10 @@ const StyledCollectionButton = styled(StyledButton)`
 const Collections = () => {
   const [collections, setCollections] = useState<CollectionResponse[]>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const authToken = getAuthToken();
 
   const { refetch, isLoading, isFetched } = useQuery(
     ['collections'],
-    () => getUserCollections(authToken),
+    () => getUserCollections(),
     {
       onSuccess: (data) => {
         data.sort((a, b) => b.priority - a.priority);

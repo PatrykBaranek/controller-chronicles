@@ -1,0 +1,14 @@
+packages:
+  - client
+  - server
+  - mobile
+
+allowBuilds:
+  '@nestjs/core': false
+  '@scarf/scarf': false
+  bcrypt: false
+  esbuild: false
+  mongodb-client-encryption: false
+  puppeteer: false
+  sharp: false
+  unrs-resolver: false

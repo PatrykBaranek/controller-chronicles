@@ -199,50 +199,30 @@ export type Games = {
   id: number;
   slug: string;
   name: string;
-  released: Date;
+  firstReleaseDate: Date;
   background_image: string;
-  ratings_count: number;
-  metacritic: number;
-  suggestions_count: number;
-  updated: Date;
   platforms: PlatformElement[];
-  genres: Genre[];
-  stores: Store[];
-  tags: Genre[];
-  short_screenshots: ShortScreenshot[];
-  description_raw?: string;
+  genres?: Genre[];
+  description?: string;
 };
 
 export type GameDetailsResponse = {
-  rawgGame: RawgGameDetails;
+  igdbGame: IgdbGameDetails;
   howLongToBeat: HLTB;
   video_reviews: YoutubeVideo[];
   game_trailers: YoutubeVideo[];
+  steam_reviews?: SteamReviewsResponse;
+  steam_players_in_game?: PlayersCountResponse;
   __v: number;
   _id: string;
 };
-export type RawgGameDetails = Omit<Games, 'short_Screenshots'> & {
-  name_original: string;
-  metacritic_platforms: string[];
-  background_image_additional: string;
-  website: string;
-  screenshots_count: number;
-  creators_count: number;
-  achievements_count: number;
-  reddit_url: string;
-  reddit_name: string;
-  reddit_description: string;
-  reddit_count: number;
-  twitch_count: number;
-  youtube_count: number;
-  ratings_count: number;
-  metacritic_url: string;
-  additions_count: number;
-  game_series_count: number;
-  community_rating: number;
+export type IgdbGameDetails = Games & {
+  aggregatedRating: number;
+  screenshots: string[];
+  websites?: { url: string; category: number }[];
   developers: Developer[];
-  publishers: Developer[];
-  description_raw: string;
+  publishers?: Developer[];
+  description?: string;
 };
 export type Developer = {
   id: number;

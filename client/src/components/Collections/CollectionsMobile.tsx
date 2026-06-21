@@ -39,7 +39,7 @@ const CollectionsMobile = ({ games }: { games: GameDetailsResponse[] }) => {
     >
       {games.map((game, idx) => (
         <StyledSplideSlide key={game._id}>
-          <CollectionCard img={game.rawgGame.background_image} id={game._id} />
+          <CollectionCard img={game.igdbGame.background_image} id={game._id} />
         </StyledSplideSlide>
       ))}
     </Splide>

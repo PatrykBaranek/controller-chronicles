@@ -1,19 +1,25 @@
+import 'dotenv/config';
+
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { apiReference } from '@scalar/nestjs-api-reference';
 
-import cookieParser from 'cookie-parser';
+import { initializeAuth } from './app/lib/auth';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  await initializeAuth();
+
+  const { AppModule } = await import('./app/app.module');
+
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
 
   app.enableCors({
     origin: true,
     credentials: true,
   });
-
-  app.use(cookieParser());
 
   app.setGlobalPrefix('api');
 
@@ -27,8 +33,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api', app, document);
+  app.use('/docs', apiReference({ content: document }));
 
   await app.listen(3000);
 }
-bootstrap();
+void bootstrap();

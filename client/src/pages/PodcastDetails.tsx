@@ -1,9 +1,8 @@
-import { getPodcastById } from '#/api/gamesApi';
-import MainInfo from '#/components/PodcastDetails/MainInfo';
-import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
-import Spinner from '#/components/UI/Spinner';
-import { useSpotifyStore } from '#/store/store';
-import { Episode } from '#/types/types';
+import { getPodcastById } from '../api/gamesApi';
+import MainInfo from '../components/PodcastDetails/MainInfo';
+import PodcastEpisodes from '../components/PodcastDetails/PodcastEpisodes';
+import Spinner from '../components/UI/Spinner';
+import { Episode } from '../types/types';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -63,7 +62,6 @@ const StyledInfoWrapper = styled.div`
 
 const PodcastDetails = () => {
   const { id } = useParams();
-  const { isAuth, setAuth } = useSpotifyStore();
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   const {
@@ -71,13 +69,9 @@ const PodcastDetails = () => {
     isLoading,
     isError,
   } = useQuery(['spotify', id], () => getPodcastById(id!), {
-    enabled: isAuth,
     keepPreviousData: true,
     onSuccess: (data) => {
       setEpisodes(data.episodes.items?.slice(0, 8));
-    },
-    onError: (e) => {
-      setAuth(false);
     },
   });
 

@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 
 import { EmailService } from './email.service';
 
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { EjsAdapter } from '@nestjs-modules/mailer/adapters/ejs.adapter';
 
 import { join } from 'path';
 
@@ -19,7 +19,7 @@ import { join } from 'path';
           auth: {
             user: configService.get<string>('MAIL_USER'),
             pass: configService.get<string>('MAIL_PASS'),
-          }
+          },
         },
         defaults: {
           from: `Controller Chronicles <${configService.get<string>('MAIL_HOST')}>`,
@@ -31,8 +31,8 @@ import { join } from 'path';
             strict: false,
           },
         },
-      })
-    })
+      }),
+    }),
   ],
   providers: [EmailService],
 })

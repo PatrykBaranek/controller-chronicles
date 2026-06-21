@@ -1,24 +1,22 @@
 {
   "name": "controller-chronicles",
   "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/PatrykBaranek/controller-chronicles#readme",
   "scripts": {
-    "start:client": "npm run dev --prefix ./client",
-    "start:server": "npm run start  --prefix ./server",
-    "installDev": "concurrently \"cd client && npm i\" \"cd server && npm i\"",
-    "build": "concurrently \"cd client && npm run build\" \"cd server && npm run build\"",
-    "start": "concurrently \"npm run start:client\" \"npm run start:server\""
+    "start:client": "pnpm --filter=client start",
+    "start:server": "pnpm --filter=server start",
+    "start:mobile": "pnpm --filter=mobile start",
+    "dev:client": "pnpm --filter=client dev",
+    "dev:server": "pnpm --filter=server start:dev"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PatrykBaranek/controller-chronicles.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/PatrykBaranek/controller-chronicles/issues"
   },
-  "homepage": "https://github.com/PatrykBaranek/controller-chronicles#readme",
-  "dependencies": {
-    "concurrently": "^8.0.1"
-  }
+  "packageManager": "pnpm@11.6.0"
 }

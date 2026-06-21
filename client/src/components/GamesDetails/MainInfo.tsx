@@ -1,13 +1,13 @@
 import heartIcon from '#/assets/heartIcon.svg';
 import starIcon from '#/assets/starIcon.svg';
-import { RawgGameDetails } from '#/types/types';
-import iconFilter from '#/utils/iconFilter';
+import { IgdbGameDetails } from '#/types/types';
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import AddToCollectionForm from '../Collections/AddToCollectionForm';
+
 type StarProps = {
   rating: number;
   index: number;
@@ -68,35 +68,6 @@ const StyledGenresWrapper = styled.div`
     }
   }
 `;
-const StyledStoresWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  h4 {
-    font-size: 1rem;
-    color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-const StyledIconsWrapper = styled.div`
-  display: flex;
-  max-width: 100%;
-  gap: 6vw;
-  img {
-    width: 15vw;
-    max-width: 50px;
-    aspect-ratio: 3/2;
-    object-fit: contain;
-    border-radius: 0;
-    @media screen and (min-width: 1800px) {
-      width: 100%;
-    }
-  }
-  img:not([src]) {
-    display: none;
-  }
-`;
-
 const StyledButtonsWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -160,21 +131,23 @@ const MainInfo = ({
   setIsDrawerOpen,
   hasReviewSites,
 }: {
-  gameInfo: RawgGameDetails | undefined;
+  gameInfo: IgdbGameDetails | undefined;
   gameId?: string | number;
   setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
   hasReviewSites: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
-  const auth = useIsAuthenticated();
-  const isLogged = auth();
+  const rating = Math.round((gameInfo?.aggregatedRating! / 20) * 2) / 2 || 0;
+  const { data: session } = authClient.useSession();
+  const isLogged = !!session;
+  // IGDB website category 1 = official site
+  const officialWebsite = gameInfo?.websites?.find((website) => website.category === 1);
 
   return (
     <StyledTitleWrapper>
       <h1 className='title'>{gameInfo?.name}</h1>
-      <p className='publisher'>{gameInfo?.publishers.map((item) => item.name)}</p>
+      <p className='publisher'>{gameInfo?.publishers?.map((item) => item.name)}</p>
       <StyledStarWrapper>
         <p className='rating'>{rating}</p>
         {Array.from({ length: 5 }).map((_, idx) => (
@@ -186,26 +159,17 @@ const MainInfo = ({
             rating={rating}
           />
         ))}
-        <p className='rating'>{gameInfo?.ratings_count} ratings</p>
       </StyledStarWrapper>
       <StyledGenresWrapper>
-        {gameInfo?.genres.slice(0, 4).map((genre) => (
+        {gameInfo?.genres?.slice(0, 4).map((genre) => (
           <span key={genre.id} className='genre'>
             {genre?.name}
           </span>
         ))}
       </StyledGenresWrapper>
-      <StyledStoresWrapper>
-        <h4>Available in</h4>
-        <StyledIconsWrapper>
-          {gameInfo?.stores.map((store) => (
-            <img key={store.id} src={iconFilter(store.store.slug)} alt={store.store.name} />
-          ))}
-        </StyledIconsWrapper>
-      </StyledStoresWrapper>
       <StyledButtonsWrapper>
         <div className='wrap'>
-          <Link className='link' target='_blank' to={gameInfo?.website || ''}>
+          <Link className='link' target='_blank' to={officialWebsite?.url || ''}>
             Check publisher website
           </Link>
           <Tooltip title={isLogged ? 'Add to collection' : 'Please log in'} arrow>

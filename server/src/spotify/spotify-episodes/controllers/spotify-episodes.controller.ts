@@ -1,11 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, ParseIntPipe, Req } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { SpotifyEpisodesService } from '../services/spotify-episodes.service';
-import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 
 @ApiTags('api/spotify/episodes')
 @Controller('spotify/episodes')
-@UseGuards(SpotifyAuthGuard)
 export class SpotifyEpisodesController {
   constructor(
     private readonly spotifyEpisodesService: SpotifyEpisodesService,
@@ -13,14 +12,24 @@ export class SpotifyEpisodesController {
 
   @ApiOperation({ summary: 'Get episode by id' })
   @ApiParam({ name: 'id', description: 'Episode id' })
+  @ApiResponse({ status: 200, description: 'Returns episode details by id' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Episode not found' })
   @Get(':id')
-  async getEpisodeById(@Param('id') id: string) {
-    return this.spotifyEpisodesService.getEpisodeById(id);
+  async getEpisodeById(@Req() req: Request, @Param('id') id: string) {
+    return this.spotifyEpisodesService.getEpisodeById(req, id);
   }
 
   @ApiOperation({ summary: 'Get episodes by game title' })
+  @ApiParam({ name: 'gameId', description: 'The ID of the game' })
+  @ApiResponse({ status: 200, description: 'Returns episodes for the game' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Game not found' })
   @Get('game/:gameId')
-  async getEpisodesByGameTitle(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.spotifyEpisodesService.getEpisodesByGameTitle(gameId);
+  async getEpisodesByGameTitle(
+    @Req() req: Request,
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
+    return this.spotifyEpisodesService.getEpisodesByGameTitle(req, gameId);
   }
 }

@@ -4,8 +4,11 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { GamesRepository } from '../../games/database/games.repository';
 import { Game } from '../../games/models/game.schema';
 
-import { UpdateStrategyFactory, UpdateStrategyType } from './strategies/update-strategy-factory';
-import { RawgGameResponseDto } from 'src/rawg/rawg-api/rawg-api-games/dto/rawg-game-response.dto';
+import {
+  UpdateStrategyFactory,
+  UpdateStrategyType,
+} from './strategies/update-strategy-factory';
+import { IgdbGameResponseDto } from 'src/igdb/igdb-api/igdb-api-games/dto/igdb-game-response.dto';
 import { HowLongToBeat } from 'src/how-long-to-beat/models/hltb.schema';
 
 @Injectable()
@@ -15,7 +18,7 @@ export class GamesUpdateService {
   constructor(
     private readonly gamesRepository: GamesRepository,
     private readonly updateStrategyFactory: UpdateStrategyFactory,
-  ) { }
+  ) {}
 
   @Cron(CronExpression.EVERY_12_HOURS)
   async updateGames() {
@@ -23,17 +26,17 @@ export class GamesUpdateService {
     const gamesInDb = await this.gamesRepository.getRecentGames();
 
     const updatedGames = await Promise.all(
-      gamesInDb.map(game => this.updateGame(game))
+      gamesInDb.map((game) => this.updateGame(game)),
     );
 
     await this.gamesRepository.updateGames(updatedGames);
   }
 
   async updateGame(game: Game): Promise<Game> {
-    const updatedRawg = await this.updateRawgGame(game);
+    const updatedIgdb = await this.updateIgdbGame(game);
     const updatedHltb = await this.updateHowLongToBeat(game);
 
-    game.rawgGame = updatedRawg;
+    game.igdbGame = updatedIgdb;
     game.howLongToBeat = updatedHltb;
 
     await this.gamesRepository.updateGame(game._id, game);
@@ -41,15 +44,19 @@ export class GamesUpdateService {
     return game;
   }
 
-  private async updateRawgGame(game: Game) {
-    const rawgApiGamesService = this.updateStrategyFactory.createUpdateStrategy(UpdateStrategyType.RAWG);
+  private async updateIgdbGame(game: Game) {
+    const igdbApiGamesService = this.updateStrategyFactory.createUpdateStrategy(
+      UpdateStrategyType.IGDB,
+    );
 
-    return await rawgApiGamesService.update(game) as RawgGameResponseDto;
+    return (await igdbApiGamesService.update(game)) as IgdbGameResponseDto;
   }
 
   private async updateHowLongToBeat(game: Game): Promise<HowLongToBeat> {
-    const howLongToBeat = this.updateStrategyFactory.createUpdateStrategy(UpdateStrategyType.HLTB);
+    const howLongToBeat = this.updateStrategyFactory.createUpdateStrategy(
+      UpdateStrategyType.HLTB,
+    );
 
-    return await howLongToBeat.update(game) as HowLongToBeat;
+    return (await howLongToBeat.update(game)) as HowLongToBeat;
   }
 }

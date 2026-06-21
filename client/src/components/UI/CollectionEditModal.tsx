@@ -1,8 +1,7 @@
-import { deleteGameFromCollection } from '#/api/gamesApi';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import { GameDetailsResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { deleteGameFromCollection } from '../../api/gamesApi';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
+import { GameDetailsResponse } from '../../types/types';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -93,11 +92,10 @@ const StyledAddButton = styled(StyledButton)`
 `;
 
 const CollectionEditModal = ({ handleClose, isOpen, games, collectionId, refetch }: Props) => {
-  const authToken = getAuthToken();
   const [deleteQueue, setDeleteQueue] = useState<Array<string | number>>([]);
 
   const removeGamesFromCollection = useMutation({
-    mutationFn: (id: string | number) => deleteGameFromCollection(collectionId, id, authToken),
+    mutationFn: (id: string | number) => deleteGameFromCollection(collectionId, id),
 
     onSuccess: () => {
       if (deleteQueue.length === 1) {
@@ -141,7 +139,7 @@ const CollectionEditModal = ({ handleClose, isOpen, games, collectionId, refetch
 
   const formattedGames: Option[] = games?.map((game) => ({
     id: game._id,
-    name: game.rawgGame?.name,
+    name: game.igdbGame?.name,
   }));
 
   return (

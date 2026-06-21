@@ -1,4 +1,12 @@
-import { IsEnum, IsNotEmpty, IsBooleanString, IsNumberString, Min, IsString, IsNumber } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsBooleanString,
+  IsNumberString,
+  Min,
+  IsString,
+  IsNumber,
+} from 'class-validator';
 import { VideoType } from '../util/youtube-utility.service';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateStringValid } from './decorators/IsDateStringValidConstraint.decorator';
@@ -9,10 +17,10 @@ export class GetVideosByDateRangeDto {
     description: 'From date',
     format: 'YYYY-MM-DD',
     required: true,
-    type: String
+    type: String,
   })
   @IsDateStringValid({
-    message: 'fromDate must be in YYYY-MM-DD format and valid'
+    message: 'fromDate must be in YYYY-MM-DD format and valid',
   })
   @IsNotEmpty()
   fromDate: string;
@@ -21,10 +29,10 @@ export class GetVideosByDateRangeDto {
     description: 'To date',
     format: 'YYYY-MM-DD',
     required: true,
-    type: String
+    type: String,
   })
   @IsDateStringValid({
-    message: 'toDate must be in YYYY-MM-DD format'
+    message: 'toDate must be in YYYY-MM-DD format',
   })
   @IsNotEmpty()
   toDate: string;
@@ -33,7 +41,7 @@ export class GetVideosByDateRangeDto {
     description: 'Number of games',
     required: true,
     default: 5,
-    type: Number
+    type: Number,
   })
   @Min(5)
   @IsNumber()
@@ -43,10 +51,7 @@ export class GetVideosByDateRangeDto {
   @ApiProperty({
     description: 'Video type',
     required: true,
-    enum: [
-      VideoType.REVIEW,
-      VideoType.TRAILER,
-    ],
+    enum: [VideoType.REVIEW, VideoType.TRAILER],
   })
   @IsEnum(VideoType)
   @IsNotEmpty()

@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { HowLongtoBeatUpdateStrategy, RawgUpdateStrategy } from './update-strategy';
-import { RawgApiGamesService } from 'src/rawg/rawg-api/rawg-api-games/rawg-api-games.service';
+import {
+  HowLongtoBeatUpdateStrategy,
+  IgdbUpdateStrategy,
+} from './update-strategy';
+import { IgdbApiGamesService } from 'src/igdb/igdb-api/igdb-api-games/igdb-api-games.service';
 import { HowLongToBeatService } from 'src/how-long-to-beat/services/how-long-to-beat.service';
 
-
 export enum UpdateStrategyType {
-  RAWG = 'RAWG',
-  HLTB = 'HLTB'
+  IGDB = 'IGDB',
+  HLTB = 'HLTB',
 }
 
 @Injectable()
 export class UpdateStrategyFactory {
-
   constructor(
-    private readonly rawgApiGamesService: RawgApiGamesService,
+    private readonly igdbApiGamesService: IgdbApiGamesService,
     private readonly howLongToBeatService: HowLongToBeatService,
   ) {}
 
   createUpdateStrategy(type: UpdateStrategyType) {
     switch (type) {
-      case UpdateStrategyType.RAWG:
-        return new RawgUpdateStrategy(this.rawgApiGamesService);
+      case UpdateStrategyType.IGDB:
+        return new IgdbUpdateStrategy(this.igdbApiGamesService);
 
       case UpdateStrategyType.HLTB:
         return new HowLongtoBeatUpdateStrategy(this.howLongToBeatService);

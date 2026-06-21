@@ -13,10 +13,9 @@ import { ReviewsSites } from './reviews-sites-scraper-factory';
 const SELECTORS = {
   REVIEWS_CONTAINER: '.archive_by_date_items',
   REVIEW_LINKS: 'a',
-}
+};
 
 export class EurogamerStrategy implements IReviewSiteScraper {
-
   private readonly siteUrl: string = 'https://www.eurogamer.net/archive/';
 
   constructor(
@@ -26,33 +25,46 @@ export class EurogamerStrategy implements IReviewSiteScraper {
 
   async scrapeData(game: Game): Promise<ReviewsSitesGameReviewsDto[]> {
     return await this.puppeteerService.withBrowser(async (browser) => {
-      const month = getMonth(new Date(game.rawgGame.released)) + 1;
-      const year  = getYear(new Date(game.rawgGame.released));
+      const releaseDate = game.igdbGame.firstReleaseDate ?? new Date();
+      const month = getMonth(releaseDate) + 1;
+      const year = getYear(releaseDate);
 
-      const page = await this.puppeteerService.createPage(browser, this.siteUrl + `${year}/${month >= 10 ? month : '0' + month}/`);
+      const page = await this.puppeteerService.createPage(
+        browser,
+        this.siteUrl + `${year}/${month >= 10 ? month : '0' + month}/`,
+      );
 
-      const reviewsContainerElement = await page.waitForSelector(SELECTORS.REVIEWS_CONTAINER);
+      const reviewsContainerElement = await page.waitForSelector(
+        SELECTORS.REVIEWS_CONTAINER,
+      );
+      if (!reviewsContainerElement) {
+        return [];
+      }
       const reviews = await reviewsContainerElement.$$(SELECTORS.REVIEW_LINKS);
 
       const reviewsArray = await Promise.all(
         reviews.map(async (review) => {
           return {
-            title: await review.evaluate((el) => el.textContent.replace(/\n/g, '').trim()),
-            url:   await review.evaluate((el: HTMLAnchorElement) => el.href),
+            title: await review.evaluate((el) =>
+              el.textContent.replace(/\n/g, '').trim(),
+            ),
+            url: await review.evaluate((el: HTMLAnchorElement) => el.href),
           };
         }),
       );
 
-      const matchedArticles = this.fuseJsCompareService.findBestMatch(game.rawgGame.name, reviewsArray);
+      const matchedArticles = this.fuseJsCompareService.findBestMatch(
+        game.igdbGame.name,
+        reviewsArray,
+      );
 
-      const result = matchedArticles.map(article => ({
+      const result = matchedArticles.map((article) => ({
         title: article.title,
         url: article.url,
         source: ReviewsSites.EUROGAMER,
-      }))
+      }));
 
       return result;
     });
   }
-
 }

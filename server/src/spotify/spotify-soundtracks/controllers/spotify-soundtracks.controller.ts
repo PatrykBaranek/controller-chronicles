@@ -1,33 +1,69 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { SpotifySoundtracksService } from '../services/spotify-soundtracks.service';
-import { ApiTags } from '@nestjs/swagger';
-import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('api/spotify/soundtracks')
 @Controller('spotify/soundtracks')
-@UseGuards(SpotifyAuthGuard)
 export class SpotifySoundtracksController {
-  constructor(private readonly spotifySoundtracksService: SpotifySoundtracksService) {}
+  constructor(
+    private readonly spotifySoundtracksService: SpotifySoundtracksService,
+  ) {}
 
+  @ApiOperation({ summary: 'Get soundtracks for a game' })
+  @ApiParam({ name: 'gameId', description: 'The ID of the game' })
+  @ApiResponse({ status: 200, description: 'Returns soundtracks for the game' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Game not found' })
   @Get(':gameId')
-  getSoundtracksForGame(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.spotifySoundtracksService.getSoundtracksForGame(gameId);
+  getSoundtracksForGame(
+    @Req() req: Request,
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
+    return this.spotifySoundtracksService.getSoundtracksForGame(req, gameId);
   }
 
+  @ApiOperation({ summary: 'Get Spotify playlists for a game' })
+  @ApiParam({ name: 'gameId', description: 'The ID of the game' })
+  @ApiResponse({ status: 200, description: 'Returns playlists for the game' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Game not found' })
   @Get(':gameId/playlists')
-  getPlaylistsForGame(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.spotifySoundtracksService.getPlaylistsForGame(gameId);
+  getPlaylistsForGame(
+    @Req() req: Request,
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
+    return this.spotifySoundtracksService.getPlaylistsForGame(req, gameId);
   }
 
+  @ApiOperation({ summary: 'Add a soundtrack to a game' })
+  @ApiParam({ name: 'id', description: 'The ID of the soundtrack' })
+  @ApiResponse({ status: 201, description: 'Soundtrack added to the game' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post(':id')
   @HttpCode(HttpStatus.CREATED)
-  addSoundtrack(@Param('id') id: string) {
-    return this.spotifySoundtracksService.addSoundtrack(id);
+  addSoundtrack(@Req() req: Request, @Param('id') id: string) {
+    return this.spotifySoundtracksService.addSoundtrack(req, id);
   }
 
+  @ApiOperation({ summary: 'Remove a soundtrack from a game' })
+  @ApiParam({ name: 'id', description: 'The ID of the soundtrack' })
+  @ApiResponse({ status: 204, description: 'Soundtrack removed from the game' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Soundtrack not found' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeSoundtrack(@Param('id') id: string) {
-    return this.spotifySoundtracksService.removeSoundtrack(id);
+  removeSoundtrack(@Req() req: Request, @Param('id') id: string) {
+    return this.spotifySoundtracksService.removeSoundtrack(req, id);
   }
 }

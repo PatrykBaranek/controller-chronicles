@@ -18,8 +18,8 @@ const SELECTORS = {
   gameReviewsSummaryColumn: '.summary.column',
   gameReviewsSummary: '.game_review_summary',
   usersCount: '.responsive_hidden',
-  positivePercentage: '.nonresponsive_hidden.responsive_reviewdesc'
-}
+  positivePercentage: '.nonresponsive_hidden.responsive_reviewdesc',
+};
 
 @Injectable()
 export class SteamReviewsService {
@@ -43,7 +43,9 @@ export class SteamReviewsService {
 
     const scrapedData = await this.scrapeSteamReviews(steamUrl);
 
-    await this.gamesRepository.updateGame(id, { steam_reviews: plainToInstance(SteamReviews, scrapedData) } );
+    await this.gamesRepository.updateGame(id, {
+      steam_reviews: plainToInstance(SteamReviews, scrapedData),
+    });
 
     return scrapedData;
   }
@@ -54,51 +56,102 @@ export class SteamReviewsService {
 
       await this.steamUtilityService.checkIfApproveAgeGateButtonExists(page);
 
-      const reviewsContainerElement = await page.waitForSelector(SELECTORS.reviewsContainer);
+      const reviewsContainerElement = await page.waitForSelector(
+        SELECTORS.reviewsContainer,
+      );
 
-      const isOnlyOneReview = await this.steamUtilityService.checkIfOnlyOneReviewExists(reviewsContainerElement);
+      const isOnlyOneReview =
+        await this.steamUtilityService.checkIfOnlyOneReviewExists(
+          reviewsContainerElement!,
+        );
 
-      const reviewsSummaryElements = await reviewsContainerElement.$$(SELECTORS.reviewsSummary);
+      const reviewsSummaryElements = await reviewsContainerElement!.$$(
+        SELECTORS.reviewsSummary,
+      );
 
       if (isOnlyOneReview) {
-        const reviewsSummaryOverallResult = await this.fetchReviewSummary(reviewsSummaryElements[0], page, 'Overall');
+        const reviewsSummaryOverallResult = await this.fetchReviewSummary(
+          reviewsSummaryElements[0],
+          page,
+          'Overall',
+        );
 
         return { ...reviewsSummaryOverallResult };
       } else {
-        const reviewsSummaryFrom30DaysResult = await this.fetchReviewSummary(reviewsSummaryElements[0], page, '30Days');
-        const reviewsSummaryOverallResult = await this.fetchReviewSummary(reviewsSummaryElements[1], page, 'Overall');
+        const reviewsSummaryFrom30DaysResult = await this.fetchReviewSummary(
+          reviewsSummaryElements[0],
+          page,
+          '30Days',
+        );
+        const reviewsSummaryOverallResult = await this.fetchReviewSummary(
+          reviewsSummaryElements[1],
+          page,
+          'Overall',
+        );
 
-        return { ...reviewsSummaryFrom30DaysResult, ...reviewsSummaryOverallResult };
+        return {
+          ...reviewsSummaryFrom30DaysResult,
+          ...reviewsSummaryOverallResult,
+        };
       }
     });
   }
 
-  private async getSteamReviewsHelper(reviewsSummaryElement: ElementHandle<Element>, page: Page, reviewType: ReviewType): Promise<SteamReviewsDto> {
-    const gameReviewSummaryElement = await reviewsSummaryElement.$(SELECTORS.gameReviewsSummary);
-    const gameReviewSummaryText = await this.steamUtilityService.extractTextContent(page, gameReviewSummaryElement);
+  private async getSteamReviewsHelper(
+    reviewsSummaryElement: ElementHandle<Element>,
+    page: Page,
+    reviewType: ReviewType,
+  ): Promise<SteamReviewsDto> {
+    const gameReviewSummaryElement = await reviewsSummaryElement.$(
+      SELECTORS.gameReviewsSummary,
+    );
+    const gameReviewSummaryText =
+      await this.steamUtilityService.extractTextContent(
+        page,
+        gameReviewSummaryElement!,
+      );
 
-    const usersCountElement = await reviewsSummaryElement.$(SELECTORS.usersCount);
-    const usersCountRawText = await this.steamUtilityService.extractTextContent(page, usersCountElement);
+    const usersCountElement = await reviewsSummaryElement.$(
+      SELECTORS.usersCount,
+    );
+    const usersCountRawText = await this.steamUtilityService.extractTextContent(
+      page,
+      usersCountElement!,
+    );
     const usersCountText = usersCountRawText.trim().replace(/[\(\)]/g, '');
     const usersCount = Number(usersCountText.split(',').join(''));
 
-    const positivePercentageElement = await reviewsSummaryElement.$(SELECTORS.positivePercentage);
-    const positivePercentageRawText = await this.steamUtilityService.extractTextContent(page, positivePercentageElement);
-    const positivePercentage = Number(positivePercentageRawText.split('%')[0].replace('- ', ''))
+    const positivePercentageElement = await reviewsSummaryElement.$(
+      SELECTORS.positivePercentage,
+    );
+    const positivePercentageRawText =
+      await this.steamUtilityService.extractTextContent(
+        page,
+        positivePercentageElement!,
+      );
+    const positivePercentage = Number(
+      positivePercentageRawText.split('%')[0].replace('- ', ''),
+    );
 
     const reviewsSummary = {
       usersCount: usersCount,
       textSummary: gameReviewSummaryText,
       positivePercentage: positivePercentage,
-    }
+    };
 
-    return reviewType === '30Days' 
-    ? { reviewsSummaryFrom30Days: reviewsSummary }
-    : { reviewsSummaryOverall: reviewsSummary };
+    return reviewType === '30Days'
+      ? { reviewsSummaryFrom30Days: reviewsSummary }
+      : { reviewsSummaryOverall: reviewsSummary };
   }
 
-  private async fetchReviewSummary(element: ElementHandle<Element>, page: Page, reviewType: ReviewType): Promise<SteamReviewsDto> {
-    const reviewSummaryElement = await element.$(SELECTORS.gameReviewsSummaryColumn);
-    return this.getSteamReviewsHelper(reviewSummaryElement, page, reviewType);
+  private async fetchReviewSummary(
+    element: ElementHandle<Element>,
+    page: Page,
+    reviewType: ReviewType,
+  ): Promise<SteamReviewsDto> {
+    const reviewSummaryElement = await element.$(
+      SELECTORS.gameReviewsSummaryColumn,
+    );
+    return this.getSteamReviewsHelper(reviewSummaryElement!, page, reviewType);
   }
 }

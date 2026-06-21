@@ -1,9 +1,12 @@
-import { useIsAuthenticated } from 'react-auth-kit';
 import { Navigate } from 'react-router-dom';
+import { authClient } from '../api/auth-client';
 
-const PrivateRoute = ({ Component }: { Component: React.ComponentType<any> }) => {
-  const isAuthenticated = useIsAuthenticated();
-  return isAuthenticated() ? <Component /> : <Navigate to={'/login'} />;
+const PrivateRoute = ({ Component }: { Component: React.ComponentType }) => {
+  const { data: session, isPending } = authClient.useSession();
+  
+  if (isPending) return null;
+  
+  return session ? <Component /> : <Navigate to={'/login'} />;
 };
 
 export default PrivateRoute;

@@ -1,15 +1,14 @@
-import { deleteUserAccount, getUserProfile, requestPasswordChange } from '#/api/gamesApi';
-import { StyledButton } from '#/pages/Login';
-import getAuthToken from '#/utils/getAuthToken';
+import { deleteUserAccount, getUserProfile, requestPasswordChange } from '../../api/gamesApi';
+import { StyledButton } from '../../pages/Login';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
 import ConfirmationModal from '../UI/ConfirmationModal';
 import { toast } from 'sonner';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
+import errorIco from '../../assets/errorIco.svg';
+import successIco from '../../assets/successIco.svg';
 import { useNavigate } from 'react-router-dom';
-import { useSignOut } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 
 type ButtonProps = {
   isDelete: boolean;
@@ -103,11 +102,9 @@ export const StyledAvatar = styled.span`
 const Profile = () => {
   const [userName, setUserName] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const authToken = getAuthToken();
   const navigate = useNavigate();
-  const signOut = useSignOut();
 
-  const { data } = useQuery(['user'], () => getUserProfile(authToken), {
+  const { data } = useQuery(['user'], () => getUserProfile(), {
     onSuccess: (data) => setUserName(data.email.split('@')[0]),
   });
 
@@ -134,9 +131,9 @@ const Profile = () => {
   });
 
   const removeUser = useMutation({
-    mutationFn: () => deleteUserAccount(authToken, data?.id!),
+    mutationFn: () => deleteUserAccount(data?.id!),
     onSuccess: () => {
-      signOut();
+      authClient.signOut();
       navigate('/');
       toast('Success', {
         className: 'default',

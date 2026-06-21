@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Schema({ autoCreate: false, timestamps: true })
 export class ReviewsSites {
-
   @ApiProperty({
     description: 'Source of the review',
     type: String,

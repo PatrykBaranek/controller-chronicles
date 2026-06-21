@@ -1,44 +1,50 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { ElementHandle, Page } from "puppeteer";
-import { isBefore } from "date-fns";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { ElementHandle, Page } from 'puppeteer';
+import { isBefore } from 'date-fns';
 
-import { GamesService } from "src/games/services/games.service";
-import { Game } from "src/games/models/game.schema";
-import { SteamRepository } from "../database/steam.repository";
-import { SteamReviews } from "../models/steam-reviews.schema";
-import { SteamReviewsDto } from "../dto/steam-reviews.dto";
-import { SteamPlayersCountInGameDto } from "../dto/steam-players-in-game.dto";
-import { SteamPlayersInGame } from "../models/steam-players-in-game.schema";
+import { GamesService } from 'src/games/services/games.service';
+import { Game } from 'src/games/models/game.schema';
+import { SteamRepository } from '../database/steam.repository';
+import { SteamReviews } from '../models/steam-reviews.schema';
+import { SteamReviewsDto } from '../dto/steam-reviews.dto';
+import { SteamPlayersCountInGameDto } from '../dto/steam-players-in-game.dto';
+import { SteamPlayersInGame } from '../models/steam-players-in-game.schema';
 
 const SELECTORS = {
   approveAgeGateButton: '.age_gate',
   ageYearSelect: '#ageYear',
   viewProductPageButton: '#view_product_page_btn',
-  approveAgeBeforeCommunityPageButton: '.btn_blue_steamui.btn_medium'
-}
+  approveAgeBeforeCommunityPageButton: '.btn_blue_steamui.btn_medium',
+};
+
+// IGDB website "category" id for a Steam store link (stable across the v4 API)
+const IGDB_WEBSITE_CATEGORY_STEAM = 13;
 
 @Injectable()
 export class SteamUtilityService {
-
   constructor(
     private readonly gamesService: GamesService,
     private readonly steamRepository: SteamRepository,
-  ) { }
+  ) {}
 
   public async checkIfGameIsReleased(game: Game) {
-    if (isBefore(new Date(), new Date(game.rawgGame.released))) {
+    if (isBefore(new Date(), game.igdbGame.firstReleaseDate ?? new Date(0))) {
       throw new NotFoundException('Game is not released yet ' + game._id);
     }
   }
 
   public async getSteamUrlByGameId(id: number) {
-    const stores = await this.gamesService.getGameStoresByGameId(id);
+    const game = await this.gamesService.getGameById(id);
 
-    if (!stores.some((store) => store.name === 'Steam')) {
+    const steamWebsite = game.igdbGame?.websites?.find(
+      (website) => website.category === IGDB_WEBSITE_CATEGORY_STEAM,
+    );
+
+    if (!steamWebsite) {
       throw new NotFoundException('Game is not available on Steam');
     }
 
-    return stores.find((store) => store.name === 'Steam').url;
+    return steamWebsite.url;
   }
 
   public async checkIfApproveAgeGateButtonExists(page: Page) {
@@ -53,16 +59,21 @@ export class SteamUtilityService {
   }
 
   public async checkIfCommunityApproveAgeExists(page: Page) {
-    const communityAppoveBtn = await page.waitForSelector(SELECTORS.approveAgeBeforeCommunityPageButton, {
-      visible: true
-    });
+    const communityAppoveBtn = await page.waitForSelector(
+      SELECTORS.approveAgeBeforeCommunityPageButton,
+      {
+        visible: true,
+      },
+    );
 
     if (communityAppoveBtn) {
       await communityAppoveBtn.click();
     }
   }
 
-  public async checkIfOnlyOneReviewExists(reviewsContainerElement: ElementHandle<Element>) {
+  public async checkIfOnlyOneReviewExists(
+    reviewsContainerElement: ElementHandle<Element>,
+  ) {
     const childrenCount = await reviewsContainerElement.evaluate((el) => {
       return el.children.length;
     });
@@ -80,7 +91,10 @@ export class SteamUtilityService {
     return bestSellers?.games.length !== 0;
   }
 
-  public async extractTextContent(page: Page, element: ElementHandle<Element>): Promise<string> {
+  public async extractTextContent(
+    page: Page,
+    element: ElementHandle<Element>,
+  ): Promise<string> {
     return await page.evaluate((el) => el.textContent, element);
   }
 
@@ -93,7 +107,9 @@ export class SteamUtilityService {
     return dto;
   }
 
-  public mapToSteamPlayersCountInGameDto(steamPlayersInGame: SteamPlayersInGame): SteamPlayersCountInGameDto {
+  public mapToSteamPlayersCountInGameDto(
+    steamPlayersInGame: SteamPlayersInGame,
+  ): SteamPlayersCountInGameDto {
     const dto = new SteamPlayersCountInGameDto();
 
     dto.playersCount = steamPlayersInGame?.playersCount;

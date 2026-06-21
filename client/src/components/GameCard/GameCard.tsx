@@ -1,7 +1,7 @@
 import heartIcon from '#/assets/heartIcon.svg';
 import { Gamecard } from '#/types/types';
 import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import AddToCollectionForm from '../Collections/AddToCollectionForm';
@@ -94,7 +94,8 @@ const GameCard = ({
   totalEpisodes,
 }: Gamecard) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const isAuth = useIsAuthenticated();
+  const { data: session } = authClient.useSession();
+  const isAuth = !!session;
 
   return (
     <>
@@ -124,7 +125,7 @@ const GameCard = ({
                 <p>Something went wrong!</p>
               )}
             </StyledDescription>
-            {isAuth() && !isPodcastCard && (
+            {isAuth && !isPodcastCard && (
               <StyledAddToCollection
                 onClick={(e) => {
                   e.stopPropagation();

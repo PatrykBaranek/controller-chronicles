@@ -1,11 +1,10 @@
 import { Pagination, ThemeProvider, createTheme } from '@mui/material';
 
-import { connectToSpotify, getAllPodcasts } from '#/api/gamesApi';
-import GameCard from '#/components/GameCard/GameCard';
-import Spinner from '#/components/UI/Spinner';
-import useWindowWidth from '#/hooks/useWindowWidth';
-import { useSpotifyStore } from '#/store/store';
-import isDesktopWidth from '#/utils/isDesktopWidth';
+import { connectToSpotify, getAllPodcasts } from '../api/gamesApi';
+import GameCard from '../components/GameCard/GameCard';
+import Spinner from '../components/UI/Spinner';
+import useWindowWidth from '../hooks/useWindowWidth';
+import isDesktopWidth from '../utils/isDesktopWidth';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
@@ -98,38 +97,53 @@ const Podcasts = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
   const [page, setPage] = useState(1);
-  const { isAuth, setAuth } = useSpotifyStore();
+  const [spotifyLinked, setSpotifyLinked] = useState(true);
 
-  const { data, isLoading } = useQuery(['spotify/login'], () => connectToSpotify(), {
-    onSuccess: (data) => {
-      setAuth(true);
-      window.location.replace(data.url);
+  const { isLoading: isAuthLoading } = useQuery(
+    ['spotify/login'],
+    () => connectToSpotify(),
+    {
+      onSuccess: () => {},
+      enabled: !spotifyLinked,
+      retry: false,
+      cacheTime: 0,
     },
-    onError: () => {
-      setAuth(false);
-    },
-    enabled: !isAuth,
-  });
+  );
 
   const { data: podcastData, isLoading: isPodcastLoading } = useQuery(
     ['spotify', page],
     () => getAllPodcasts((page - 1) * 20),
     {
-      enabled: isAuth,
       keepPreviousData: true,
-      onError: () => {
-        setAuth(false);
+      onError: (e: any) => {
+        if (e.response?.status === 400 || e.response?.status === 401) {
+          setSpotifyLinked(false);
+        }
       },
-    }
+    },
   );
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
+  if (isAuthLoading) {
+    return <Spinner />;
+  }
+
+  if (!spotifyLinked) {
+    return (
+      <StyledContainer>
+        <h2 style={{ textAlign: 'center' }}>
+          You need to link your Spotify account to see podcasts.
+        </h2>
+      </StyledContainer>
+    );
+  }
+
   return (
     <StyledContainer>
-      {isLoading || isPodcastLoading ? (
+      {isPodcastLoading ? (
         <Spinner />
       ) : (
         <>
@@ -151,7 +165,7 @@ const Podcasts = () => {
               siblingCount={isDesktop ? 1 : 0}
               size={isDesktop ? 'medium' : 'small'}
               count={podcastData?.total}
-              variant='outlined'
+              variant="outlined"
               page={page}
               onChange={handlePageChange}
             />

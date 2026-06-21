@@ -1,73 +1,69 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Controller Chronicles — Server
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS v11 API for [Controller Chronicles](https://github.com/PatrykBaranek/controller-chronicles).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Prerequisites
 
-## Description
+- Node.js >= 20
+- pnpm
+- MongoDB (Docker recommended)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Setup
 
 ```bash
-$ npm install
+pnpm install
+cp .env .env.local   # or edit .env directly
 ```
 
-## Running the app
+### MongoDB
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker run -d --name mongodb -p 27017:27017 -v mongodb-data:/data/db mongo:7
 ```
 
-## Test
+## Commands
 
-```bash
-# unit tests
-$ npm run test
+| Command | Description |
+|---|---|
+| `pnpm start:dev` | Start with watch mode |
+| `pnpm start` | Start without watch |
+| `pnpm build` | Compile to `dist/` |
+| `pnpm lint` | ESLint (flat config) |
+| `pnpm test` | Unit tests (Jest + ts-jest) |
+| `pnpm test:e2e` | End-to-end tests |
+| `pnpm start:prod` | Run compiled build |
 
-# e2e tests
-$ npm run test:e2e
+Run from root: `pnpm --filter=server <command>`
 
-# test coverage
-$ npm run test:cov
-```
+## API
 
-## Support
+- **Base URL:** `http://localhost:3000/api`
+- **Swagger UI:** `http://localhost:3000/api`
+- **Auth:** JWT access + refresh tokens (Passport)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Modules
 
-## Stay in touch
+| Module | Routes |
+|---|---|
+| Auth | `/api/auth/signup`, `/api/auth/login`, `/api/auth/refresh`, `/api/auth/logout`, `/api/auth/request-reset-password`, `/api/auth/reset-password` |
+| Users | `/api/users` CRUD |
+| Games | `/api/games` |
+| Collections | `/api/collections` |
+| Spotify | `/api/spotify/auth`, `/api/spotify/podcasts`, `/api/spotify/episodes`, `/api/spotify/soundtracks` |
+| Steam | `/api/steam/bestsellers`, `/api/steam/:gameId/reviews` |
+| YouTube | `/api/youtube` |
+| Reviews | `/api/reviews-sites/:gameId` |
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Env Variables
 
-## License
+16 variables required in `.env` — see `.env` for the full list (MongoDB URI, JWT secrets, Spotify OAuth, RAWG API key, YouTube API key, SMTP config).
 
-Nest is [MIT licensed](LICENSE).
+## Tech Stack
+
+- **Framework:** NestJS v11
+- **Database:** MongoDB + Mongoose v9
+- **Auth:** Passport.js (JWT, local), bcrypt
+- **Validation:** class-validator + class-transformer
+- **Docs:** Swagger / OpenAPI via `@nestjs/swagger`
+- **Email:** `@nestjs-modules/mailer` + nodemailer + EJS templates
+- **HTTP:** Axios, Puppeteer

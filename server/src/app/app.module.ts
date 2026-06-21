@@ -5,14 +5,17 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '@thallesp/nestjs-better-auth';
+import { getAuth } from './lib/auth';
 import { CollectionsModule } from '../collections/collections.module';
 import { EmailModule } from 'src/email/email.module';
 import { GamesModule } from '../games/games.module';
 import { GamesUpdateModule } from '../games-update/games-update.module';
+import { IgdbModule } from '../igdb/igdb.module';
 import { ReviewsSitesModule } from '../reviews-sites/reviews-sites.module';
 import { SpotifyModule } from '../spotify/spotify.module';
 import { SteamModule } from 'src/steam/steam.module';
+import { UsersModule } from '../users/users.module';
 import { YoutubeModule } from 'src/youtube/youtube.module';
 
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
@@ -37,15 +40,19 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
       inject: [ConfigService],
     }),
     EventEmitterModule.forRoot(),
+    AuthModule.forRoot({
+      auth: getAuth(),
+    }),
     SpotifyModule,
     ReviewsSitesModule,
-    AuthModule,
     CollectionsModule,
     GamesModule,
+    IgdbModule,
     SteamModule,
     YoutubeModule,
+    UsersModule,
     GamesUpdateModule,
-    EmailModule
+    EmailModule,
   ],
   providers: [
     {
@@ -67,7 +74,7 @@ import { AxiosExceptionFilter } from './filters/axios-exception.filter';
     {
       provide: APP_FILTER,
       useClass: AxiosExceptionFilter,
-    }
+    },
   ],
 })
 export class AppModule {}
