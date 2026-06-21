@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { apiReference } from '@scalar/nestjs-api-reference';
 
-import { initializeAuth, getAuth } from './lib/auth';
+import { initializeAuth } from './lib/auth';
 
 async function bootstrap() {
   await initializeAuth();
@@ -33,18 +33,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  try {
-    const auth = getAuth();
-    const authSpec = await (auth as any).api.generateOpenAPISchema();
-    Object.assign(document.paths, authSpec.paths);
-  } catch {}
-
-  app.use(
-    '/api',
-    apiReference({
-      content: document,
-    }),
-  );
+  app.use('/api', apiReference({ content: document }));
 
   await app.listen(3000);
 }

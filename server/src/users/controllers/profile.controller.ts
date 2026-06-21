@@ -6,12 +6,15 @@ import {
   HttpStatus,
   Param,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 
 @ApiTags('api/users')
 @Controller('users')
 export class ProfileController {
+  @ApiOperation({ summary: 'Get the current user profile' })
+  @ApiResponse({ status: 200, description: 'Returns the current user profile' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Get('profile')
   getProfile(@Session() session: UserSession) {
     return {
@@ -20,6 +23,11 @@ export class ProfileController {
     };
   }
 
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiParam({ name: 'id', description: 'The ID of the user' })
+  @ApiResponse({ status: 204, description: 'User deleted' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser() {
