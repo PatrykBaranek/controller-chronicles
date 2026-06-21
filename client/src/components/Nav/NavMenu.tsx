@@ -6,7 +6,7 @@ import loginIco from '#/assets/loginIcon.svg';
 import loggedIco from '#/assets/loggedIco.svg';
 import collectionIco from '#/assets/collectionIco.svg';
 import NavbarLink from '../UI/NavbarLink';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 
 const StyledNavMenu = styled.ul`
   width: 100%;
@@ -25,14 +25,15 @@ const StyledNavMenu = styled.ul`
 `;
 
 const NavMenu = () => {
-  const isAuthenticated = useIsAuthenticated();
+  const { data: session } = authClient.useSession();
+  const isLogged = !!session;
 
   return (
     <StyledNavMenu>
       <NavbarLink icon={homeIco} text='Home' />
       <NavbarLink icon={gamepadIco} text='Games' />
       <NavbarLink icon={podcastIco} text='Podcasts' />
-      {!isAuthenticated() ? (
+      {!isLogged ? (
         <NavbarLink icon={loginIco} text={'Login'} />
       ) : (
         <>

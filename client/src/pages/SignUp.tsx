@@ -1,13 +1,12 @@
-import { signUpUser } from '#/api/gamesApi';
-import crossedEye from '#/assets/crossedEye.svg';
-import errorIco from '#/assets/errorIco.svg';
-import eye from '#/assets/eye.svg';
-import successIco from '#/assets/successIco.svg';
-import Form from '#/components/Form/Form';
-import { AuthError, UserInputs } from '#/types/types';
-import { validateEmail, validatePassword } from '#/utils/formValidation';
-import { useEffect, useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { signUpUser } from '../api/gamesApi';
+import crossedEye from '../assets/crossedEye.svg';
+import errorIco from '../assets/errorIco.svg';
+import eye from '../assets/eye.svg';
+import successIco from '../assets/successIco.svg';
+import Form from '../components/Form/Form';
+import { AuthError, UserInputs } from '../types/types';
+import { validateEmail, validatePassword } from '../utils/formValidation';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,7 +22,6 @@ import {
 } from './Login';
 
 const SignUp = () => {
-  const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
 
   const signUp = useMutation({
@@ -39,10 +37,6 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserInputs>();
-
-  useEffect(() => {
-    isAuthenticated() && navigate('/');
-  }, []);
 
   const onSubmit: SubmitHandler<UserInputs> = async (data) => {
     signUp.mutate(data, {

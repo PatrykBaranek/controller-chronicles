@@ -3,16 +3,15 @@ import {
   getUserCollections,
   getUserPodcasts,
   removePodcastFromCollection,
-} from '#/api/gamesApi';
-import errorIco from '#/assets/errorIco.svg';
-import gearIco from '#/assets/gearIco.svg';
-import successIco from '#/assets/successIco.svg';
-import trashIcon from '#/assets/trashIco.svg';
-import CollectionsForm from '#/components/Collections/CollectionsForm';
-import Card from '#/components/UI/Card';
-import ConfirmationModal from '#/components/UI/ConfirmationModal';
-import Spinner from '#/components/UI/Spinner';
-import getAuthToken from '#/utils/getAuthToken';
+} from '../api/gamesApi';
+import errorIco from '../assets/errorIco.svg';
+import gearIco from '../assets/gearIco.svg';
+import successIco from '../assets/successIco.svg';
+import trashIcon from '../assets/trashIco.svg';
+import CollectionsForm from '../components/Collections/CollectionsForm';
+import Card from '../components/UI/Card';
+import ConfirmationModal from '../components/UI/ConfirmationModal';
+import Spinner from '../components/UI/Spinner';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -20,8 +19,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import styled from 'styled-components';
 import { StyledButton } from './Login';
-import CollectionEditModal from '#/components/UI/CollectionEditModal';
-import { useSpotifyStore } from '#/store/store';
+import CollectionEditModal from '../components/UI/CollectionEditModal';
 
 type StyledProps = {
   hasCollections?: boolean;
@@ -134,8 +132,6 @@ const StyledCollectionButton = styled(StyledButton)<StyledProps>`
 `;
 
 const Collections = () => {
-  const authToken = getAuthToken();
-  const { isAuth } = useSpotifyStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -148,18 +144,16 @@ const Collections = () => {
     data: collections,
     refetch,
     isLoading,
-  } = useQuery(['availableCollections'], () => getUserCollections(authToken));
+  } = useQuery(['availableCollections'], () => getUserCollections());
 
   const {
     data: podcastsCollection,
     refetch: refetchPodcasts,
     isLoading: isLoadingPodcasts,
-  } = useQuery(['userPodcasts'], () => getUserPodcasts(), {
-    enabled: isAuth,
-  });
+  } = useQuery(['userPodcasts'], () => getUserPodcasts());
 
   const removeCollection = useMutation({
-    mutationFn: (id: string) => deleteCollection(id, authToken),
+    mutationFn: (id: string) => deleteCollection(id),
   });
 
   const removePodcast = useMutation({

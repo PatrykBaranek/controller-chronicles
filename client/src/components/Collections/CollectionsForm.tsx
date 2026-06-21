@@ -1,7 +1,6 @@
-import { addCollection } from '#/api/gamesApi';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import getAuthToken from '#/utils/getAuthToken';
+import { addCollection } from '../../api/gamesApi';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,7 +10,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { toast } from 'sonner';
 import styled from 'styled-components';
-import errorIco from '#/assets/errorIco.svg';
+import errorIco from '../../assets/errorIco.svg';
 
 type Props = {
   handleClose: () => void;
@@ -81,7 +80,6 @@ const validateInput = (text: string) => {
 };
 
 const CollectionsForm = ({ handleClose, isOpen, refetch }: Props) => {
-  const authToken = getAuthToken();
   const {
     register,
     handleSubmit,
@@ -92,7 +90,6 @@ const CollectionsForm = ({ handleClose, isOpen, refetch }: Props) => {
     mutationFn: (data: InputValue) =>
       addCollection({
         collectionName: data.collectionName,
-        authToken,
       }),
     onSuccess: () => refetch(),
     onError: (error: any) => {

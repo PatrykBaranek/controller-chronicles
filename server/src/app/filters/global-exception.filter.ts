@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AxiosError } from 'axios';
+import { Request, Response } from 'express';
 
 interface ExceptionResponse {
   response: string | object;
@@ -23,8 +23,8 @@ export interface ExceptionBody {
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const context = host.switchToHttp();
-    const response = context.getResponse();
-    const request = context.getRequest();
+    const response = context.getResponse<Response>();
+    const request = context.getRequest<Request>();
     const exceptionResponse = exception.getResponse() as ExceptionResponse;
 
     const status =

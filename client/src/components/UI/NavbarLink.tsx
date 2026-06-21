@@ -1,5 +1,5 @@
-import useStore from '#/store/store';
-import { useSignOut } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
+import useStore from '../../store/store';
 import { NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import styled from 'styled-components';
@@ -161,8 +161,6 @@ const StyledWrapper = styled.div`
 const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
   const { pathname } = useLocation();
   const { toggleMenuOpen } = useStore();
-  const logout = useSignOut();
-
   const isLinkActive = () => {
     if (text.toLowerCase() === 'home') {
       return pathname === '/';
@@ -186,7 +184,7 @@ const NavbarLink = ({ text, icon, isLogoutButton }: NavbarLink) => {
         },
       });
 
-      logout();
+      authClient.signOut();
     }
   };
 

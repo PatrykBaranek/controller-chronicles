@@ -1,10 +1,10 @@
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { AuthProvider } from 'react-auth-kit';
+
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Layout from './Layout';
-import { refreshToken } from './api/gamesApi';
+
 import PrivateRoute from './components/PrivateRoute';
 import Collections from './pages/Collections';
 import GameDetails from './pages/GameDetails';
@@ -63,16 +63,9 @@ const router = createBrowserRouter([
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider
-      authType={'cookie'}
-      authName={'_auth'}
-      cookieDomain={window.location.hostname}
-      refresh={refreshToken}
-    >
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <RouterProvider router={router} />
-      </LocalizationProvider>
-    </AuthProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <RouterProvider router={router} />
+    </LocalizationProvider>
   </QueryClientProvider>
 );
 

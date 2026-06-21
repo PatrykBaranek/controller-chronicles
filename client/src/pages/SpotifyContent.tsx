@@ -1,8 +1,7 @@
-import { getEpisodesByGameId, getSoundtrackByGameId } from '#/api/gamesApi';
-import PodcastEpisodes from '#/components/PodcastDetails/PodcastEpisodes';
-import Spinner from '#/components/UI/Spinner';
-import { useSpotifyStore } from '#/store/store';
-import { Episode, Soundtrack } from '#/types/types';
+import { getEpisodesByGameId, getSoundtrackByGameId } from '../api/gamesApi';
+import PodcastEpisodes from '../components/PodcastDetails/PodcastEpisodes';
+import Spinner from '../components/UI/Spinner';
+import { Episode, Soundtrack } from '../types/types';
 import { useState } from 'react';
 import { useQueries } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -50,7 +49,7 @@ const StyledSpotifyWrapper = styled.div`
 const SpotifyContent = ({ id }: { id?: string }) => {
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [soundtracks, setSoundtracks] = useState<Soundtrack[]>([]);
-  const { isAuth, setAuth } = useSpotifyStore();
+  const [spotifyLinked, setSpotifyLinked] = useState(true);
 
   const spotify = useQueries([
     {
@@ -58,22 +57,22 @@ const SpotifyContent = ({ id }: { id?: string }) => {
       queryFn: () => getEpisodesByGameId(id!),
       onSuccess: (data: Episode[]) => setEpisodes(data),
       onError: (e: any) => {
-        if (e.response.status === 403) {
-          setAuth(false);
+        if (e.response?.status === 400 || e.response?.status === 403) {
+          setSpotifyLinked(false);
         }
       },
-      enabled: isAuth,
+      enabled: spotifyLinked,
     },
     {
       queryKey: ['/podcast/soundtracks/:id', id],
       queryFn: () => getSoundtrackByGameId(id!),
       onSuccess: (data: Soundtrack[]) => setSoundtracks(data),
       onError: (e: any) => {
-        if (e.response.status === 403) {
-          setAuth(false);
+        if (e.response?.status === 400 || e.response?.status === 403) {
+          setSpotifyLinked(false);
         }
       },
-      enabled: isAuth,
+      enabled: spotifyLinked,
     },
   ]);
 
@@ -84,21 +83,21 @@ const SpotifyContent = ({ id }: { id?: string }) => {
       {isSpotifyLoading ? (
         <Spinner />
       ) : (
-        !isAuth && (
+        !spotifyLinked && (
           <StyledNoSpotify>
-            <h2>You need to be authorized to see spotify content</h2>
-            <Link to={'/podcasts'}>Authorize</Link>
+            <h2>You need to link your Spotify account to see content</h2>
+            <Link to={'/podcasts'}>Link Spotify</Link>
           </StyledNoSpotify>
         )
       )}
       {episodes.length !== 0 && (
         <StyledEpisodesWrapper>
-          <PodcastEpisodes heading='Spotify Episodes' data={episodes.slice(0, 8)} />
+          <PodcastEpisodes heading="Spotify Episodes" data={episodes.slice(0, 8)} />
         </StyledEpisodesWrapper>
       )}
       {soundtracks.length !== 0 && (
         <StyledEpisodesWrapper>
-          <PodcastEpisodes heading='Spotify soundtracks' data={soundtracks.slice(0, 8)} />
+          <PodcastEpisodes heading="Spotify soundtracks" data={soundtracks.slice(0, 8)} />
         </StyledEpisodesWrapper>
       )}
     </StyledSpotifyWrapper>

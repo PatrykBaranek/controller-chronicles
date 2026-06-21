@@ -7,39 +7,44 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  UseGuards,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { SpotifySoundtracksService } from '../services/spotify-soundtracks.service';
 import { ApiTags } from '@nestjs/swagger';
-import { SpotifyAuthGuard } from '../../guards/spotify-auth.guard';
 
 @ApiTags('api/spotify/soundtracks')
 @Controller('spotify/soundtracks')
-@UseGuards(SpotifyAuthGuard)
 export class SpotifySoundtracksController {
   constructor(
     private readonly spotifySoundtracksService: SpotifySoundtracksService,
   ) {}
 
   @Get(':gameId')
-  getSoundtracksForGame(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.spotifySoundtracksService.getSoundtracksForGame(gameId);
+  getSoundtracksForGame(
+    @Req() req: Request,
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
+    return this.spotifySoundtracksService.getSoundtracksForGame(req, gameId);
   }
 
   @Get(':gameId/playlists')
-  getPlaylistsForGame(@Param('gameId', ParseIntPipe) gameId: number) {
-    return this.spotifySoundtracksService.getPlaylistsForGame(gameId);
+  getPlaylistsForGame(
+    @Req() req: Request,
+    @Param('gameId', ParseIntPipe) gameId: number,
+  ) {
+    return this.spotifySoundtracksService.getPlaylistsForGame(req, gameId);
   }
 
   @Post(':id')
   @HttpCode(HttpStatus.CREATED)
-  addSoundtrack(@Param('id') id: string) {
-    return this.spotifySoundtracksService.addSoundtrack(id);
+  addSoundtrack(@Req() req: Request, @Param('id') id: string) {
+    return this.spotifySoundtracksService.addSoundtrack(req, id);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeSoundtrack(@Param('id') id: string) {
-    return this.spotifySoundtracksService.removeSoundtrack(id);
+  removeSoundtrack(@Req() req: Request, @Param('id') id: string) {
+    return this.spotifySoundtracksService.removeSoundtrack(req, id);
   }
 }

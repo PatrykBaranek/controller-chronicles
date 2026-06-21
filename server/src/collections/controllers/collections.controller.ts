@@ -8,30 +8,25 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Req,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 
 import { CollectionsService } from '../services/collections.service';
 
 import { AddGameToCollectionDto } from '../dto/add-game-to-collection.dto';
 import { CreateNewCollectionDto } from '../dto/create-new-collection.dto';
-
-import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
+import { Session, UserSession } from '@thallesp/nestjs-better-auth';
 
 @ApiTags('api/collections')
 @Controller('collections')
-@UseGuards(AccessTokenGuard)
 export class CollectionsController {
   constructor(private collectionsService: CollectionsService) {}
 
   @ApiOperation({ summary: 'Get all collections of a user' })
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getCollections(@Req() req: Request) {
-    return this.collectionsService.getCollections(req.user!['sub']);
+  async getCollections(@Session() session: UserSession) {
+    return this.collectionsService.getCollections(session.user.id);
   }
 
   @ApiOperation({ summary: 'Create a new collection' })
@@ -39,26 +34,17 @@ export class CollectionsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createCollection(
-    @Req() req: Request,
+    @Session() session: UserSession,
     @Body() createNewCollectionDto: CreateNewCollectionDto,
   ) {
-    return this.collectionsService.createCollection(
-      req.user!['sub'],
-      createNewCollectionDto,
-    );
+    return this.collectionsService.createCollection(session.user.id, createNewCollectionDto);
   }
 
   @ApiOperation({ summary: 'Delete a collection' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteCollection(
-    @Req() req: Request,
-    @Param('id') collectionId: string,
-  ) {
-    return this.collectionsService.deleteCollection(
-      req.user!['sub'],
-      collectionId,
-    );
+  async deleteCollection(@Session() session: UserSession, @Param('id') collectionId: string) {
+    return this.collectionsService.deleteCollection(session.user.id, collectionId);
   }
 
   @ApiOperation({ summary: 'Add a game to a collection' })

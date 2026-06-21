@@ -1,16 +1,15 @@
-import { addGameToCollection, getUserCollections } from '#/api/gamesApi';
-import errorIco from '#/assets/errorIco.svg';
-import successIco from '#/assets/successIco.svg';
-import { StyledButton } from '#/pages/Login';
-import { GameDetailsResponse } from '#/types/types';
-import getAuthToken from '#/utils/getAuthToken';
+import { addGameToCollection, getUserCollections } from '../../api/gamesApi';
+import errorIco from '../../assets/errorIco.svg';
+import successIco from '../../assets/successIco.svg';
+import { StyledButton } from '../../pages/Login';
+import { GameDetailsResponse } from '../../types/types';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
@@ -109,13 +108,13 @@ const StyledAddButton = styled(StyledButton)`
 const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
   const [collections, setColletions] = useState<MappedCollection[]>();
   const [isGameInEveryCollection, setIsGameInEveryCollection] = useState(false);
-  const authToken = getAuthToken();
-  const isAuth = useIsAuthenticated();
+  const { data: session } = authClient.useSession();
+  const isAuth = !!session;
   const [isNewCollectionModalOpen, setIsNewCollectionModalOpen] = useState(false);
 
   const { data, refetch } = useQuery(
     ['availableCollections'],
-    () => getUserCollections(authToken),
+    () => getUserCollections(),
     {
       onSuccess: (data) => {
         const mappedCollections: MappedCollection[] = data.map((collection) => ({
@@ -136,7 +135,7 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
 
         setColletions(filteredCollections);
       },
-      enabled: isAuth() && isOpen,
+      enabled: isAuth && isOpen,
       onError: (error: any) => {
         toast('Error', {
           className: 'default',
@@ -149,7 +148,7 @@ const AddToCollectionForm = ({ handleClose, isOpen, gameId }: Props) => {
     }
   );
   const addToCollection = useMutation({
-    mutationFn: (id: string) => addGameToCollection(authToken, gameId, id),
+    mutationFn: (id: string) => addGameToCollection(gameId, id),
   });
 
   const {

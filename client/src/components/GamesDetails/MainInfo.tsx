@@ -4,7 +4,7 @@ import { RawgGameDetails } from '#/types/types';
 import iconFilter from '#/utils/iconFilter';
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
-import { useIsAuthenticated } from 'react-auth-kit';
+import { authClient } from '../../api/auth-client';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import AddToCollectionForm from '../Collections/AddToCollectionForm';
@@ -168,8 +168,8 @@ const MainInfo = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const rating = Math.round((gameInfo?.metacritic! / 20) * 2) / 2 || 0;
-  const auth = useIsAuthenticated();
-  const isLogged = auth();
+  const { data: session } = authClient.useSession();
+  const isLogged = !!session;
 
   return (
     <StyledTitleWrapper>

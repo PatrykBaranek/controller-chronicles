@@ -1,14 +1,13 @@
-import { logInUser } from '#/api/gamesApi';
-import crossedEye from '#/assets/crossedEye.svg';
-import errorIco from '#/assets/errorIco.svg';
-import eye from '#/assets/eye.svg';
-import loggedInIco from '#/assets/loggedIco.svg';
-import ChangePasswordModal from '#/components/Form/ChangePasswordModal';
-import Form from '#/components/Form/Form';
-import { AuthError, UserInputs } from '#/types/types';
-import { validateEmail } from '#/utils/formValidation';
-import { useEffect, useState } from 'react';
-import { useIsAuthenticated, useSignIn } from 'react-auth-kit';
+import { logInUser } from '../api/gamesApi';
+import crossedEye from '../assets/crossedEye.svg';
+import errorIco from '../assets/errorIco.svg';
+import eye from '../assets/eye.svg';
+import loggedInIco from '../assets/loggedIco.svg';
+import ChangePasswordModal from '../components/Form/ChangePasswordModal';
+import Form from '../components/Form/Form';
+import { AuthError, UserInputs } from '../types/types';
+import { validateEmail } from '../utils/formValidation';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
@@ -150,13 +149,7 @@ const Login = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [error, setError] = useState<AuthError>();
-  const signIn = useSignIn();
-  const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    isAuthenticated() && navigate('/');
-  }, []);
 
   const {
     register,
@@ -171,29 +164,18 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<UserInputs> = (data) => {
     logIn.mutate(data, {
-      onSuccess: (data) => {
-        if (
-          signIn({
-            token: data.access_token,
-            expiresIn: data.access_token_expires_in,
-            tokenType: 'string',
-            authState: {},
-            refreshToken: data.refresh_token,
-            refreshTokenExpireIn: data.refresh_token_expires_in,
-          })
-        ) {
-          navigate('/');
-          toast('Logged In', {
-            className: 'default',
-            description: 'You have successfully logged in',
-            duration: 5000,
-            icon: <img className='login' src={loggedInIco} />,
-            position: 'top-center',
-            style: {
-              gap: '1rem',
-            },
-          });
-        }
+      onSuccess: () => {
+        navigate('/');
+        toast('Logged In', {
+          className: 'default',
+          description: 'You have successfully logged in',
+          duration: 5000,
+          icon: <img className='login' src={loggedInIco} />,
+          position: 'top-center',
+          style: {
+            gap: '1rem',
+          },
+        });
       },
       onError: (error: any) => {
         toast('Error', {

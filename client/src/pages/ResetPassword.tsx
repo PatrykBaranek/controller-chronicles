@@ -5,7 +5,6 @@ import successIco from '#/assets/successIco.svg';
 import { validatePassword } from '#/utils/formValidation';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useSignOut } from 'react-auth-kit';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -95,8 +94,6 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const navigate = useNavigate();
-  const signOut = useSignOut();
-
   useEffect(() => {
     const token = searchParams.get('token');
 
@@ -116,7 +113,6 @@ const ResetPassword = () => {
     mutationFn: (data: InputValues) =>
       resetPassword(searchParams.get('token')!, data.password, data.repeatPassword),
     onSuccess: () => {
-      signOut();
       navigate('/login');
       toast('Password successfully changed', {
         className: 'default',
