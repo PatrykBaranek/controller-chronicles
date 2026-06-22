@@ -36,8 +36,15 @@ export const getBestsellers = async (): Promise<BestsellerResponse> => {
   return response.data;
 };
 
-export const getGames = async (page = 1, pageSize = 8): Promise<GamesResponse> => {
-  const response = await gamesApi.get(`/games?page=${page}&page_size=${pageSize}`);
+export const getGames = async (
+  page = 1,
+  pageSize = 8,
+  ordering?: string
+): Promise<GamesResponse> => {
+  const orderingParam = ordering ? `&ordering=${ordering}` : '';
+  const response = await gamesApi.get(
+    `/games?page=${page}&page_size=${pageSize}${orderingParam}`
+  );
 
   return response.data;
 };

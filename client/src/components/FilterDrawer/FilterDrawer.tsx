@@ -1,7 +1,7 @@
 import useStore from '#/store/store';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { platforms, sortingOptions, stores } from './Filters.mock';
+import { platforms, sortingOptions } from './Filters.mock';
 import Autocomplete, { Option } from './components/Autocomplete';
 import Datepicker from './components/Datepicker';
 import RadioGroup from './components/RadioGroup';
@@ -21,7 +21,6 @@ type DrawerProps = {
 
 export type FormValues = {
   Platforms?: Option;
-  Stores?: Option;
   Sort?: Option;
   Order?: {
     label: string;
@@ -115,13 +114,13 @@ const FilterDrawer = () => {
     enabled: false,
   });
 
-  const onSubmit: SubmitHandler<FormValues> = ({ Platforms, Stores, Sort, Order, From, To }) => {
+  const onSubmit: SubmitHandler<FormValues> = ({ Platforms, Sort, Order, From, To }) => {
+    // Sort.id is the server ordering token (e.g. 'rating'); Order.value is '' (asc) or '-' (desc).
+    const ordering = Sort ? `${Order?.value ?? ''}${Sort.id}` : undefined;
     const paramObj = {
-      platforms: Platforms?.name,
-      stores: Stores?.name,
-      sort: Sort?.name,
+      platforms: Platforms ? String(Platforms.id) : undefined,
+      ordering,
       dates: formatDate(From, To),
-      order: Order?.value,
     };
     if (!Object.keys(formatParams(paramObj)).length) {
       toggleFiltersOpen();
@@ -153,7 +152,6 @@ const FilterDrawer = () => {
         </StyledButton>
       </StyledButtonWrapper>
       <Autocomplete control={control} options={platforms} label='Platforms' />
-      <Autocomplete control={control} options={stores} label='Stores' />
       <Autocomplete control={control} options={sortingOptions} label='Sort' />
       {isSorted && (
         <RadioGroup control={control} options={radioOptions} size='small' name='Order' />

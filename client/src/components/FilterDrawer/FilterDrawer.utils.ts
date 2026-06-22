@@ -3,10 +3,8 @@ export const dateFormat = 'YYYY-MM-DD';
 
 type Params = {
   platforms?: string;
-  stores?: string;
-  sort?: string;
+  ordering?: string;
   dates?: string;
-  order?: string;
 };
 
 const formatDate = (from: Dayjs | undefined, to: Dayjs | undefined): string | undefined => {
@@ -23,11 +21,10 @@ const formatDate = (from: Dayjs | undefined, to: Dayjs | undefined): string | un
 };
 
 const formatParams = (params: Params) => {
-  const sortOption = params.sort && (!params.order ? `${params.sort}` : `-${params.sort}`);
   const newParams: Partial<Params> = {};
-  for (const [key, value] of Object.entries({ ...params, sort: sortOption })) {
+  for (const [key, value] of Object.entries(params)) {
     if (value) {
-      newParams[key.toLowerCase() as keyof Params] = value.toLowerCase();
+      newParams[key as keyof Params] = value;
     }
   }
   return newParams;

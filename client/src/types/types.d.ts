@@ -204,6 +204,7 @@ export type Games = {
   platforms: PlatformElement[];
   genres?: Genre[];
   description?: string;
+  aggregatedRating?: number;
 };
 
 export type GameDetailsResponse = {
