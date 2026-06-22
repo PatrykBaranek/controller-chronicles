@@ -7,10 +7,12 @@ const Ordering = [
   'released',
   'rating',
   'updated',
+  'popularity',
   '-name',
   '-released',
   '-rating',
   '-updated',
+  '-popularity',
 ];
 
 export class GetGameQueryParamsDto extends PageQueryParamsDto {

@@ -22,6 +22,7 @@ const GAME_FIELDS = [
   'summary',
   'first_release_date',
   'aggregated_rating',
+  'total_rating_count',
   'cover.image_id',
   'screenshots.image_id',
   'websites.url',
@@ -54,7 +55,11 @@ export class IgdbApiGamesService extends IgdbApiService {
   async getGames(options?: GetGameQueryParamsDto) {
     const { page = 1, page_size = 5 } = options ?? {};
     const where = this.buildWhereClause(options);
-    const sort = this.buildSortClause(options?.ordering);
+    // IGDB rejects `sort` combined with `search` (search forces relevance order).
+    // Otherwise honor an explicit ordering, falling back to popularity by default.
+    const sort = options?.search
+      ? undefined
+      : (this.buildSortClause(options?.ordering) ?? 'total_rating_count desc');
 
     const query = buildApicalypseQuery({
       fields: GAME_FIELDS,
@@ -183,6 +188,7 @@ export class IgdbApiGamesService extends IgdbApiService {
       released: 'first_release_date',
       rating: 'aggregated_rating',
       updated: 'updated_at',
+      popularity: 'total_rating_count',
     };
 
     const igdbField = fieldMap[field];
