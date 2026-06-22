@@ -1,5 +1,7 @@
 import { getGames, getGamesBySearchQuery } from '#/api/gamesApi';
 import GameCard from '#/components/GameCard/GameCard';
+import FeaturedHero from '#/components/Hero/FeaturedHero';
+import GamesControlBar, { SortKey } from '#/components/Games/GamesControlBar';
 import useWindowWidth from '#/hooks/useWindowWidth';
 import useStore from '#/store/store';
 import isDesktopWidth from '#/utils/isDesktopWidth';
@@ -7,7 +9,7 @@ import { Pagination, Skeleton, ThemeProvider, createTheme } from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const theme = createTheme({
   components: {
@@ -69,6 +71,11 @@ const StyledContainer = styled.div`
   }
 `;
 
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const StyledWrapper = styled.div`
   display: grid;
   width: 100%;
@@ -79,18 +86,27 @@ const StyledWrapper = styled.div`
     gap: 1.5rem;
   }
 
-  @media screen and (min-width: 900px) {
-    padding-top: 2rem;
-  }
   @media screen and (min-width: 1000px) {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
   @media screen and (min-width: 1300px) {
-    padding-inline: 2rem;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
   }
+
+  /* staggered entrance for the page of cards */
+  > * {
+    opacity: 0;
+    animation: ${fadeUp} 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  > *:nth-child(1) { animation-delay: 0.04s; }
+  > *:nth-child(2) { animation-delay: 0.1s; }
+  > *:nth-child(3) { animation-delay: 0.16s; }
+  > *:nth-child(4) { animation-delay: 0.22s; }
+  > *:nth-child(5) { animation-delay: 0.28s; }
+  > *:nth-child(6) { animation-delay: 0.34s; }
+  > *:nth-child(7) { animation-delay: 0.4s; }
+  > *:nth-child(8) { animation-delay: 0.46s; }
 `;
 const StyledSkeleton = styled(Skeleton)`
   height: 300px !important;
@@ -113,15 +129,21 @@ const Games = () => {
   const isSearchbarUsed = Boolean(searchParams.get('query'));
   const { games: storedGames, storeGames } = useStore();
   const [page, setPage] = useState(1);
+  const [ordering, setOrdering] = useState<SortKey>('-popularity');
 
   const {
     data: games,
     isLoading,
     isError,
-  } = useQuery(['/games', page], () => getGames(page), {
+  } = useQuery(['/games', page, ordering], () => getGames(page, 8, ordering), {
     keepPreviousData: true,
     enabled: !Boolean(query),
   });
+
+  const handleOrderingChange = (value: SortKey) => {
+    setOrdering(value);
+    setPage(1);
+  };
 
   const { data } = useQuery(['search', query], () => getGamesBySearchQuery(query || undefined), {
     enabled: Boolean(query),
@@ -143,6 +165,12 @@ const Games = () => {
 
   return (
     <StyledContainer>
+      {!isSearchbarUsed && (
+        <>
+          <FeaturedHero game={storedGames?.[0]} />
+          <GamesControlBar ordering={ordering} onOrderingChange={handleOrderingChange} />
+        </>
+      )}
       <StyledWrapper>
         {isLoading || isError
           ? Array(8)
@@ -166,8 +194,12 @@ const Games = () => {
                 id={game.id}
                 title={game.name}
                 image={game.background_image}
-                rating={game.metacritic / 10}
-                description={game?.description_raw}
+                rating={
+                  game.aggregatedRating
+                    ? Math.round((game.aggregatedRating / 10) * 10) / 10
+                    : 0
+                }
+                description={game?.description}
               />
             ))}
       </StyledWrapper>

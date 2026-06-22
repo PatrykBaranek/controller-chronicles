@@ -1,35 +1,18 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { GlobalStyle } from './GlobalStyle';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header/Header';
 import Nav from './components/Nav/Nav';
 import useWindowWidth from './hooks/useWindowWidth';
 import isDesktopWidth from '#/utils/isDesktopWidth';
-import NewReleases from './components/NewReleases/NewReleases';
 import { Toaster } from 'sonner';
 import { ErrorBoundary } from 'react-error-boundary';
 import PageErrorFallback from './components/UI/PageErrorFallback';
 
-type StyledProps = {
-  isHome: boolean;
-};
-
-const StyledMain = styled.main<StyledProps>`
+const StyledMain = styled.main`
   display: flex;
-  flex-direction: ${({ isHome }) => (isHome ? 'column' : 'row')};
+  flex-direction: row;
   width: 100%;
-  ${({ isHome }) =>
-    isHome &&
-    css`
-      @media screen and (min-width: 900px) {
-        display: grid;
-        grid-template-columns: 30vw repeat(3, 1fr);
-      }
-      @media screen and (min-width: 1050px) {
-        display: grid;
-        grid-template-columns: 18vw repeat(3, 1fr);
-      }
-    `}
 `;
 
 const StyledToaster = styled(Toaster)`
@@ -48,15 +31,13 @@ const Layout = () => {
   const windowWidth = useWindowWidth();
   const isDesktop = isDesktopWidth(windowWidth);
   const location = useLocation();
-  const isHome = location.pathname === '/';
 
   return (
     <>
       <GlobalStyle />
       <Header />
-      <StyledMain isHome={isHome}>
+      <StyledMain>
         {isDesktop && <Nav />}
-        {isHome && <NewReleases />}
         <ErrorBoundary FallbackComponent={PageErrorFallback} resetKeys={[location.pathname]}>
           <Outlet />
         </ErrorBoundary>
