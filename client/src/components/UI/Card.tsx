@@ -5,9 +5,11 @@ const Wrapper = styled.div`
   overflow: hidden;
   position: relative;
   padding: 1px;
-  transition: all 0.2s ease-in-out;
+  border-radius: 1rem;
+  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.04) translateY(-4px);
+    box-shadow: ${({ theme }) => theme.shadows?.softGlow};
   }
   &::before {
     content: '';

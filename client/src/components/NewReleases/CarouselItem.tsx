@@ -36,7 +36,8 @@ const StyledOverlay = styled.span`
   width: 100%;
   height: 100%;
   left: 0;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 30%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(0deg, rgba(13, 9, 28, 0.92) 22%, rgba(34, 23, 56, 0.15) 65%, transparent 100%),
+    linear-gradient(90deg, rgba(13, 9, 28, 0.55) 0%, transparent 60%);
   @media screen and (min-width: 900px) {
     border-radius: 1rem;
   }
@@ -49,12 +50,26 @@ const StyledTitle = styled.span<StyledProps>`
   left: 5%;
   opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
   transition: all 1s ease-in-out 0.1s;
-  color: #ffffffcc;
-  font-size: clamp(0.5rem, 3vw, 1.2rem);
+  color: ${({ theme }) => theme.colors.white};
+  font-family: ${({ theme }) => theme.fonts?.display};
+  font-size: clamp(1rem, 4vw, 1.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
   font-weight: ${({ theme }) => theme.fontWeights.bold};
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+
+  &::after {
+    content: '';
+    display: block;
+    margin-top: 0.5rem;
+    width: 2.5rem;
+    height: 3px;
+    border-radius: 2px;
+    background: ${({ theme }) => theme.colors.secondaryGradient};
+  }
   @media screen and (min-width: 900px) {
-    width: 50%;
-    font-size: clamp(0.5rem, 2vw, 1.2rem);
+    width: 60%;
+    font-size: clamp(1.1rem, 2.4vw, 2rem);
   }
   @media screen and (min-width: 1000px) {
     transform: translateY(${({ $isActive }) => ($isActive ? '95%' : '300%')});
@@ -68,9 +83,9 @@ const StyledReleaseDate = styled.span<StyledProps>`
   left: 5%;
   opacity: ${({ $isActive }) => ($isActive ? 1 : 0)};
   transition: all 1s ease-in-out 0.1s;
-  color: #ffffffcc;
+  color: ${({ theme }) => theme.colors.neon};
   font-size: clamp(0.4rem, 2.5vw, 1.2rem);
-  font-weight: ${({ theme }) => theme.fontWeights.semiBild};
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
   @media screen and (min-width: 900px) {
     width: 50%;
     font-size: clamp(0.5rem, 1.75vw, 1rem);

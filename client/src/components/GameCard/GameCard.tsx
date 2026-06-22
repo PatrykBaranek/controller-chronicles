@@ -1,4 +1,5 @@
 import heartIcon from '#/assets/heartIcon.svg';
+import starIcon from '#/assets/starIcon.svg';
 import { Gamecard } from '#/types/types';
 import { useState } from 'react';
 import { authClient } from '../../api/auth-client';
@@ -8,12 +9,53 @@ import AddToCollectionForm from '../Collections/AddToCollectionForm';
 import Card from '../UI/Card';
 
 const StyledImage = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  border-radius: 1rem 1rem 0 0;
+
   img {
     border-radius: 1rem 1rem 0 0;
     width: 100%;
     aspect-ratio: 3/2;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* bottom scrim so the seam into the glass body reads as one surface */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 45%;
+    background: linear-gradient(0deg, rgba(34, 23, 56, 0.85) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  a:hover & img {
+    transform: scale(1.06);
+  }
+`;
+
+const StyledBadge = styled.span`
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 100vw;
+  font-size: 0.78rem;
+  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
+  color: ${({ theme }) => theme.colors.white};
+  background: rgba(17, 12, 34, 0.55);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0, 235, 255, 0.35);
+
+  img {
+    width: 0.8rem;
+    height: 0.8rem;
   }
 `;
 
@@ -21,7 +63,7 @@ const StyledContent = styled.div`
   width: 100%;
   height: 100%;
   padding-inline: 1rem;
-  padding-top: 1.2rem;
+  padding-top: 1rem;
   display: grid;
 `;
 
@@ -29,18 +71,21 @@ const StyledTopSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   h1 {
     width: 100%;
     color: white;
+    font-family: ${({ theme }) => theme.fonts?.display};
     font-weight: ${({ theme }) => theme.fontWeights.bold};
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
     @media screen and (min-width: 900px) {
-      font-size: clamp(0.7rem, 1vw, 1rem);
       padding-block: 0.2rem;
     }
   }
   p {
-    width: 100%;
+    white-space: nowrap;
     text-align: right;
     font-size: clamp(0.8rem, 2vw, 1rem);
     color: ${({ theme }) => theme.colors.primary};
@@ -57,8 +102,8 @@ const StyledTopSection = styled.div`
 
 const StyledDescription = styled.div`
   color: ${({ theme }) => theme.colors.primary};
-  margin-block: 0.3rem;
-  line-height: 1.1;
+  margin-block: 0.4rem;
+  line-height: 1.25;
   p {
     font-size: 0.8rem;
   }
@@ -79,7 +124,8 @@ const StyledAddToCollection = styled.button`
     background: rgba(255, 255, 255, 0.05);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: ${({ theme }) => theme.colors.secondaryGradient};
+      box-shadow: ${({ theme }) => theme.shadows?.softGlow};
     }
   }
 `;
@@ -102,6 +148,12 @@ const GameCard = ({
       <Card>
         <Link style={{ paddingBottom: '2rem' }} to={`${id}`}>
           <StyledImage>
+            {!isPodcastCard && Boolean(rating) && (
+              <StyledBadge>
+                <img src={starIcon} alt='' />
+                {rating}
+              </StyledBadge>
+            )}
             <img src={image} alt={`${title} image`} />
           </StyledImage>
 
@@ -112,17 +164,13 @@ const GameCard = ({
                 <p>
                   Episodes <span>{totalEpisodes || 0}</span>
                 </p>
-              ) : (
-                <p>
-                  Rating <span>{rating ? rating : 0}/10</span>
-                </p>
-              )}
+              ) : null}
             </StyledTopSection>
             <StyledDescription>
               {description ? (
                 <p>{description && description.slice(0, 250) + ' ...'}</p>
               ) : (
-                <p>Something went wrong!</p>
+                <p>No description available yet.</p>
               )}
             </StyledDescription>
             {isAuth && !isPodcastCard && (

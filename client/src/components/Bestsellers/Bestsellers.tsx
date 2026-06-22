@@ -21,10 +21,22 @@ const StyledBestsellers = styled.div`
     padding-right: 0;
   }
   h3 {
-    font-size: 1.2rem;
-    font-weight: ${({ theme }) => theme.fontWeights.semiBold};
-    margin-bottom: 1rem;
+    font-family: ${({ theme }) => theme.fonts?.display};
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: ${({ theme }) => theme.fontWeights.bold};
+    letter-spacing: -0.01em;
+    margin-bottom: 1.2rem;
     margin-left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    &::before {
+      content: '';
+      width: 4px;
+      height: 1.05em;
+      border-radius: 2px;
+      background: ${({ theme }) => theme.colors.secondaryGradient};
+    }
   }
 `;
 const StyledSplideSlide = styled(SplideSlide)`

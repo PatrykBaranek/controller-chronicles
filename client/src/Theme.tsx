@@ -9,6 +9,8 @@ const theme = {
     secondary: '#ffffff99',
     yellow: '#F4BF4F',
     red: '#ED695E',
+    neon: '#00EBFF',
+    magenta: '#A73EE7',
     mainGradient: 'linear-gradient(234.73deg, #3c705599 12.85%, #221738 61.83%),#221475',
     secondaryGradient: 'linear-gradient(131.88deg, #A73EE7 14.48%, #00EBFF 83.43%)',
     inputGradient: 'linear-gradient(135deg, #0f55e819 0%, #9ddff319 100%)',
@@ -18,11 +20,19 @@ const theme = {
       50% 0% / calc(100% - 2px) no-repeat,
     linear-gradient(0deg, transparent 35%, rgba(255, 255, 255, 0.5) 100%);`,
   },
+  fonts: {
+    display: "'Clash Display', 'Inter', sans-serif",
+    body: "'Inter', sans-serif",
+  },
   fontWeights: {
     light: 300,
     medium: 400,
     semiBold: 500,
     bold: 600,
+  },
+  shadows: {
+    glow: '0 0 0 1px rgba(0, 235, 255, 0.25), 0 18px 50px -12px rgba(167, 62, 231, 0.55)',
+    softGlow: '0 12px 40px -16px rgba(0, 235, 255, 0.45)',
   },
 };
 
