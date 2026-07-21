@@ -34,7 +34,7 @@
     "@nestjs/platform-express": "^10.2.8",
     "@nestjs/schedule": "^4.0.0",
     "@nestjs/swagger": "^7.1.14",
-    "axios": "^1.6.0",
+    "axios": "^1.18.0",
     "bcrypt": "^5.1.1",
     "cache-manager": "^5.2.4",
     "class-transformer": "^0.5.1",
